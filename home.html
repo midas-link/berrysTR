@@ -3,28 +3,271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
     <link href='https://fonts.googleapis.com/css?family=Mulish' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
     <title>Home</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex: 1; /* Allow main to grow and fill the space */
+        }
+        ::placeholder {
+            color: #FFFFFF;
+        }
+        .header-container {
+            width: 100%;
+            background: linear-gradient(to bottom, #001338 0%, #014B96 44%);
+            position: relative;
+            z-index: 1;
+        }
+        .top-header {
+            display: flex;
+            justify-content: flex-end;
+            padding: 5px 20px;
+        }
+        .top-header-link {
+            font-size: 0.875rem;
+            font-family: 'Mulish', sans-serif;
+            color: #AAAAAA;
+            font-weight: 700;
+            text-decoration: underline;
+            margin-right: 2.5vh;
+        }
+        .top-header-link:last-child {
+            margin-right: 20vh;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        .header img {
+            height: 78px;
+            margin-bottom: 1vh;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%; /* Reduced width to fit on left side */
+            height: 60%;
+            background: url('svg/Vector_1.svg') no-repeat left center;
+            background-size: contain;
+            mask-image: url('svg/Vector_1.svg');
+            -webkit-mask-image: url('svg/Vector_1.svg');
+            z-index: -1;
+            opacity: 1;
+        }
+        .header a {
+            color: white;
+            text-decoration: none;
+            font-family: 'Mulish', sans-serif;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        .header a:first-child {
+            margin-left: 50vh;
+        }
+        .header a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        .header input[type="text"] {
+            padding: 8px 12px 8px 30px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            outline: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%23FFFFFF" viewBox="0 0 24 24"><path d="M10 2a8 8 0 105.293 14.293l4.707 4.707 1.414-1.414-4.707-4.707A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z"/></svg>');
+            background-repeat: no-repeat;
+            background-size: 16px;
+            background-position: 8px center;
+        }
+        .header input[type="text"]::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        footer {
+            padding: 1.5rem 0;
+            background: linear-gradient(to right, #001338, #014B96);
+            color: white;
+            width: 100%;
+        }
+        footer img {
+            width: 300px;
+            height: 78px;
+            margin-left: 2%;
+        }
+        .sub-header {
+            display: flex;
+            background-color: #F5F5F5;
+            padding-left: 5vh;
+            padding-top: 1vh;
+        }
+        .sub-header div {
+            text-align: center;
+            padding-left: 1vh;
+            padding-bottom: 1vh;
+            font-family: 'Mulish', sans-serif;
+            font-weight: 600;
+        }
+        .sub-header img {
+            width: 52px;
+            height: 52px;
+            display: block;
+            margin: 0 auto;
+        }
+        .sub-header-profile-name, .sub-header-role {
+            margin-top: 0.5vh;
+        }
+        .main-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 0 20px;
+            margin-top: 10vh;
+        }
+        .main-container div {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+   
+        .main-container-left {
+            margin-left : 2.5vh;
+        }
+        .main-container-right {
+            margin-right: 2.5vh;
+        }
+        .main-container img {
+            width: 270px;
+            height: 250px;
+        }
+        .main-container-middle img {
+            width: 370px;
+            height: 350px;
+        }
+        .main-container span {
+            font-family: 'Mulish', sans-serif;
+            font-weight: 400;
+            font-size: 1rem;
+            color: #747474;
+            text-decoration: underline;
+            text-transform: uppercase;
+        }
+        img.left-arrow {
+            width:53px;
+            height:56px;
+            align-self: center;
+            padding-left: 2vh;
+            cursor: pointer;
+        }
+        img.right-arrow {
+            width:53px;
+            height:56px;
+            align-self: center;
+            padding-right: 2vh;
+            cursor: pointer;
+        }
+        .sub-header-container {
+            position: relative;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 8vh;
+            background-color: #014B96;
+            border: 1px solid #ccc;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+        .dropdown-menu a {
+            display: block;
+            padding: 2vh 4vh 2vh 4vh;
+            font-family: 'Mulish', sans-serif;
+            font-size: 1rem;
+            color: #FFFFFF;
+            text-decoration: underline;
+        }
+        .sub-header-profile, .sub-header-company {
+            cursor: pointer;
+        }
+    </style>
 </head>
-<header>
-    <div class="header-container" >
-        <div class="header" style="display:flex; justify-content: space-between; align-items: center; padding: 0 20px; background: linear-gradient(to right, #001338, #014B96)">
-            <a href="home.html" style="margin-left: 35vh;"> Home </a> 
-            <a href="manageAcc.html"> Manage Account </a>
-            <a href="Inventory.html"> Inventory </a>
-            <a href="Analytics.html"> Analytics </a>
-            <input type="text" placeholder="Search...">
-            <img src="images/Midas_Link_logo.png" alt="Berrys Logo" style="height: 78px;">
-        </div>
-</header>
 <body>
-</body>
-<footer>
-    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
-        <span style="font-size: 0.875rem; font-family: Inter;">@copyrights Berrys Global Innovations</span>
-        <img src="images/logo.png" alt="Berrys Logo" style="height: 78px;">
+    <header>
+        <div class="header-container">
+            <div class="top-header">
+                <a class="top-header-link" href="https://berrys.com">Berrys.com</a>
+                <a class="top-header-link" href="contact.html">Contact Us</a>
+            </div>
+            <div class="header">
+                <a href="home.html">Home</a>
+                <a href="manageAcc.html">Manage Account</a>
+                <a href="Inventory.html">Inventory</a>
+                <a href="Analytics.html">Analytics</a>
+                <input type="text" placeholder="Search...">
+                <img src="images/Midas_Link_logo.png" alt="Berrys Logo">
+            </div>
+        </div>
+    </header>
+    <div class="sub-header-container">
+        <div class="sub-header">
+            <div class="sub-header-profile">
+                <img src="images/NicePng_gray.png" alt="profile-logo">
+                <div class="sub-header-profile-name">Darren Keane</div>
+            </div>
+            <div class="sub-header-company">
+                <img class="company-logo" src="images/circle-k-logo.png" alt="company-logo">
+                <div class="sub-header-role">(Area Manager)</div>
+            </div>
+        </div>
+        <div class="dropdown-menu" id="dropdownMenu">
+            <a href="login.html" id="logout">Logout</a>
+        </div>
     </div>
-</footer>
+    <main>
+        <div class="main-container">
+            <img src="svg/left-arrow.svg" alt="left-arrow" class="left-arrow">
+            <div class="main-container-left">
+                <img src="images/Truck_graphic.png" alt="Truck Graphic">
+                <span class="main-container-left-sub-title">Vehicle Logging</span>
+            </div>
+            <div class="main-container-middle">
+                <img src="images/Cross-drop graphic.png" alt="Cross-drop">
+                <span class="main-container-middle-sub-title">Cross-Drop Prevention</span>
+            </div>
+            <div class="main-container-right">
+                <img src="images/Gas_station_graphic.png" alt="Gas Station Graphic">
+                <span class="main-container-right-sub-title">Site Data</span>
+            </div>
+            <img src="svg/right-arrow.svg" alt="right-arrow" class="right-arrow">
+        </div>
+    </main>
+    
+    <footer>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
+            <span style="font-size: 1rem; font-family: Mulish;">@copyrights Berrys Global Innovations</span>
+            <img src="images/logo.png" alt="Berrys Logo" style="height: 78px;">
+        </div>
+    </footer>
+    <script src="move_images.js"></script>
+</body>
 </html>
