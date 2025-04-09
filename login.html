@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Berrys Login</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href='https://fonts.googleapis.com/css?family=Mulish' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+</head>
+<body> 
+    <main>
+        <div class="content">
+            <div class="sign-in-container">
+                <form class="sign-in-form">
+                    <p class="sign-in-title">Sign in to your account</p>
+                    <div class="form-group">
+                        <label for="email"> Your email</label>
+                        <input type="email" id="email" name="email" placeholder="email@domain.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" name="password" placeholder="•••••••••" required>
+                    </div>
+                    <div class="form-group below-password-container">
+                        <label class="checkbox-container">
+                            <input type="checkbox" name="remember">
+                            <span class="checkmark"></span>
+                            Remember me
+                        </label>
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                    </div>
+                    <button type="submit" class="sign-in-button">Sign In</button>
+                    <div class="no-account">Don't have an account? <a class="sign-up-link" href="register.html">Sign up</a></div>
+                </form>
+            </div>
+        </div> 
+    </main>
+    <footer>
+         <img src="images/logo.png" alt="logo">
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html> 
