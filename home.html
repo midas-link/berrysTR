@@ -37,7 +37,7 @@
         .top-header {
             display: flex;
             justify-content: flex-end;
-            padding: 5px 20px;
+            padding: 1vh 2vh;
         }
         .top-header-link {
             font-size: 0.875rem;
@@ -48,31 +48,35 @@
             margin-right: 2.5vh;
         }
         .top-header-link:last-child {
-            margin-right: 20vh;
+            margin-right: 20%;
         }
         .header {
+            position: relative;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 20px;
+            padding: 0 2vh;
         }
-        .header img {
-            height: 78px;
-            margin-bottom: 1vh;
-        }
-        .header::before {
-            content: '';
+        .header-background {
             position: absolute;
-            top: 50%;
+            top: 35%;
             left: 0;
-            width: 100%; /* Reduced width to fit on left side */
-            height: 60%;
+            width: 100%;
+            height: 70%;
             background: url('svg/Vector_1.svg') no-repeat left center;
             background-size: contain;
             mask-image: url('svg/Vector_1.svg');
             -webkit-mask-image: url('svg/Vector_1.svg');
             z-index: -1;
             opacity: 1;
+        }
+        .header img {
+            height: 7vh;
+            margin-bottom: 1vh;
+        }
+        .header a, .header input, .header img {
+            position: relative; /* Ensure these elements are above the background */
+            z-index: 1;
         }
         .header a {
             color: white;
@@ -81,15 +85,44 @@
             font-weight: 700;
             transition: all 0.3s ease;
         }
-        .header a:first-child {
-            margin-left: 50vh;
+        .header a:nth-child(2) {
+            margin-left: 30%;
+        }
+        @media (max-width: 900px) {
+            .header a:nth-child(2) {
+                margin-left: 5%;
+            }
+            .header img {
+                height: 3vh;
+            }
+            .header-background {
+                top: 50%;
+                height: 90%;
+            }
+            .sub-header {
+                padding-left: 1vh;
+            }
+            .sub-header img {
+                width: 3vh !important;
+                height: 3vh !important;
+            }
+            .sub-header-profile-name {
+                font-size: 0.8rem;
+            }
+            .sub-header-role {
+                font-size: 0.8rem;
+            }
+            * {
+                font-size: 0.75rem !important;
+            }
+           
         }
         .header a:hover {
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
         }
         .header input[type="text"] {
-            padding: 8px 12px 8px 30px;
+            padding: 1vh 3vh 1vh 3vh;
             border-radius: 4px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             background-color: rgba(255, 255, 255, 0.1);
@@ -98,7 +131,12 @@
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%23FFFFFF" viewBox="0 0 24 24"><path d="M10 2a8 8 0 105.293 14.293l4.707 4.707 1.414-1.414-4.707-4.707A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z"/></svg>');
             background-repeat: no-repeat;
             background-size: 16px;
-            background-position: 8px center;
+            background-position: 0.5vh center;
+        }
+        @media (max-width: 900px) {
+            .header input[type="text"] {
+                width: 40%;
+            }
         }
         .header input[type="text"]::placeholder {
             color: rgba(255, 255, 255, 0.7);
@@ -110,8 +148,8 @@
             width: 100%;
         }
         footer img {
-            width: 300px;
-            height: 78px;
+            width: 20%;
+            height: 90%;
             margin-left: 2%;
         }
         .sub-header {
@@ -128,8 +166,8 @@
             font-weight: 600;
         }
         .sub-header img {
-            width: 52px;
-            height: 52px;
+            width: 5vh;   
+            height: 5vh;
             display: block;
             margin: 0 auto;
         }
@@ -137,10 +175,10 @@
             margin-top: 0.5vh;
         }
         .main-container {
-            display: flex;
+            display: flex;  
             justify-content: space-between;
             align-items: flex-start;
-            padding: 0 20px;
+            padding: 0 2vh;
             margin-top: 10vh;
         }
         .main-container div {
@@ -156,12 +194,12 @@
             margin-right: 2.5vh;
         }
         .main-container img {
-            width: 270px;
-            height: 250px;
+            width: 50%;
+            height: 50%;
         }
         .main-container-middle img {
-            width: 370px;
-            height: 350px;
+            width: 75%;
+            height: 75%;
         }
         .main-container span {
             font-family: 'Mulish', sans-serif;
@@ -170,17 +208,18 @@
             color: #747474;
             text-decoration: underline;
             text-transform: uppercase;
+            text-align: center;
         }
         img.left-arrow {
-            width:53px;
-            height:56px;
+            width:10%;
+            height:10%;
             align-self: center;
             padding-left: 2vh;
             cursor: pointer;
         }
         img.right-arrow {
-            width:53px;
-            height:56px;
+            width:10%;
+            height:10%;
             align-self: center;
             padding-right: 2vh;
             cursor: pointer;
@@ -219,6 +258,7 @@
                 <a class="top-header-link" href="contact.html">Contact Us</a>
             </div>
             <div class="header">
+                <div class="header-background"></div>
                 <a href="home.html">Home</a>
                 <a href="manageAcc.html">Manage Account</a>
                 <a href="Inventory.html">Inventory</a>
@@ -265,7 +305,7 @@
     <footer>
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
             <span style="font-size: 1rem; font-family: Mulish;">@copyrights Berrys Global Innovations</span>
-            <img src="images/logo.png" alt="Berrys Logo" style="height: 78px;">
+            <img src="images/logo.png" alt="Berrys Logo" >
         </div>
     </footer>
     <script src="move_images.js"></script>
