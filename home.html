@@ -43,9 +43,9 @@
             font-size: 0.875rem;
             font-family: 'Mulish', sans-serif;
             color: #AAAAAA;
-            font-weight: 700;
-            text-decoration: underline;
+            font-style: bold;
             margin-right: 2.5vh;
+            text-decoration:none;
         }
         .top-header-link:last-child {
             margin-right: 20%;
@@ -59,7 +59,7 @@
         }
         .header-background {
             position: absolute;
-            top: 35%;
+            top: 40%;
             left: 0;
             width: 100%;
             height: 70%;
@@ -71,15 +71,16 @@
             opacity: 1;
         }
         .header img {
-            height: 7vh;
-            margin-bottom: 1vh;
+            width:290px;
+            height:99px;
+            padding-bottom: 2vh;
         }
         .header a, .header input, .header img {
             position: relative; /* Ensure these elements are above the background */
             z-index: 1;
         }
         .header a {
-            color: white;
+            color: #FFFFFF;
             text-decoration: none;
             font-family: 'Mulish', sans-serif;
             font-weight: 700;
@@ -148,15 +149,14 @@
             width: 100%;
         }
         footer img {
-            width: 20%;
-            height: 90%;
+            width: 10%;
             margin-left: 2%;
         }
         .sub-header {
             display: flex;
             background-color: #F5F5F5;
             padding-left: 5vh;
-            padding-top: 1vh;
+            padding-top: 2vh;
         }
         .sub-header div {
             text-align: center;
@@ -171,8 +171,11 @@
             display: block;
             margin: 0 auto;
         }
-        .sub-header-profile-name, .sub-header-role {
-            margin-top: 0.5vh;
+        .company-logo{
+            height: 6vh !important;
+        }
+        .sub-header-profile-name {
+            margin-top: 1vh;
         }
         .main-container {
             display: flex;  
@@ -254,7 +257,7 @@
     <header>
         <div class="header-container">
             <div class="top-header">
-                <a class="top-header-link" href="https://berrys.com">Berrys.com</a>
+                <a class="top-header-link" href="https://berrys.com">berrys.com</a>
                 <a class="top-header-link" href="contact.html">Contact Us</a>
             </div>
             <div class="header">
