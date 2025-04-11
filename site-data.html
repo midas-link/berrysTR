@@ -6,6 +6,8 @@
     <link href='https://fonts.googleapis.com/css?family=Mulish' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
     <title>Home</title>
     <style>
         * {
@@ -314,7 +316,7 @@
         thead {
             position: sticky;
             top: 0;
-            z-index: 1;
+            z-index: 0;
         }
         tbody {
             display: block;
@@ -365,6 +367,35 @@
             align-items: center;
             width: 90%;
             margin: 0 auto;
+            z-index: 1;
+        }
+        .export-dropdown {
+            position: relative;
+            display: inline-block;
+            margin-left: auto;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #f9f9f9;
+            min-width: 120px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 4px;
+        }
+        .dropdown-content a {
+            color: #014B96;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-family: 'Mulish', sans-serif;
+        }
+        .dropdown-content a:hover {
+            background-color: #EAF3FC;
+        }
+        .show {
+            display: block;
         }
     </style>
 </head>
@@ -417,11 +448,19 @@
            </div>
            <button class="search-button" >Search</button>       
            <div class="table-header">
-               <label for="table-type" class="table-type">
-                   LIVE
-                   <span class="live-indicator"></span>
-               </label>
-               <button class="export-button" onclick="exportTableToCSV()">Export to CSV</button>
+            <div class="live-status">
+                <label for="table-type" class="table-type">
+                    LIVE
+                    <span class="live-indicator"></span>
+                </label>
+            </div>
+            <div class="export-dropdown">
+                <button class="export-button" onclick="toggleDropdown()">Export As ▼</button>
+                <div class="dropdown-content" id="exportDropdown">
+                    <a href="#" onclick="exportTableToCSV(); return false;">CSV</a>
+                    <a href="#" onclick="exportTableToPDF(); return false;">PDF</a>
+                </div>
+            </div>
            </div>
           <table>
             <thead>
@@ -434,7 +473,7 @@
                     <th>Zip</th>
                     <th>Tank Grade</th>
                     <th>Tank No.</th>
-                    <th>Presented Delivery</th>
+                    <th>Prevented Delivery</th>
                 </tr>
             </thead>
             <tbody>
@@ -533,6 +572,142 @@ function exportTableToCSV() {
         link.click();
         document.body.removeChild(link);
     }
+}
+
+// Function to check if any search field has input
+function hasSearchInput() {
+    const searchInputs = document.querySelectorAll('.search-fields input');
+    return Array.from(searchInputs).some(input => input.value.trim() !== '');
+}
+
+// Function to toggle live indicator visibility
+function toggleLiveStatus() {
+    const liveStatus = document.querySelector('.live-status');
+    if (hasSearchInput()) {
+        liveStatus.style.display = 'none';
+    } else {
+        liveStatus.style.display = 'block';
+    }
+}
+
+// Add event listeners to all search inputs
+document.querySelectorAll('.search-fields input').forEach(input => {
+    input.addEventListener('input', toggleLiveStatus);
+});
+
+// Add event listener to search button
+document.querySelector('.search-button').addEventListener('click', toggleLiveStatus);
+
+// Add event listener to clear all inputs and show live status again
+document.querySelectorAll('.search-fields input').forEach(input => {
+    input.addEventListener('input', function() {
+        if (!hasSearchInput()) {
+            toggleLiveStatus();
+        }
+    });
+});
+
+// Toggle dropdown menu
+function toggleDropdown() {
+    document.getElementById("exportDropdown").classList.toggle("show");
+}
+
+// Close dropdown when clicking outside
+window.onclick = function(event) {
+    if (!event.target.matches('.export-button')) {
+        var dropdowns = document.getElementsByClassName("dropdown-content");
+        for (var i = 0; i < dropdowns.length; i++) {
+            var openDropdown = dropdowns[i];
+            if (openDropdown.classList.contains('show')) {
+                openDropdown.classList.remove('show');
+            }
+        }
+    }
+}
+
+// Function to export table to PDF
+async function exportTableToPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    
+    // Get table data
+    const table = document.querySelector('table');
+    
+    // Add title
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(16);
+    doc.text('Cross Drop Prevention Data', 14, 15);
+    
+    // Add timestamp
+    const timestamp = new Date().toLocaleString();
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Generated: ${timestamp}`, 14, 25);
+    
+    // Create the PDF table
+    doc.autoTable({
+        html: table,
+        startY: 30,
+        styles: {
+            fontSize: 8,
+            cellPadding: 2,
+            overflow: 'linebreak',
+            halign: 'center'
+        },
+        headStyles: {
+            fillColor: [1, 75, 150],
+            textColor: 255,
+            fontSize: 8,
+            fontStyle: 'bold',
+            halign: 'center'
+        },
+        alternateRowStyles: {
+            fillColor: [234, 243, 252]
+        },
+        margin: { top: 30 }
+    });
+
+    // Generate filename
+    const date = new Date();
+    const formattedDate = date.toISOString().split('T')[0];
+    const formattedTime = date.toTimeString().split(' ')[0].replace(/:/g, '-');
+    const fileName = `cross_drop_data_${formattedDate}_${formattedTime}.pdf`;
+
+    // Get the PDF as blob
+    const pdfBlob = new Blob([doc.output('blob')], { type: 'application/pdf' });
+
+    // Try to use the modern File System Access API if available
+    if ('showSaveFilePicker' in window) {
+        try {
+            const handle = await window.showSaveFilePicker({
+                suggestedName: fileName,
+                types: [{
+                    description: 'PDF File',
+                    accept: {
+                        'application/pdf': ['.pdf'],
+                    },
+                }],
+            });
+            
+            const writable = await handle.createWritable();
+            await writable.write(pdfBlob);
+            await writable.close();
+        } catch (err) {
+            if (err.name !== 'AbortError') {
+                // Fall back to traditional method if there's an error
+                // (other than user cancelling)
+                fallbackSavePDF(doc, fileName);
+            }
+        }
+    } else {
+        // Fall back to traditional method for browsers that don't support File System Access API
+        fallbackSavePDF(doc, fileName);
+    }
+}
+
+// Fallback save method for PDF
+function fallbackSavePDF(doc, fileName) {
+    doc.save(fileName);
 }
 </script>
 </html>
