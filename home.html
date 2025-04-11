@@ -71,9 +71,11 @@
             opacity: 1;
         }
         .header img {
-            width:290px;
+            width:225px;
             height:99px;
+            scale:1.1;
             padding-bottom: 2vh;
+            padding-right:1vh;
         }
         .header a, .header input, .header img {
             position: relative; /* Ensure these elements are above the background */
@@ -182,7 +184,7 @@
             justify-content: space-between;
             align-items: flex-start;
             padding: 0 2vh;
-            margin-top: 10vh;
+            margin-top: 5vh;
         }
         .main-container div {
             display: flex;
@@ -199,6 +201,14 @@
         .main-container img {
             width: 50%;
             height: 50%;
+        }
+        .main-container-middle {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .main-container-middle:hover {
+            transform: scale(1.05);
         }
         .main-container-middle img {
             width: 75%;
@@ -293,7 +303,7 @@
                 <img src="images/Truck_graphic.png" alt="Truck Graphic">
                 <span class="main-container-left-sub-title">Vehicle Logging</span>
             </div>
-            <div class="main-container-middle">
+            <div class="main-container-middle" onclick="handleMiddleClick()">
                 <img src="images/Cross-drop graphic.png" alt="Cross-drop">
                 <span class="main-container-middle-sub-title">Cross-Drop Prevention</span>
             </div>

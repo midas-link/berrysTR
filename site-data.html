@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://fonts.googleapis.com/css?family=Mulish' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
     <title>Home</title>
     <style>
         * {
@@ -204,9 +205,13 @@
         .sub-header span {
             padding-left: 10%;
             font-family: 'Mulish', sans-serif;
+
         }
         .sub-header h1 {
             color: #014B96;
+            font-family: 'Mulish', sans-serif;
+            white-space: nowrap;
+            font-weight: 400;
         }
         .breadcrumb {
         margin-top:2vh;
@@ -233,85 +238,111 @@
         .main-container {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
             padding-top: 4vh;
+            padding-left: 4vh;
             border-top-left-radius: 20px;
             background-color: white;
             height: 100%;
         }
-        .header-role,
-        .header-profile-name {
-            text-align: center;
-            padding-top: 1vh;
-            padding-left: 1vh;
-            padding-bottom: 1vh;
-            font-size: 1rem;
-            font-family: Mulish;
-            font-weight: 600;  
-        }
-        .header-profile img{
-            width: 6vh;   
-            height: 6vh;
-            display: block;
-            margin: 0 auto;
-        }
-        .header-company img {
-            width: 5vh;
-            height: 6vh;
-            display: block;
-            margin: 0 auto;
-        }
-        .profile-details {
-            display: flex;
-            flex-direction: row; /* Align children in a row */
-            justify-content: space-between; /* Optional: space them out evenly */
-            align-items: center; /* Optional: center them vertically */
-        }
-        .form-container {
-            border-radius: 25px;
-            background-color: #FAFAFA;
+        .search-label {
             font-family: 'Mulish', sans-serif;
-            font-weight: 500;
+            font-size: 2rem;
+            font-weight: 400;
+            color:#014B96;
+            margin-bottom: 2vh;
+        }
+        .search-fields {
+            padding-left: 4%;
+        }
+        .search-fields label {
+            font-family: 'Mulish', sans-serif;
+            font-weight: 400;
             font-size: 1rem;
-            display: flex;        
-            justify-content: center;
-            align-items: center;
-            padding: 4vh 4vh 4vh 4vh;
-            width: fit-content;
-            margin-top: 2vh;
+
         }
-        .form-container input {
-            padding: 0.5vh 0.5vh 0.5vh 0.5vh;
-            border-radius: 2px;
-            border:0px;
+        .search-fields input{
             background-color: #EAF3FC;
+            border:none;
+            margin-left:1.5vh;
+            margin-right:1.5vh;
+            padding-top: 1vh;
+            padding-bottom: 1vh;
+            padding-left: 1vh;
         }
-        .form-row {
-            display: flex;
-            align-items: center; /* Align items vertically centered */
-            margin-bottom: 4vh; /* Add some space between rows */
-        }
-        .form-row label {
-            margin-right: 3vh; /* Add space between label and input */
-        }
-        .form-container form {
-            display: flex;
-            flex-direction: column; /* Stack children vertically */
-            align-items: center; /* Center children horizontally */
-        }
-        .form-container button {
+        .search-button{
             background-color: #014B96;
             color: white;
-            border-radius: 15px;
-            text-align: center;
-            padding: 0.5vh 7vh 0.5vh 7vh;
+            padding: 1vh 4vh 1vh 4vh;
+            border-radius: 4px;
             font-family: 'Mulish', sans-serif;
-            font-weight: 600;
+            font-weight: 400;
             font-size: 1rem;
-            margin-top: 1vh; 
+            margin-top: 5vh;
+            text-transform: uppercase;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
-        .form-container button:hover {
-            background-color: #012F5E;
+        .table-type {
+            font-family: 'Mulish', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .live-indicator {
+            width: 12px;
+            height: 12px;
+            background-color: #FF0000;
+            border-radius: 2px;
+            display: inline-block;
+        }
+        table {
+
+            display: block;
+            margin-top: 1vh;
+            margin-left: auto;
+            margin-right: auto;
+            max-height: 50vh; /* This sets the maximum height of the table */
+            overflow-y: auto; /* This enables vertical scrolling */
+            border-collapse: collapse;
+            width: 95%; /* Adjust width as needed */
+            border-radius: 10px;
+        }
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        tbody {
+            display: block;
+            overflow-y: scroll;
+            width: 100%;
+        }
+        thead, tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+        th, td {
+            font-family: 'Mulish', sans-serif;
+            text-align: center;
+            padding: 1.5vh 2vh;
+            width: calc(100% / 9); /* Divides space equally among 9 columns */
+        }
+        table th {
+            padding-left: 1vh;
+            padding-right: 1vh;
+            background-color: #004B96;
+            color: white;
+        }
+        tr:nth-child(odd) {
+            background-color: #EAF3FC;
+        }
+        tr:nth-child(even) {
+            background-color: #F5F5F5;
         }
     </style>
 </head>
@@ -335,39 +366,55 @@
     </header>
     <div class="sub-header-container">
         <div class="sub-header">
-                <h1> Manage Account </h1>
-                <span> Change your password, your new password will be assigned to the email address you used to sign in. </span>
+                <h1>Site Data</h1>
+                <span> Gather insight into your deliveries by site location. You can dive into delivery information by State, Zip code, Street Address and City. This <br>will offer you vital information on drop frequency, scheduling and billing reports.  </span>
               
         </div>
         <div class="breadcrumb">
-            <a href="home.html">Home</a> / <span>Manage Account</span>
+            <a href="home.html">Home</a> / <span>Site Data</span>
         </div> 
     </div>
     <main>
         <div class="main-container">
-            <div class="profile-details">
-                <div class="header-profile">
-                    <img src="images/NicePng_gray.png" alt="profile-logo">
-                    <div class="header-profile-name">Darren Keane</div>
-                </div>
-                <div class="header-company">
-                    <img class="company-logo" src="images/circle-k-logo.png" alt="company-logo">
-                    <div class="header-role">(Area Manager)</div>
-                </div>
-            </div>
-            <div class="form-container">
-                <form action="">
-                    <div class="form-row">
-                        <label for="change-password">Change Password:</label>
-                        <input type="password" id="change-password" name="change-password">
-                    </div>
-                    <div class="form-row">
-                        <label for="confirm-password">Confirm Password:</label>
-                        <input type="password" id="confirm-password" name="confirm-password">
-                    </div>
-                    <button type="submit">Reset</button>
-                </form>
-            </div>
+           <label class="search-label"> Search</label>
+           <div class="search-fields">
+             <label for="ST-address"> ST. Address</label>
+             <input type="text" id="ST-address" name="ST-address">
+             <label for="State"> State</label>
+             <input type="text" id="State" name="State">
+             <label for="City"> City</label>
+             <input type="text" id="City" name="City">
+             <label for="Site">Site</label>
+             <input type="text" id="Site" name="Site">
+             <label for="Zip">Zip</label>
+             <input type="text" id="Zip" name="Zip">
+             <label for="Date">Date</label>
+             <input type="text" id="Date" name="Date">
+             <label for="Fuel">Fuel</label>
+             <input type="text" id="Fuel" name="Fuel">
+           </div>
+           <button class="search-button" >Search</button>       
+           <label for="table-type" class="table-type">
+             LIVE
+             <span class="live-indicator"></span>
+           </label>
+          <table>
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Address</th>
+                    <th>City</th>
+                    <th>State</th>
+                    <th>Zip</th>
+                    <th>Tank Grade</th>
+                    <th>Tank No.</th>
+                    <th>Presented Delivery</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+           </table>
         </div>
     </main>
     
@@ -378,4 +425,5 @@
         </div>
     </footer>
 </body>
+<script src="cross-drop.js"></script>
 </html>

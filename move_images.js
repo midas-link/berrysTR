@@ -49,3 +49,18 @@ subHeaderCompany.addEventListener('click', toggleDropdown);
 document.addEventListener('click', () => {
     dropdownMenu.style.display = 'none';
 });
+
+// Function to handle middle container click
+function handleMiddleClick() {
+    const middleImage = document.querySelector('.main-container-middle img');
+    const imageSrc = middleImage.getAttribute('src');
+    
+    // Determine which page to redirect to based on the current middle image
+    if (imageSrc.includes('Truck_graphic')) {
+        window.location.href = 'vehicle-logging.html';
+    } else if (imageSrc.includes('Cross-drop')) {
+        window.location.href = 'cross-drops.html';
+    } else if (imageSrc.includes('Gas_station_graphic')) {
+        window.location.href = 'site-data.html';
+    }
+}
