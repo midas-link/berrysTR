@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='https://fonts.googleapis.com/css?family=Mulish' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
+    <title>Home</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html, body {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+        }
+        main {
+            flex: 1; /* Allow main to grow and fill the space */
+            background-color: #F9BC39;
+        }
+        ::placeholder {
+            color: #FFFFFF;
+        }
+        .header-container {
+            width: 100%;
+            background: linear-gradient(to bottom, #001338 0%, #014B96 44%);
+            position: relative;
+            z-index: 1;
+        }
+        .top-header {
+            display: flex;
+            justify-content: flex-end;
+            padding: 1vh 2vh;
+        }
+        .top-header-link {
+            font-size: 0.875rem;
+            font-family: 'Mulish', sans-serif;
+            color: #AAAAAA;
+            font-style: bold;
+            margin-right: 2.5vh;
+            text-decoration:none;
+        }
+        .top-header-link:last-child {
+            margin-right: 20%;
+        }
+        .header {
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2vh;
+        }
+        .header-background {
+            position: absolute;
+            top: 40%;
+            left: 0;
+            width: 100%;
+            height: 70%;
+            background: url('svg/Vector_1.svg') no-repeat left center;
+            background-size: contain;
+            mask-image: url('svg/Vector_1.svg');
+            -webkit-mask-image: url('svg/Vector_1.svg');
+            z-index: -1;
+            opacity: 1;
+        }
+        .header img {
+            width:225px;
+            height:99px;
+            scale:1.1;
+            padding-bottom: 2vh;
+            padding-right:1vh;
+        }
+        .header a, .header input, .header img {
+            position: relative; /* Ensure these elements are above the background */
+            z-index: 1;
+        }
+        .header a {
+            color: white;
+            text-decoration: none;
+            font-family: 'Mulish', sans-serif;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        .header a:nth-child(2) {
+            margin-left: 30%;
+        }
+        @media (max-width: 1000px) and (max-height: 900px) {    
+            .header a:nth-child(2) {
+                margin-left: 5%;
+            }
+            .header img {
+                height: 3vh;
+            }
+            .header-background {
+                top: 25%;
+                height: 90%;
+            }
+            .sub-header {
+                padding-left: 1vh;
+            }
+            .sub-header img {
+                width: 3vh !important;
+                height: 3vh !important;
+            }
+            .sub-header-profile-name {
+                font-size: 0.8rem;
+            }
+            .sub-header-role {
+                font-size: 0.8rem;
+            }
+            * {
+                font-size: 0.75rem !important;
+            }
+            .sub-header-container .header-background {
+                top: 30%;
+            }
+           
+        }
+        @media (max-width: 1000px) and (max-height: 1000px) {
+            .header a:nth-child(2) {
+                margin-left: 5%;
+            }
+            .header img {
+                height: 3vh;
+            }
+            .header-background {
+                top: 45%;
+                height: 90%;
+            }
+            .sub-header {
+                padding-left: 1vh;
+            }
+            .sub-header img {
+                width: 3vh !important;
+                height: 3vh !important;
+            }
+            .sub-header-profile-name {
+                font-size: 0.8rem;
+            }
+            .sub-header-role {
+                font-size: 0.8rem;
+            }
+            * {
+                font-size: 0.75rem !important;
+            }
+            .sub-header-container .header-background {
+                top: 40%;
+            }
+        }
+        .header a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        .header input[type="text"] {
+            padding: 1vh 3vh 1vh 3vh;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            outline: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%23FFFFFF" viewBox="0 0 24 24"><path d="M10 2a8 8 0 105.293 14.293l4.707 4.707 1.414-1.414-4.707-4.707A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z"/></svg>');
+            background-repeat: no-repeat;
+            background-size: 16px;
+            background-position: 0.5vh center;
+        }
+        @media (max-width: 900px) {
+            .header input[type="text"] {
+                width: 40%;
+            }
+        }
+        .header input[type="text"]::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        footer {
+            padding: 1.5rem 0;
+            background: linear-gradient(to right, #001338, #014B96);
+            color: white;
+            width: 100%;
+        }
+        footer img {
+            width: 10%;
+            margin-left: 2%;
+        }
+        .sub-header-container {
+            height: fit-content;
+            position: relative;
+            background-color: #EAF3FC;
+            z-index: 1;
+        }
+
+        .sub-header-container.header-background {
+            background-color: #F5F5F5;
+        }
+        .sub-header {
+            display: flex;
+            align-items: center;
+            padding-left: 5vh;
+            padding-top: 2vh;
+        }
+        .sub-header span {
+            padding-left: 10%;
+            font-family: 'Mulish', sans-serif;
+        }
+        .breadcrumb {
+            margin-top:2vh;
+        padding: 0.5vh 2vh 0.5vh 3vh;
+        color: #014B96;
+        background-color: #F9BC39;
+        width: fit-content;
+        border-radius: 20px;
+        border-bottom-left-radius: 0px;
+        border-top-left-radius: 0px;
+        }
+        .breadcrumb span,
+        .breadcrumb a {
+        font-family: 'Mulish', sans-serif;
+        text-decoration: none;
+        color: #000;
+        font-size: 0.875rem;
+        font-weight: 700;
+        font-style: bold;
+        }
+
+        .breadcrumb a:hover {
+        text-decoration: underline;
+        }
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 4vh;
+            border-top-left-radius: 20px;
+            background-color: white;
+            height: 100%;
+        }
+        .header-role,
+        .header-profile-name {
+            text-align: center;
+            padding-top: 1vh;
+            padding-left: 1vh;
+            padding-bottom: 1vh;
+            font-size: 1rem;
+            font-family: Mulish;
+            font-weight: 600;  
+        }
+        .header-profile img{
+            width: 6vh;   
+            height: 6vh;
+            display: block;
+            margin: 0 auto;
+        }
+        .header-company img {
+            width: 5vh;
+            height: 6vh;
+            display: block;
+            margin: 0 auto;
+        }
+        .profile-details {
+            display: flex;
+            flex-direction: row; /* Align children in a row */
+            justify-content: space-between; /* Optional: space them out evenly */
+            align-items: center; /* Optional: center them vertically */
+        }
+        .trailer-container {
+            border-radius: 10px;
+            background-color: transparent;
+            width: 100%; 
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin-bottom: 2vh;
+        }
+        .trailer-container-content {
+            background-color: #EAF3FC;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 2vh;
+            width: 105vw;
+            height: 140px;
+            margin-left: calc(50% - 176px);
+            padding-left: 2vh;
+        }
+        .trailer-container-content span {
+            font-family: 'Mulish', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+        }
+        .trailer-container img {
+            width: 352px;
+            height: 166px;
+            scale:1.2;
+            margin-left: -20vh;
+        }
+        .midas-container {
+            border-radius: 10px;
+            background-color: transparent;
+            width: 100%; 
+            display: flex;
+            justify-content: flex-start;
+            align-items: end;
+            padding-right: 4vh;
+        }
+        .midas-container-content {
+            margin-top: 0;
+            background-color: #EAF3FC;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: row;
+            align-items: end;
+            justify-content: flex-end;
+            gap: 2vh;
+            width: 110vw;
+            height: 140px;
+            margin-right: calc(50% - 200px);
+            padding-left: 1vh;
+            padding-right: 2vh;
+        }
+        .midas-container img {
+            width: 300px;
+            height:140px;
+            scale:1.2;
+            margin-bottom: 1.5vh;
+            padding-right:2vh;
+            
+        }
+        .midas-container-content span {
+            font-family: 'Mulish', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            align-self: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <div class="top-header">
+                <a class="top-header-link" href="https://berrys.com">berrys.com</a>
+                <a class="top-header-link" href="contact.html">Contact Us</a>
+            </div>
+            <div class="header">
+                <div class="header-background"></div>
+                <a href="home.html">Home</a>
+                <a href="manageAcc.html">Manage Account</a>
+                <a href="Inventory.html">Inventory</a>
+                <a href="Analytics.html">Analytics</a>
+                <input type="text" placeholder="Search...">
+                <img src="images/Midas_Link_logo.png" alt="Berrys Logo">
+            </div>
+        </div>
+    </header>
+    <div class="sub-header-container">
+        <div class="sub-header">
+                <h1> Inventory </h1>
+                <span> View your inventory - each Elbow is assigned a trailer that can be identified from the UID on the Link box. This way, you can manage how many trailer's and Elbow's are being discovered, as well as which trailers your Midas Elbows are assigned too.  </span>
+              
+        </div>
+        <div class="breadcrumb">
+            <a href="home.html">Home</a> / <span>Inventory</span>
+        </div> 
+    </div>
+    <main>
+        <div class="main-container">
+            <div class="profile-details">
+                <div class="header-profile">
+                    <img src="images/NicePng_gray.png" alt="profile-logo">
+                    <div class="header-profile-name">Darren Keane</div>
+                </div>
+                <div class="header-company">
+                    <img class="company-logo" src="images/circle-k-logo.png" alt="company-logo">
+                    <div class="header-role">(Area Manager)</div>
+                </div>
+            </div>
+            <div class="trailer-container">
+                <div class="trailer-container-content">
+                    <img src="images/Link_device.189.png" alt="Link_device">
+                    <span class="trailers-count"> Active Trailers </span> <span class="trailers-count-number"> 100</span>
+                </div>
+            </div>
+            <div class="midas-container"> 
+                <div class="midas-container-content">
+                    <img src="images/Midas_Elbow_close_up.png" alt="Midas_Elbow_close_up">
+                    <span class="midas-count"> Active Midas </span> <span class="midas-count-number"> 52</span>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
+            <span style="font-size: 1rem; font-family: Mulish;">@copyrights Berrys Global Innovations</span>
+            <img src="images/logo.png" alt="Berrys Logo" >
+        </div>
+    </footer>
+</body>
+</html>
