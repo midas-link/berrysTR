@@ -100,7 +100,8 @@ function createCityDropdown(siteData) {
     });
     
     // Toggle dropdown on input click
-    cityInput.addEventListener('click', function() {
+    cityInput.addEventListener('click', function(e) {
+        e.stopPropagation(); // Prevent the click from being captured by the document
         dropdownContent.classList.toggle('show');
     });
     
@@ -130,6 +131,18 @@ function createCityDropdown(siteData) {
         
         // Apply filter to table
         filterTable();
+    });
+    
+    // Add a dropdown indicator to show it's clickable
+    cityInput.style.backgroundImage = "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23014B96\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg>')";
+    cityInput.style.backgroundRepeat = "no-repeat";
+    cityInput.style.backgroundPosition = "right 8px center";
+    cityInput.style.backgroundSize = "16px";
+    cityInput.style.paddingRight = "30px";
+    
+    // Make sure the dropdown is visible when clicking on the input
+    cityInput.addEventListener('focus', function() {
+        dropdownContent.classList.add('show');
     });
 }
 
