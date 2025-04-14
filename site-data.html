@@ -257,19 +257,18 @@
             margin-bottom: 2vh;
         }
         .search-fields {
-            padding-left: 1.5vw;
+            padding-left: 0.5vw;
         }
         .search-fields label {
             font-family: 'Mulish', sans-serif;
             font-weight: 400;
             font-size: 1rem;
-
+            padding-left: 0.5vw;
         }
         .search-fields input{
             background-color: #EAF3FC;
             border:none;
-            margin-left:1vh;
-            margin-right:1vh;
+            margin-left:0.5vw;
             padding-top: 1vh;
             padding-bottom: 1vh;
             padding-left: 1vh;
@@ -277,6 +276,7 @@
         }
         .search-fields input::placeholder{
             color: #5e5e5e;
+            font-size: 0.5rem;
         }
         /* Styles for the city dropdown */
         .custom-dropdown {
@@ -501,24 +501,24 @@
            <label class="search-label"> Search</label>
            <div class="search-fields">
             <label for="Business-unit"> Business Unit</label>
-            <input type="text" id="Business-unit" name="Business-unit">
+            <input type="text" id="Business-unit" name="Business-unit" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
              <label for="ST-address"> ST. Address</label>
-             <input type="text" id="ST-address" name="ST-address">
+             <input type="text" id="ST-address" name="ST-address" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
              <label for="State"> State</label>
-             <input type="text" id="State" name="State">
+             <input type="text" id="State" name="State" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
              <label for="City"> City</label>
              <div class="custom-dropdown">
-                <input type="text" id="City" name="City" placeholder="Select or type a city" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                <input type="text" id="City" name="City" placeholder="Select or type" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
                 <div class="dropdown-content" id="cityDropdown"></div>
              </div>
              <label for="Site">Site</label>
-             <input type="text" id="Site" name="Site">
+             <input type="text" id="Site" name="Site" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
              <label for="Zip">Zip</label>
-             <input type="text" id="Zip" name="Zip">
+             <input type="text" id="Zip" name="Zip" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
              <label for="Date">Date</label>
-             <input type="text" id="Date" name="Date">
+             <input type="text" id="Date" name="Date" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
              <label for="Fuel">Fuel</label>
-             <input type="text" id="Fuel" name="Fuel">
+             <input type="text" id="Fuel" name="Fuel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
            </div>
            <div class="button-container">
             <button class="search-button">Search</button>       
