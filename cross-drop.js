@@ -70,7 +70,6 @@ function filterTable() {
     const stAddress = document.getElementById('ST-address').value.toLowerCase();
     const state = document.getElementById('State').value.toLowerCase();
     const city = document.getElementById('City').value.toLowerCase();
-    const site = document.getElementById('Site').value.toLowerCase();
     const zip = document.getElementById('Zip').value.toLowerCase();
     const date = document.getElementById('Date').value.toLowerCase();
     const fuel = document.getElementById('Fuel').value.toLowerCase();

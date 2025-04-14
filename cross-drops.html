@@ -264,7 +264,6 @@
 
         }
         .search-fields input{
-            
             background-color: #EAF3FC;
             border:none;
             margin-left:1vh;
@@ -284,9 +283,29 @@
             font-size: 1rem;
             margin-top: 5vh;
             text-transform: uppercase;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
+            display: inline-block;
+            margin-right: 2vh;
+        }
+        .clear-button{
+            background-color: #014B96;
+            color: white;
+            padding: 1vh 4vh 1vh 4vh;
+            border-radius: 4px;
+            font-family: 'Mulish', sans-serif;
+            font-weight: 400;
+            font-size: 1rem;
+            margin-top: 5vh;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+        .clear-button:hover {
+            background-color: #EAF3FC;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: 5vh;
         }
         .table-type {
             font-family: 'Mulish', sans-serif;
@@ -439,8 +458,6 @@
              <input type="text" id="State" name="State">
              <label for="City"> City</label>
              <input type="text" id="City" name="City">
-             <label for="Site">Site</label>
-             <input type="text" id="Site" name="Site">
              <label for="Zip">Zip</label>
              <input type="text" id="Zip" name="Zip">
              <label for="Date">Date</label>
@@ -448,7 +465,10 @@
              <label for="Fuel">Fuel</label>
              <input type="text" id="Fuel" name="Fuel">
            </div>
-           <button class="search-button">Search</button>       
+           <div class="button-container">
+            <button class="search-button">Search</button>       
+            <button class="clear-button">Clear</button>
+           </div>
            <div class="table-header">
                <div class="live-status">
                    <label for="table-type" class="table-type">
@@ -728,5 +748,12 @@ async function exportTableToPDF() {
 function fallbackSavePDF(doc, fileName) {
     doc.save(fileName);
 }
+
+document.querySelector('.clear-button').addEventListener('click', function() {
+    // Clear all input fields
+    document.querySelectorAll('.search-fields input').forEach(input => {
+        input.value = '';
+    });
+});
 </script>
 </html>

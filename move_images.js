@@ -64,3 +64,26 @@ function handleMiddleClick() {
         window.location.href = 'site-data.html';
     }
 }
+function handleLeftClick() {
+    const leftImage = document.querySelector('.main-container-left img');
+    const leftImageSrc = leftImage.getAttribute('src');
+    if (leftImageSrc.includes('Truck_graphic')) {
+        window.location.href = 'vehicle-logging.html';
+    } else if (leftImageSrc.includes('Cross-drop')) {
+        window.location.href = 'cross-drops.html';
+    } else if (leftImageSrc.includes('Gas_station_graphic')) {
+        window.location.href = 'site-data.html';
+    }
+}
+function handleRightClick() {
+    const rightImage = document.querySelector('.main-container-right img');
+    const rightImageSrc = rightImage.getAttribute('src');
+    if (rightImageSrc.includes('Truck_graphic')) {
+        window.location.href = 'vehicle-logging.html';
+    } else if (rightImageSrc.includes('Cross-drop')) {
+        window.location.href = 'cross-drops.html';
+    } else if (rightImageSrc.includes('Gas_station_graphic')) {
+        window.location.href = 'site-data.html';
+    }
+}
+
