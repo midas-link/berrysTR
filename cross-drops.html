@@ -754,6 +754,10 @@ document.querySelector('.clear-button').addEventListener('click', function() {
     document.querySelectorAll('.search-fields input').forEach(input => {
         input.value = '';
     });
+    // Show live status and update table
+    toggleLiveStatus();
+    // Repopulate the table with all data
+    populateTable();
 });
 </script>
 </html>

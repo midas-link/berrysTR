@@ -500,7 +500,7 @@
                     <th>City</th>
                     <th>State</th>
                     <th>Zip</th>
-                    <th>Product</th>
+                    <th>Delivered</th>
                     <th>Tank Number</th>
                     <th>Trailer</th>
                 </tr>
@@ -762,6 +762,8 @@ document.querySelector('.clear-button').addEventListener('click', function() {
     document.querySelectorAll('.search-fields input').forEach(input => {
         input.value = '';
     });
+    // Show live status and update table
+    toggleLiveStatus();
 });
 </script>
 </html>
