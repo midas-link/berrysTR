@@ -82,26 +82,21 @@ function createCityDropdown(siteData) {
     // Extract all unique cities from the data
     const uniqueCities = [...new Set(siteData.map(row => row.City).filter(city => city && city.trim() !== ''))];
     
-    // Get the city input field
-    const cityInput = document.getElementById('City');
-    
-    // Create a datalist element
-    const datalist = document.createElement('datalist');
-    datalist.id = 'cityList';
-
+    // Get the city select element
+    const citySelect = document.getElementById('City');
     
     // Add options for each unique city
     uniqueCities.forEach(city => {
         const option = document.createElement('option');
         option.value = city;
-        datalist.appendChild(option);
+        option.textContent = city;
+        citySelect.appendChild(option);
     });
     
-    // Add the datalist to the document
-    document.body.appendChild(datalist);
-    
-    // Connect the datalist to the input field
-    cityInput.setAttribute('list', 'cityList');
+    // Add event listener to filter the table when a city is selected
+    citySelect.addEventListener('change', function() {
+        filterTable();
+    });
 }
 
 // Function to filter the table based on search inputs

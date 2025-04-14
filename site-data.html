@@ -278,6 +278,37 @@
         .search-fields input::placeholder{
             color: #5e5e5e;
         }
+        /* Styles for the city dropdown */
+        .styled-select {
+            background-color: #EAF3FC;
+            border: none;
+            margin-left: 1vh;
+            margin-right: 1vh;
+            padding-top: 1vh;
+            padding-bottom: 1vh;
+            padding-left: 1vh;
+            width: 7vw;
+            color: #014B96;
+            font-family: 'Mulish', sans-serif;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23014B96" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+            background-repeat: no-repeat;
+            background-position: right 8px center;
+            background-size: 16px;
+            padding-right: 30px;
+        }
+        .styled-select:focus {
+            outline: none;
+        }
+        .styled-select option {
+            background-color: white;
+            color: #014B96;
+            padding: 8px;
+            font-family: 'Mulish', sans-serif;
+        }
         .search-button{
         background-color: #014B96;
             color: white;
@@ -461,7 +492,9 @@
              <label for="State"> State</label>
              <input type="text" id="State" name="State">
              <label for="City"> City</label>
-             <input type="text" id="City" name="City" placeholder="Select a city">
+             <select id="City" name="City" class="styled-select">
+                <option value="">Select a city</option>
+             </select>
              <label for="Site">Site</label>
              <input type="text" id="Site" name="Site">
              <label for="Zip">Zip</label>
@@ -769,4 +802,5 @@ document.querySelector('.clear-button').addEventListener('click', function() {
     toggleLiveStatus();
 });
 </script>
+</html>
 </html>
