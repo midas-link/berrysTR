@@ -1,0 +1,397 @@
+[
+    {
+        "Serial No.": "1",
+        "Trailer ": "XUI28",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "2",
+        "Trailer ": "XUI29",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "3",
+        "Trailer ": "XUI30",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "4",
+        "Trailer ": "XUI31",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "5",
+        "Trailer ": "XUI32",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "6",
+        "Trailer ": "XUI33",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "7",
+        "Trailer ": "XUI34",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "8",
+        "Trailer ": "XUI35",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "9",
+        "Trailer ": "XUI36",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "10",
+        "Trailer ": "XUI37",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "11",
+        "Trailer ": "XUI38",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "12",
+        "Trailer ": "XUI39",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "13",
+        "Trailer ": "XUI40",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "14",
+        "Trailer ": "XUI41",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "15",
+        "Trailer ": "XUI42",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "16",
+        "Trailer ": "XUI43",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "17",
+        "Trailer ": "XUI44",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "18",
+        "Trailer ": "XUI45",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "19",
+        "Trailer ": "XUI46",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "20",
+        "Trailer ": "XUI47",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "21",
+        "Trailer ": "XUI48",
+        "Location ": "TX"
+    },
+    {
+        "Serial No.": "22",
+        "Trailer ": "CCO28",
+        "Location ": "LA"
+    },
+    {
+        "Serial No.": "23",
+        "Trailer ": "CCO29",
+        "Location ": "LA"
+    },
+    {
+        "Serial No.": "24",
+        "Trailer ": "CCO30",
+        "Location ": "LA"
+    },
+    {
+        "Serial No.": "25",
+        "Trailer ": "CCO31",
+        "Location ": "LA"
+    },
+    {
+        "Serial No.": "26",
+        "Trailer ": "CCO32",
+        "Location ": "LA"
+    },
+    {
+        "Serial No.": "27",
+        "Trailer ": "CCO33",
+        "Location ": "LA"
+    },
+    {
+        "Serial No.": "28",
+        "Trailer ": "CCO34",
+        "Location ": "LA"
+    },
+    {
+        "Serial No.": "29",
+        "Trailer ": "CCO35",
+        "Location ": "LA"
+    },
+    {
+        "Serial No.": "30",
+        "Trailer ": "CCO36",
+        "Location ": "LA"
+    },
+    {
+        "Serial No.": "31",
+        "Trailer ": "CCO37",
+        "Location ": "LA"
+    },
+    {
+        "Serial No.": "32",
+        "Trailer ": "CCO38",
+        "Location ": "LA"
+    },
+    {
+        "Serial No.": "33",
+        "Trailer ": "WPD24",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "34",
+        "Trailer ": "WPD25",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "35",
+        "Trailer ": "WPD26",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "36",
+        "Trailer ": "WPD27",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "37",
+        "Trailer ": "WPD28",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "38",
+        "Trailer ": "WPD29",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "39",
+        "Trailer ": "WPD30",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "40",
+        "Trailer ": "WPD31",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "41",
+        "Trailer ": "WPD32",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "42",
+        "Trailer ": "WPD33",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "43",
+        "Trailer ": "WPD34",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "44",
+        "Trailer ": "WPD35",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "45",
+        "Trailer ": "WPD36",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "46",
+        "Trailer ": "WPD37",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "47",
+        "Trailer ": "WPD38",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "48",
+        "Trailer ": "WPD39",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "49",
+        "Trailer ": "WPD40",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "50",
+        "Trailer ": "WPD41",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "51",
+        "Trailer ": "WPD42",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "52",
+        "Trailer ": "WPD43",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "53",
+        "Trailer ": "WPD44",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "54",
+        "Trailer ": "WPD45",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "55",
+        "Trailer ": "WPD46",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "56",
+        "Trailer ": "WPD47",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "57",
+        "Trailer ": "WPD48",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "58",
+        "Trailer ": "WPD49",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "59",
+        "Trailer ": "WPD50",
+        "Location ": "MI"
+    },
+    {
+        "Serial No.": "60",
+        "Trailer ": "RUI86",
+        "Location ": "FL"
+    },
+    {
+        "Serial No.": "61",
+        "Trailer ": "RUI87",
+        "Location ": "FL"
+    },
+    {
+        "Serial No.": "62",
+        "Trailer ": "RUI88",
+        "Location ": "FL"
+    },
+    {
+        "Serial No.": "63",
+        "Trailer ": "RUI89",
+        "Location ": "FL"
+    },
+    {
+        "Serial No.": "64",
+        "Trailer ": "RUI90",
+        "Location ": "FL"
+    },
+    {
+        "Serial No.": "65",
+        "Trailer ": "RUI91",
+        "Location ": "FL"
+    },
+    {
+        "Serial No.": "66",
+        "Trailer ": "RUI92",
+        "Location ": "FL"
+    },
+    {
+        "Serial No.": "67",
+        "Trailer ": "RUI93",
+        "Location ": "FL"
+    },
+    {
+        "Serial No.": "68",
+        "Trailer ": "RUI94",
+        "Location ": "FL"
+    },
+    {
+        "Serial No.": "69",
+        "Trailer ": "RUI95",
+        "Location ": "FL"
+    },
+    {
+        "Serial No.": "70",
+        "Trailer ": "RUI96",
+        "Location ": "FL"
+    },
+    {
+        "Serial No.": "71",
+        "Trailer ": "RUI97",
+        "Location ": "FL"
+    },
+    {
+        "Serial No.": "72",
+        "Trailer ": "RUI98",
+        "Location ": "FL"
+    },
+    {
+        "Serial No.": "73",
+        "Trailer ": "RUI99",
+        "Location ": "FL"
+    },
+    {
+        "Serial No.": "74",
+        "Trailer ": "RUI100",
+        "Location ": "FL"
+    },
+    {
+        "Serial No.": "75",
+        "Trailer ": "RUI101",
+        "Location ": "FL"
+    },
+    {
+        "Serial No.": "76",
+        "Trailer ": "RUI102",
+        "Location ": "FL"
+    },
+    {
+        "Serial No.": "77",
+        "Trailer ": "RUI103",
+        "Location ": "FL"
+    },
+    {
+        "Serial No.": "78",
+        "Trailer ": "RUI104",
+        "Location ": "FL"
+    },
+    {
+        "Serial No.": "79",
+        "Trailer ": "RUI105",
+        "Location ": "FL"
+    }
+]
