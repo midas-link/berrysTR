@@ -9,6 +9,7 @@ async function fetchAndPopulateTable() {
         const siteData = await response.json();
         populateTable(siteData);
         createCityDropdown(siteData); // Create city dropdown after populating table
+        disableBrowserAutocomplete(); // Disable browser autocomplete for all inputs
     } catch (error) {
         console.error('Error fetching site data:', error);
         
@@ -21,6 +22,7 @@ async function fetchAndPopulateTable() {
                     const siteData = JSON.parse(xhr.responseText);
                     populateTable(siteData);
                     createCityDropdown(siteData); // Create city dropdown after populating table
+                    disableBrowserAutocomplete(); // Disable browser autocomplete for all inputs
                 } catch (e) {
                     console.error('Error parsing JSON:', e);
                     showErrorMessage();
@@ -182,6 +184,24 @@ function filterTable() {
             cells[9].textContent.toLowerCase().includes(fuel) // Product
         );
         row.style.display = shouldShow ? '' : 'none';
+    });
+}
+
+// Function to disable browser autocomplete for all input fields
+function disableBrowserAutocomplete() {
+    // Get all input fields in the search fields section
+    const inputs = document.querySelectorAll('.search-fields input');
+    
+    inputs.forEach(input => {
+        // Set attributes to prevent browser autocomplete
+        input.setAttribute('autocomplete', 'off');
+        input.setAttribute('autocorrect', 'off');
+        input.setAttribute('autocapitalize', 'off');
+        input.setAttribute('spellcheck', 'false');
+        
+        // Add a random name to prevent browser autocomplete
+        const randomName = input.id + '_' + Math.random().toString(36).substring(2, 9);
+        input.setAttribute('name', randomName);
     });
 }
 
