@@ -86,6 +86,16 @@ function createCityDropdown(siteData) {
     const cityInput = document.getElementById('City');
     const dropdownContent = document.getElementById('cityDropdown');
     
+    // Prevent browser autocomplete
+    cityInput.setAttribute('autocomplete', 'off');
+    cityInput.setAttribute('autocorrect', 'off');
+    cityInput.setAttribute('autocapitalize', 'off');
+    cityInput.setAttribute('spellcheck', 'false');
+    
+    // Add a random name to prevent browser autocomplete
+    const randomName = 'city_' + Math.random().toString(36).substring(2, 9);
+    cityInput.setAttribute('name', randomName);
+    
     // Add options for each unique city
     uniqueCities.forEach(city => {
         const item = document.createElement('div');
@@ -102,7 +112,7 @@ function createCityDropdown(siteData) {
     // Toggle dropdown on input click
     cityInput.addEventListener('click', function(e) {
         e.stopPropagation(); // Prevent the click from being captured by the document
-        dropdownContent.classList.toggle('show');
+       // dropdownContent.classList.toggle('show');
     });
     
     // Close dropdown when clicking outside
@@ -204,6 +214,13 @@ function addClearButtonFunctionality() {
         rows.forEach(row => {
             row.style.display = '';
         });
+        
+        // Reset the city dropdown to show all cities
+        const cityDropdown = document.getElementById('cityDropdown');
+        const dropdownItems = cityDropdown.getElementsByClassName('dropdown-item');
+        for (let i = 0; i < dropdownItems.length; i++) {
+            dropdownItems[i].style.display = '';
+        }
         
         // Show live status and update table
         toggleLiveStatus();
