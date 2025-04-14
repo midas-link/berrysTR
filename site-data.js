@@ -8,6 +8,7 @@ async function fetchAndPopulateTable() {
         }
         const siteData = await response.json();
         populateTable(siteData);
+        createCityDropdown(siteData); // Create city dropdown after populating table
     } catch (error) {
         console.error('Error fetching site data:', error);
         
@@ -19,6 +20,7 @@ async function fetchAndPopulateTable() {
                 try {
                     const siteData = JSON.parse(xhr.responseText);
                     populateTable(siteData);
+                    createCityDropdown(siteData); // Create city dropdown after populating table
                 } catch (e) {
                     console.error('Error parsing JSON:', e);
                     showErrorMessage();
@@ -73,6 +75,33 @@ function populateTable(siteData) {
         `;
         tableBody.appendChild(tr);
     });
+}
+
+// Function to create a dropdown menu for the city field based on top repeated cities
+function createCityDropdown(siteData) {
+    // Extract all unique cities from the data
+    const uniqueCities = [...new Set(siteData.map(row => row.City).filter(city => city && city.trim() !== ''))];
+    
+    // Get the city input field
+    const cityInput = document.getElementById('City');
+    
+    // Create a datalist element
+    const datalist = document.createElement('datalist');
+    datalist.id = 'cityList';
+
+    
+    // Add options for each unique city
+    uniqueCities.forEach(city => {
+        const option = document.createElement('option');
+        option.value = city;
+        datalist.appendChild(option);
+    });
+    
+    // Add the datalist to the document
+    document.body.appendChild(datalist);
+    
+    // Connect the datalist to the input field
+    cityInput.setAttribute('list', 'cityList');
 }
 
 // Function to filter the table based on search inputs
