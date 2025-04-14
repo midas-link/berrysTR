@@ -25,6 +25,7 @@
         main {
             flex: 1; /* Allow main to grow and fill the space */
             background-color: #F9BC39;
+            min-height: 70vh;
         }
         ::placeholder {
             color: #FFFFFF;
@@ -209,6 +210,12 @@
             padding-left: 10%;
             font-family: 'Mulish', sans-serif;
         }
+        .sub-header h1 {
+            color: #014B96;
+            font-family: 'Mulish', sans-serif;
+            white-space: nowrap;
+            font-weight: 400;
+            }
         .breadcrumb {
             margin-top:2vh;
         padding: 0.5vh 2vh 0.5vh 3vh;
@@ -221,9 +228,9 @@
         }
         .breadcrumb span,
         .breadcrumb a {
-        font-family: 'Mulish', sans-serif;
+            font-family: 'Mulish', sans-serif;
         text-decoration: none;
-        color: #000;
+        color: #014B96;
         font-size: 0.875rem;
         font-weight: 700;
         font-style: bold;
@@ -323,7 +330,7 @@
             height: 140px;
             margin-right: calc(50% - 200px);
             padding-left: 1vh;
-            padding-right: 2vh;
+            padding-right: 3vh;
         }
         .midas-container img {
             width: 300px;
@@ -338,6 +345,34 @@
             font-size: 1rem;
             font-weight: 700;
             align-self: center;
+        }
+        /* Table Styles */
+        .inventory-table-container {
+            width: 80%;
+            margin: 2vh auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .inventory-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Mulish', sans-serif;
+        }
+        .inventory-table th {
+            background-color: #014B96;
+            color: white;
+            padding: 1vh;
+            text-align: left;
+            font-weight: 600;
+        }
+        .inventory-table td {
+            padding: 1vh;
+            border-bottom: 1px solid #EAF3FC;
+        }
+        .inventory-table tr:hover {
+            background-color: #EAF3FC;
         }
     </style>
 </head>
@@ -383,7 +418,7 @@
             </div>
             <div class="trailer-container">
                 <div class="trailer-container-content">
-                    <img src="images/Link_device.189.png" alt="Link_device">
+                    <img src="images/Link_device.png" alt="Link_device">
                     <span class="trailers-count"> Active Trailers </span> <span class="trailers-count-number"> 100</span>
                 </div>
             </div>
@@ -392,6 +427,21 @@
                     <img src="images/Midas_Elbow_close_up.png" alt="Midas_Elbow_close_up">
                     <span class="midas-count"> Active Midas </span> <span class="midas-count-number"> 52</span>
                 </div>
+            </div>
+            
+            <div class="inventory-table-container">
+                <table class="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>Serial No.</th>
+                            <th>Trailer</th>
+                            <th>Location</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTableBody">
+                        <!-- Table content will be populated by JavaScript -->
+                    </tbody>
+                </table>
             </div>
         </div>
     </main>
@@ -402,5 +452,6 @@
             <img src="images/logo.png" alt="Berrys Logo" >
         </div>
     </footer>
+    <script src="inventory.js"></script>
 </body>
 </html>
