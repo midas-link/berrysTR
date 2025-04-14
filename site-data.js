@@ -82,19 +82,53 @@ function createCityDropdown(siteData) {
     // Extract all unique cities from the data
     const uniqueCities = [...new Set(siteData.map(row => row.City).filter(city => city && city.trim() !== ''))];
     
-    // Get the city select element
-    const citySelect = document.getElementById('City');
+    // Get the city input field and dropdown container
+    const cityInput = document.getElementById('City');
+    const dropdownContent = document.getElementById('cityDropdown');
     
     // Add options for each unique city
     uniqueCities.forEach(city => {
-        const option = document.createElement('option');
-        option.value = city;
-        option.textContent = city;
-        citySelect.appendChild(option);
+        const item = document.createElement('div');
+        item.className = 'dropdown-item';
+        item.textContent = city;
+        item.addEventListener('click', function() {
+            cityInput.value = city;
+            dropdownContent.classList.remove('show');
+            filterTable(); // Apply the filter when a city is selected
+        });
+        dropdownContent.appendChild(item);
     });
     
-    // Add event listener to filter the table when a city is selected
-    citySelect.addEventListener('change', function() {
+    // Toggle dropdown on input click
+    cityInput.addEventListener('click', function() {
+        dropdownContent.classList.toggle('show');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.matches('#City') && !event.target.matches('.dropdown-item')) {
+            dropdownContent.classList.remove('show');
+        }
+    });
+    
+    // Filter dropdown items when typing
+    cityInput.addEventListener('input', function() {
+        const filter = cityInput.value.toLowerCase();
+        const items = dropdownContent.getElementsByClassName('dropdown-item');
+        
+        for (let i = 0; i < items.length; i++) {
+            const txtValue = items[i].textContent || items[i].innerText;
+            if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                items[i].style.display = "";
+            } else {
+                items[i].style.display = "none";
+            }
+        }
+        
+        // Show dropdown when typing
+        dropdownContent.classList.add('show');
+        
+        // Apply filter to table
         filterTable();
     });
 }
@@ -132,6 +166,7 @@ function filterTable() {
 document.addEventListener('DOMContentLoaded', function() {
     fetchAndPopulateTable();
     addFilterFunctionality();
+    addClearButtonFunctionality();
 });
 
 // Add event listeners for search functionality
@@ -139,5 +174,25 @@ function addFilterFunctionality() {
     const inputs = document.querySelectorAll('.search-fields input');
     inputs.forEach(input => {
         input.addEventListener('input', filterTable);
+    });
+}
+
+// Add functionality to the clear button
+function addClearButtonFunctionality() {
+    const clearButton = document.querySelector('.clear-button');
+    clearButton.addEventListener('click', function() {
+        // Clear all input fields
+        document.querySelectorAll('.search-fields input').forEach(input => {
+            input.value = '';
+        });
+        
+        // Show all rows in the table
+        const rows = document.querySelectorAll('table tbody tr');
+        rows.forEach(row => {
+            row.style.display = '';
+        });
+        
+        // Show live status and update table
+        toggleLiveStatus();
     });
 }

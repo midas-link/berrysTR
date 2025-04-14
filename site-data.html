@@ -279,7 +279,12 @@
             color: #5e5e5e;
         }
         /* Styles for the city dropdown */
-        .styled-select {
+        .custom-dropdown {
+            position: relative;
+            display: inline-block;
+            width: 7vw;
+        }
+        .custom-dropdown input {
             background-color: #EAF3FC;
             border: none;
             margin-left: 1vh;
@@ -287,27 +292,37 @@
             padding-top: 1vh;
             padding-bottom: 1vh;
             padding-left: 1vh;
-            width: 7vw;
+            width: 100%;
             color: #014B96;
             font-family: 'Mulish', sans-serif;
             cursor: pointer;
-            appearance: none;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23014B96" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
-            background-repeat: no-repeat;
-            background-position: right 8px center;
-            background-size: 16px;
-            padding-right: 30px;
+            box-sizing: border-box;
         }
-        .styled-select:focus {
-            outline: none;
-        }
-        .styled-select option {
+        .dropdown-content {
+            display: none;
+            position: absolute;
             background-color: white;
+            min-width: 100%;
+            max-height: 200px;
+            overflow-y: auto;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border-radius: 4px;
+            margin-top: 2px;
+            left: 1vh;
+            right: 1vh;
+        }
+        .dropdown-content.show {
+            display: block;
+        }
+        .dropdown-item {
+            padding: 8px 12px;
             color: #014B96;
-            padding: 8px;
             font-family: 'Mulish', sans-serif;
+            cursor: pointer;
+        }
+        .dropdown-item:hover {
+            background-color: #EAF3FC;
         }
         .search-button{
         background-color: #014B96;
@@ -492,9 +507,10 @@
              <label for="State"> State</label>
              <input type="text" id="State" name="State">
              <label for="City"> City</label>
-             <select id="City" name="City" class="styled-select">
-                <option value="">Select a city</option>
-             </select>
+             <div class="custom-dropdown">
+                <input type="text" id="City" name="City" placeholder="Select or type a city" autocomplete="off">
+                <div class="dropdown-content" id="cityDropdown"></div>
+             </div>
              <label for="Site">Site</label>
              <input type="text" id="Site" name="Site">
              <label for="Zip">Zip</label>
@@ -802,5 +818,4 @@ document.querySelector('.clear-button').addEventListener('click', function() {
     toggleLiveStatus();
 });
 </script>
-</html>
 </html>
