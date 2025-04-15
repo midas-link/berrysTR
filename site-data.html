@@ -133,12 +133,30 @@
                 margin-left: 5%;
             }
             .header img {
-                height: 1%;
+                height: 5vh;
                 width: 20%;
             }
+            main {
+                flex: 1;
+                min-height: 40vh;
+            }
             .header-background {
-                top: 45%;
+                top: 50%;
                 height: 90%;
+            }
+            .header a {
+                white-space: nowrap;
+                padding-left: 0.5vw;
+            }
+            .header input[type="text"] {
+                width: 15%;
+                padding-left: 2vw !important;
+                background-size: 10px !important;
+                background-position: 0.5vh center !important;
+            }
+            .header input[type="text"]::placeholder {
+                padding-left: 2vw !important;
+                font-size: 0.75rem !important;
             }
             .sub-header {
                 padding-left: 1vh;
@@ -149,6 +167,19 @@
             }
             .sub-header-profile-name {
                 font-size: 0.8rem;
+            }
+            .search-button{
+                padding: 0.5vh 1vw !important;
+                margin-top: 0 !important;
+                margin-bottom: 0.5vh !important;
+            }
+            .clear-button{
+                padding: 1vh 1vw !important;
+                margin-top: 0 !important;
+                margin-bottom: 0.5vh !important;
+            }
+            .button-container{
+                margin-top: 1vh !important;
             }
             .sub-header-role {
                 font-size: 0.8rem;
@@ -381,6 +412,7 @@
             width: 95%;
             border-radius: 10px;
             position: relative;
+            background-color: #f8f9fa;
         }
         thead {
             position: sticky;
@@ -422,6 +454,7 @@
         tr {
             transition: all 0.3s ease;
             cursor: pointer;
+            
         }
  
         
@@ -500,6 +533,7 @@
         .main-row {
             transition: background-color 0.3s ease;
             position: relative;
+            margin-bottom: 2vh;
         }
         .hover-row {
             background-color: #f8f9fa !important;
@@ -511,6 +545,7 @@
         .details-row {
             background-color: #f8f9fa;
             transition: opacity 0.3s ease;
+            margin-bottom: 2vh;
         }
         .details-cell {
             padding: 8px 15px !important;
@@ -536,7 +571,6 @@
         }
         /* Ensure consistent cell padding and text alignment */
         td {
-
             text-align: center;
             vertical-align: middle;
         }

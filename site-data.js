@@ -110,7 +110,7 @@ function populateTable(siteData) {
             ${formatDate(row.Date)} | ${row['Delivery Start '] || ''} to ${row['Delivery End'] || ''}
             \n<span class="label">Site code:</span> ${row.SiteCode || ''} | <span class="label">Business Unit:</span> ${row.BusinessUnitName || ''}
             \n${row.Address || ''} , ${row.City} ${row.State} | ${row.Zip}
-            \n<span class="label">Fuel:</span> ${row.Delivered || ''} | <span class="label">Tank:</span> T${row.TankNumber || ''}
+            \n<span class="label">Fuel dropped:</span> ${row.Delivered || ''} | <span class="label">Tank:</span> T${row.TankNumber || ''}
         </div>`;
         detailsCell.className = 'details-cell';
         
@@ -291,7 +291,7 @@ function disableBrowserAutocomplete() {
         input.setAttribute('name', randomName);
 
         // Special handling for state and zip fields
-        if (input.id === 'State' || input.id === 'Zip') {
+        if (input.id === 'State' || input.id === 'Zip' || input.id === 'Business-unit' || input.id === 'ST-address') {
             input.setAttribute('autocomplete', 'new-password');
             input.setAttribute('data-lpignore', 'true');
             input.setAttribute('data-form-type', 'other');
