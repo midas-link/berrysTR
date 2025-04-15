@@ -854,7 +854,6 @@ async function exportTableToPDF() {
 function fallbackSavePDF(doc, fileName) {
     doc.save(fileName);
 }
-
 document.querySelector('.clear-button').addEventListener('click', function() {
     // Clear all input fields
     document.querySelectorAll('.search-fields input').forEach(input => {

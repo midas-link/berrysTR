@@ -162,7 +162,6 @@ function createCityDropdown(siteData) {
             dropdownContent.classList.remove('show');
         }
     });
-    
     // Filter dropdown items when typing
     cityInput.addEventListener('input', function() {
         const filter = cityInput.value.toLowerCase();
