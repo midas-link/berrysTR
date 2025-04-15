@@ -63,20 +63,66 @@ function populateTable(siteData) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${row.Date || ''}</td>
-            <td>${row['Delivery Start '] || ''}</td>
             <td>${row['Delivery End'] || ''}</td>
             <td>${row.SiteCode || ''}</td>
-            <td>${row.BusinessUnitName || ''}</td>
-            <td>${row.Address || ''}</td>
-            <td>${row.City || ''}</td>
-            <td>${row.State || ''}</td>
-            <td>${row.Zip || ''}</td>
             <td>${row.Delivered || ''}</td>
-            <td>${row.TankNumber || ''}</td>
-            <td>${row.Trailer || ''}</td>
+            <td>
+                <span class="details-button" onclick="toggleDetails(this)">Details</span>
+            </td>
         `;
+        
+        // Create the expanded details row
+        const detailsRow = document.createElement('tr');
+        detailsRow.className = 'expanded-details';
+        detailsRow.innerHTML = `
+            <td colspan="5">
+                <table>
+                    <tr>
+                        <td>Delivery Start</td>
+                        <td>${row['Delivery Start '] || ''}</td>
+                        <td>Business Unit</td>
+                        <td>${row.BusinessUnitName || ''}</td>
+                    </tr>
+                    <tr>
+                        <td>Address</td>
+                        <td>${row.Address || ''}</td>
+                        <td>City</td>
+                        <td>${row.City || ''}</td>
+                    </tr>
+                    <tr>
+                        <td>State</td>
+                        <td>${row.State || ''}</td>
+                        <td>Zip</td>
+                        <td>${row.Zip || ''}</td>
+                    </tr>
+                    <tr>
+                        <td>Tank Number</td>
+                        <td>${row.TankNumber || ''}</td>
+                        <td>Trailer</td>
+                        <td>${row.Trailer || ''}</td>
+                    </tr>
+                </table>
+            </td>
+        `;
+
         tableBody.appendChild(tr);
+        tableBody.appendChild(detailsRow);
     });
+}
+
+function toggleDetails(button) {
+    const row = button.closest('tr');
+    const detailsRow = row.nextElementSibling;
+    
+    // Close any other open details
+    document.querySelectorAll('.expanded-details').forEach(details => {
+        if (details !== detailsRow) {
+            details.classList.remove('show');
+        }
+    });
+    
+    // Toggle the current details
+    detailsRow.classList.toggle('show');
 }
 
 // Function to create a dropdown menu for the city field based on top repeated cities

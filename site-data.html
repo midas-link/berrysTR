@@ -371,15 +371,14 @@
             display: inline-block;
         }
         table {
-
             display: block;
             margin-top: 1vh;
             margin-left: auto;
             margin-right: auto;
-            max-height: 50vh; /* This sets the maximum height of the table */
-            overflow-y: auto; /* This enables vertical scrolling */
+            max-height: 50vh;
+            overflow-y: auto;
             border-collapse: collapse;
-            width: 90%; /* Adjust width as needed */
+            width: 95%;
             border-radius: 10px;
         }
         thead {
@@ -400,12 +399,15 @@
         th, td {
             font-family: 'Mulish', sans-serif;
             text-align: center;
-            padding: 1.5vh 2vh;
-            width: calc(100% / 9); /* Divides space equally among 9 columns */
+            padding: 1.5vh 0.5vw;
+            width: 25%; /* Set equal width for the first 4 columns */
+        }
+        th:last-child, td:last-child {
+            width: 10% !important; /* Fixed width for the details column */
         }
         table th {
-            padding-left: 1vh;
-            padding-right: 1vh;
+            padding-left: 1vw;
+            padding-right: 1vw;
             background-color: #004B96;
             color: white;
         }
@@ -437,6 +439,58 @@
             width: 90%;
             margin: 0 auto;
             z-index: 1;
+        }
+        .details-column {
+            width: 10% !important;
+        }
+        .details-container {
+            position: relative;
+            display: inline-block;
+        }
+        .expanded-details {
+            display: none;
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-top: 1px solid #EAF3FC;
+        }
+        .expanded-details.show {
+            display: table-row;
+        }
+        .expanded-details td {
+            padding: 10px;
+            text-align: left;
+            color: #000000;
+        }
+        .expanded-details table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .expanded-details table td:nth-child(odd) {
+            font-weight: bold;
+            color: #014B96;
+            width: 30%;
+        }
+        .expanded-details table td:nth-child(even) {
+            color: #000000;
+        }
+        .details-button {
+            background: none;
+            border: none;
+            color: #014B96;
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 5px;
+            transition: color 0.3s ease;
+        }
+        .details-button:hover {
+            color: #001338;
+            text-decoration: underline;
+        }
+        tr {
+            transition: background-color 0.3s ease;
+        }
+        tr:hover {
+            background-color: #f0f7ff !important;
         }
         .export-dropdown {
             position: relative;
@@ -544,17 +598,10 @@
             <thead>
                 <tr>
                     <th>Date</th>
-                    <th>Delivery Start</th>
-                    <th>Delivery End</th>
+                    <th>Delivered at</th>
                     <th>Site Code</th>
-                    <th>Business Unit</th>
-                    <th>Address</th>
-                    <th>City</th>
-                    <th>State</th>
-                    <th>Zip</th>
-                    <th>Delivered</th>
-                    <th>Tank Number</th>
-                    <th>Trailer</th>
+                    <th>Fuel dropped</th>
+                    <th class="details-column">Details</th>
                 </tr>
             </thead>
             <tbody>
