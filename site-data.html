@@ -412,7 +412,7 @@
             width: 95%;
             border-radius: 10px;
             position: relative;
-            background-color: #f8f9fa;
+ 
         }
         thead {
             position: sticky;
@@ -439,8 +439,8 @@
         th, td {
             font-family: 'Mulish', sans-serif;
             text-align: center;
-            padding: 8px !important;
-            width: 25%; /* Equal width for all columns */
+            padding: 16px !important;
+            width: 25%;
         }
         table th {
             padding-left: 1vw;
@@ -530,23 +530,27 @@
             display: block;
         }
         /* Add styles for hover effect */
-        .main-row {
-            transition: background-color 0.3s ease;
-            position: relative;
-            margin-bottom: 2vh;
-            background-color: #f8f9fa;
-        }
         .main-row:nth-child(4n+1) {
             transition: background-color 0.3s ease;
             position: relative;
-            margin-bottom: 2vh;
+            padding-bottom: 3vh;
             background-color: #f8f9fa;
         }
         .main-row:nth-child(4n+3) {
             transition: background-color 0.3s ease;
             position: relative;
-            margin-bottom: 2vh;
+            padding-bottom: 3vh;
             background-color: #EAF3FC;
+        }
+        .details-row:nth-child(4n+2){
+            background-color: #f8f9fa !important;
+            padding-top: 2vh;
+            padding-bottom: 2vh;
+        }
+        .details-row:nth-child(4n){
+            background-color: #EAF3FC !important;
+            padding-top: 2vh;
+            padding-bottom: 2vh;
         }
         .hover-row:nth-child(4n+2){
             background-color: #f8f9fa !important;
