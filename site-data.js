@@ -54,6 +54,22 @@ function showErrorMessage() {
     `;
 }
 
+// Helper function to format date as Month name day, Year
+function formatDate(dateString) {
+    if (!dateString) return '';
+    
+    // Split the date string into day, month, year
+    const [day, month, year] = dateString.split('/');
+    
+    // Create a new date object (month is 0-based in JavaScript)
+    const date = new Date(year, month - 1, day);
+    
+    if (isNaN(date.getTime())) return dateString; // Return original if invalid date
+    
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+}
+
 // Function to populate the table
 function populateTable(siteData) {
     const tableBody = document.querySelector('table tbody');
@@ -91,12 +107,11 @@ function populateTable(siteData) {
         const detailsCell = document.createElement('td');
         detailsCell.colSpan = 4;
         detailsCell.innerHTML = `<div class="details-header">Details:</div> <div class="details-content">
-                ${row.Date || ''} | ${row['Delivery Start '] || ''} to ${row['Delivery End'] || ''}
-                \nSite code: ${row.SiteCode || ''} | Business Unit: ${row.BusinessUnitName || ''}
-                \n${row.Address || ''}
-                \nFuel: ${row.Delivered || ''} | Tank: T${row.TankNumber || ''}
-            </div>
-        `;
+            ${formatDate(row.Date)} | ${row['Delivery Start '] || ''} to ${row['Delivery End'] || ''}
+            \n<span class="label">Site code:</span> ${row.SiteCode || ''} | <span class="label">Business Unit:</span> ${row.BusinessUnitName || ''}
+            \n${row.Address || ''} , ${row.City} ${row.State} | ${row.Zip}
+            \n<span class="label">Fuel:</span> ${row.Delivered || ''} | <span class="label">Tank:</span> T${row.TankNumber || ''}
+        </div>`;
         detailsCell.className = 'details-cell';
         
         detailsRow.appendChild(detailsCell);
@@ -113,7 +128,7 @@ function populateTable(siteData) {
             hoverTimeout = setTimeout(() => {
                 detailsRow.style.display = 'none';
                 mainRow.classList.remove('hover-row');
-            }, 100); // Small delay to prevent rapid toggling
+            }, 50); // Small delay to prevent rapid toggling
         });
 
         // Also handle mouse events for the details row
@@ -127,7 +142,7 @@ function populateTable(siteData) {
             hoverTimeout = setTimeout(() => {
                 detailsRow.style.display = 'none';
                 mainRow.classList.remove('hover-row');
-            }, 100);
+            }, 50);
         });
 
         // Append both rows to the table
@@ -225,21 +240,37 @@ function filterTable() {
     const date = document.getElementById('Date').value.toLowerCase();
     const fuel = document.getElementById('Fuel').value.toLowerCase();
 
-    const rows = document.querySelectorAll('table tbody tr');
+    const rows = document.querySelectorAll('table tbody tr.main-row');
     
     rows.forEach(row => {
         const cells = row.getElementsByTagName('td');
+        const rowData = {
+            date: cells[0].textContent.toLowerCase(),
+            deliveredAt: cells[1].textContent.toLowerCase(),
+            siteCode: cells[2].textContent.toLowerCase(),
+            fuelDropped: cells[3].textContent.toLowerCase()
+        };
+
+        // Get the details row that follows this main row
+        const detailsRow = row.nextElementSibling;
+        const detailsText = detailsRow ? detailsRow.textContent.toLowerCase() : '';
+
         const shouldShow = (
-            cells[0].textContent.toLowerCase().includes(date) && // Date
-            cells[3].textContent.toLowerCase().includes(site) && // Site Code
-            cells[4].textContent.toLowerCase().includes(businessUnit) && // Business Unit
-            cells[5].textContent.toLowerCase().includes(stAddress) && // Address
-            cells[6].textContent.toLowerCase().includes(city) && // City
-            cells[7].textContent.toLowerCase().includes(state) && // State
-            cells[8].textContent.toLowerCase().includes(zip) && // Zip
-            cells[9].textContent.toLowerCase().includes(fuel) // Product
+            rowData.date.includes(date) &&
+            rowData.deliveredAt.includes(stAddress) &&
+            rowData.siteCode.includes(site) &&
+            rowData.fuelDropped.includes(fuel) &&
+            detailsText.includes(businessUnit) &&
+            detailsText.includes(city) &&
+            detailsText.includes(state) &&
+            detailsText.includes(zip)
         );
+
+        // Show/hide both the main row and its details row
         row.style.display = shouldShow ? '' : 'none';
+        if (detailsRow) {
+            detailsRow.style.display = shouldShow ? 'none' : 'none';
+        }
     });
 }
 
@@ -258,6 +289,13 @@ function disableBrowserAutocomplete() {
         // Add a random name to prevent browser autocomplete
         const randomName = input.id + '_' + Math.random().toString(36).substring(2, 9);
         input.setAttribute('name', randomName);
+
+        // Special handling for state and zip fields
+        if (input.id === 'State' || input.id === 'Zip') {
+            input.setAttribute('autocomplete', 'new-password');
+            input.setAttribute('data-lpignore', 'true');
+            input.setAttribute('data-form-type', 'other');
+        }
     });
 }
 
@@ -288,7 +326,12 @@ function addClearButtonFunctionality() {
         // Show all rows in the table
         const rows = document.querySelectorAll('table tbody tr');
         rows.forEach(row => {
-            row.style.display = '';
+            if (row.classList.contains('main-row')) {
+                row.style.display = '';
+                row.classList.remove('hover-row');
+            } else if (row.classList.contains('details-row')) {
+                row.style.display = 'none';
+            }
         });
         
         // Reset the city dropdown to show all cities
