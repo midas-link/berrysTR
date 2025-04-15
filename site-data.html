@@ -534,16 +534,31 @@
             transition: background-color 0.3s ease;
             position: relative;
             margin-bottom: 2vh;
+            background-color: #f8f9fa;
         }
-        .hover-row {
+        .main-row:nth-child(4n+1) {
+            transition: background-color 0.3s ease;
+            position: relative;
+            margin-bottom: 2vh;
+            background-color: #f8f9fa;
+        }
+        .main-row:nth-child(4n+3) {
+            transition: background-color 0.3s ease;
+            position: relative;
+            margin-bottom: 2vh;
+            background-color: #EAF3FC;
+        }
+        .hover-row:nth-child(4n+2){
             background-color: #f8f9fa !important;
+        }
+        .hover-row:nth-child(4n){
+            background-color: #EAF3FC !important;
         }
         .hover-row td {
             text-align: center !important;
-         
         }
         .details-row {
-            background-color: #f8f9fa;
+            background-color: inherit;
             transition: opacity 0.3s ease;
             margin-bottom: 2vh;
         }
