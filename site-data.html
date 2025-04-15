@@ -420,17 +420,13 @@
             color: #000000;
             white-space: pre-line;
             line-height: 1;
-            padding: 15px !important;
-            padding-top: 0px !important;
+            
         }
         tr:hover .label {
             color: #014B96;
             font-weight: bold;
         }
-        tr:hover .separator {
-            color: #014B96;
-            margin: 0 5px;
-        }
+        
         .export-button {
             background-color: #014B96;
             color: white;
@@ -475,23 +471,6 @@
             color: #014B96;
             font-weight: bold;
         }
-        .transformed-row .separator {
-            color: #014B96;
-            margin: 0 5px;
-        }
-        .details-button {
-            background: none;
-            border: none;
-            color: #014B96;
-            cursor: pointer;
-            font-size: 0.8rem;
-            padding: 5px;
-            transition: color 0.3s ease;
-        }
-        .details-button:hover {
-            color: #001338;
-            text-decoration: underline;
-        }
         .export-dropdown {
             position: relative;
             display: inline-block;
@@ -530,22 +509,25 @@
         }
         .hover-row td {
             text-align: center !important;
+         
         }
         .details-row {
             background-color: #f8f9fa;
             transition: opacity 0.3s ease;
         }
         .details-cell {
-            padding: 0px 15px 8px 15px !important;
+            padding: 8px 15px !important;
             text-align: left;
             color: #000000;
             white-space: pre-line;
             line-height: 1;
+            vertical-align: top;
         }
         .details-header {
             color: #014B96;
             font-weight: bold;
             font-size: 1.1em;
+            margin-bottom: 4px;
         }
         .details-content {
             color: #000000;
@@ -554,14 +536,12 @@
         .details-cell .label {
             color: #014B96;
             font-weight: bold;
-        }
-        .details-cell .separator {
-            color: #014B96;
-        }
+        }      
         /* Ensure consistent cell padding and text alignment */
         td {
-            padding: 8px !important;
+
             text-align: center;
+            vertical-align: middle;
         }
     </style>
 </head>
