@@ -400,10 +400,7 @@
             font-family: 'Mulish', sans-serif;
             text-align: center;
             padding: 1.5vh 0.5vw;
-            width: 25%; /* Set equal width for the first 4 columns */
-        }
-        th:last-child, td:last-child {
-            width: 10% !important; /* Fixed width for the details column */
+            width: 25%; /* Equal width for all columns */
         }
         table th {
             padding-left: 1vw;
@@ -411,11 +408,27 @@
             background-color: #004B96;
             color: white;
         }
-        tr:nth-child(odd) {
-            background-color: #EAF3FC;
+        tr {
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
-        tr:nth-child(even) {
-            background-color: #F5F5F5;
+        tr:hover {
+            background-color: #f8f9fa !important;
+        }
+        tr:hover td {
+            text-align: left;
+            color: #000000;
+            white-space: pre-line;
+            line-height: 1.5;
+            padding: 15px !important;
+        }
+        tr:hover .label {
+            color: #014B96;
+            font-weight: bold;
+        }
+        tr:hover .separator {
+            color: #014B96;
+            margin: 0 5px;
         }
         .export-button {
             background-color: #014B96;
@@ -447,31 +460,23 @@
             position: relative;
             display: inline-block;
         }
-        .expanded-details {
-            display: none;
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-top: 1px solid #EAF3FC;
+        .transformed-row {
+            background-color: #f8f9fa !important;
         }
-        .expanded-details.show {
-            display: table-row;
-        }
-        .expanded-details td {
-            padding: 10px;
+        .transformed-row td {
             text-align: left;
             color: #000000;
+            white-space: pre-line;
+            line-height: 1.5;
+            padding: 15px !important;
         }
-        .expanded-details table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .expanded-details table td:nth-child(odd) {
-            font-weight: bold;
+        .transformed-row .label {
             color: #014B96;
-            width: 30%;
+            font-weight: bold;
         }
-        .expanded-details table td:nth-child(even) {
-            color: #000000;
+        .transformed-row .separator {
+            color: #014B96;
+            margin: 0 5px;
         }
         .details-button {
             background: none;
@@ -485,12 +490,6 @@
         .details-button:hover {
             color: #001338;
             text-decoration: underline;
-        }
-        tr {
-            transition: background-color 0.3s ease;
-        }
-        tr:hover {
-            background-color: #f0f7ff !important;
         }
         .export-dropdown {
             position: relative;
@@ -601,7 +600,6 @@
                     <th>Delivered at</th>
                     <th>Site Code</th>
                     <th>Fuel dropped</th>
-                    <th class="details-column">Details</th>
                 </tr>
             </thead>
             <tbody>

@@ -61,68 +61,61 @@ function populateTable(siteData) {
 
     siteData.forEach(row => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${row.Date || ''}</td>
-            <td>${row['Delivery End'] || ''}</td>
-            <td>${row.SiteCode || ''}</td>
-            <td>${row.Delivered || ''}</td>
-            <td>
-                <span class="details-button" onclick="toggleDetails(this)">Details</span>
-            </td>
-        `;
         
-        // Create the expanded details row
-        const detailsRow = document.createElement('tr');
-        detailsRow.className = 'expanded-details';
-        detailsRow.innerHTML = `
-            <td colspan="5">
-                <table>
-                    <tr>
-                        <td>Delivery Start</td>
-                        <td>${row['Delivery Start '] || ''}</td>
-                        <td>Business Unit</td>
-                        <td>${row.BusinessUnitName || ''}</td>
-                    </tr>
-                    <tr>
-                        <td>Address</td>
-                        <td>${row.Address || ''}</td>
-                        <td>City</td>
-                        <td>${row.City || ''}</td>
-                    </tr>
-                    <tr>
-                        <td>State</td>
-                        <td>${row.State || ''}</td>
-                        <td>Zip</td>
-                        <td>${row.Zip || ''}</td>
-                    </tr>
-                    <tr>
-                        <td>Tank Number</td>
-                        <td>${row.TankNumber || ''}</td>
-                        <td>Trailer</td>
-                        <td>${row.Trailer || ''}</td>
-                    </tr>
-                </table>
-            </td>
+        // Create the original cells
+        const dateCell = document.createElement('td');
+        dateCell.textContent = row.Date || '';
+        
+        const deliveryCell = document.createElement('td');
+        deliveryCell.textContent = row['Delivery End'] || '';
+        
+        const siteCell = document.createElement('td');
+        siteCell.textContent = row.SiteCode || '';
+        
+        const fuelCell = document.createElement('td');
+        fuelCell.textContent = row.Delivered || '';
+        
+        // Create the transformed cell
+        const transformedCell = document.createElement('td');
+        transformedCell.colSpan = 4;
+        transformedCell.innerHTML = `
+            ${row.Date || ''} | ${row['Delivery Start '] || ''} to ${row['Delivery End'] || ''}
+            \nSite code: ${row.SiteCode || ''} | Business Unit: ${row.BusinessUnitName || ''}
+            \n${row.Address || ''}
+            \nFuel: ${row.Delivered || ''} | Tank: T${row.TankNumber || ''}
         `;
+        transformedCell.style.display = 'none';
+
+        // Append all cells to the row
+        tr.appendChild(dateCell);
+        tr.appendChild(deliveryCell);
+        tr.appendChild(siteCell);
+        tr.appendChild(fuelCell);
+        tr.appendChild(transformedCell);
+
+        // Add hover event listeners
+        tr.addEventListener('mouseenter', function() {
+            // Hide original cells
+            dateCell.style.display = 'none';
+            deliveryCell.style.display = 'none';
+            siteCell.style.display = 'none';
+            fuelCell.style.display = 'none';
+            // Show transformed cell
+            transformedCell.style.display = '';
+        });
+
+        tr.addEventListener('mouseleave', function() {
+            // Show original cells
+            dateCell.style.display = '';
+            deliveryCell.style.display = '';
+            siteCell.style.display = '';
+            fuelCell.style.display = '';
+            // Hide transformed cell
+            transformedCell.style.display = 'none';
+        });
 
         tableBody.appendChild(tr);
-        tableBody.appendChild(detailsRow);
     });
-}
-
-function toggleDetails(button) {
-    const row = button.closest('tr');
-    const detailsRow = row.nextElementSibling;
-    
-    // Close any other open details
-    document.querySelectorAll('.expanded-details').forEach(details => {
-        if (details !== detailsRow) {
-            details.classList.remove('show');
-        }
-    });
-    
-    // Toggle the current details
-    detailsRow.classList.toggle('show');
 }
 
 // Function to create a dropdown menu for the city field based on top repeated cities
