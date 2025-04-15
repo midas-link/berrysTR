@@ -60,7 +60,9 @@ function populateTable(siteData) {
     tableBody.innerHTML = ''; // Clear existing table data
 
     siteData.forEach(row => {
-        const tr = document.createElement('tr');
+        // Create the main row
+        const mainRow = document.createElement('tr');
+        mainRow.className = 'main-row';
         
         // Create the original cells
         const dateCell = document.createElement('td');
@@ -75,46 +77,62 @@ function populateTable(siteData) {
         const fuelCell = document.createElement('td');
         fuelCell.textContent = row.Delivered || '';
         
-        // Create the transformed cell
-        const transformedCell = document.createElement('td');
-        transformedCell.colSpan = 4;
-        transformedCell.innerHTML = `
-            ${row.Date || ''} | ${row['Delivery Start '] || ''} to ${row['Delivery End'] || ''}
-            \nSite code: ${row.SiteCode || ''} | Business Unit: ${row.BusinessUnitName || ''}
-            \n${row.Address || ''}
-            \nFuel: ${row.Delivered || ''} | Tank: T${row.TankNumber || ''}
+        // Append cells to main row
+        mainRow.appendChild(dateCell);
+        mainRow.appendChild(deliveryCell);
+        mainRow.appendChild(siteCell);
+        mainRow.appendChild(fuelCell);
+        
+        // Create the details row
+        const detailsRow = document.createElement('tr');
+        detailsRow.className = 'details-row';
+        detailsRow.style.display = 'none';
+        
+        const detailsCell = document.createElement('td');
+        detailsCell.colSpan = 4;
+        detailsCell.innerHTML = `<div class="details-header">Details:</div> <div class="details-content">
+                ${row.Date || ''} | ${row['Delivery Start '] || ''} to ${row['Delivery End'] || ''}
+                \nSite code: ${row.SiteCode || ''} | Business Unit: ${row.BusinessUnitName || ''}
+                \n${row.Address || ''}
+                \nFuel: ${row.Delivered || ''} | Tank: T${row.TankNumber || ''}
+            </div>
         `;
-        transformedCell.style.display = 'none';
-
-        // Append all cells to the row
-        tr.appendChild(dateCell);
-        tr.appendChild(deliveryCell);
-        tr.appendChild(siteCell);
-        tr.appendChild(fuelCell);
-        tr.appendChild(transformedCell);
-
+        detailsCell.className = 'details-cell';
+        
+        detailsRow.appendChild(detailsCell);
+        
         // Add hover event listeners
-        tr.addEventListener('mouseenter', function() {
-            // Hide original cells
-            dateCell.style.display = 'none';
-            deliveryCell.style.display = 'none';
-            siteCell.style.display = 'none';
-            fuelCell.style.display = 'none';
-            // Show transformed cell
-            transformedCell.style.display = '';
+        let hoverTimeout;
+        mainRow.addEventListener('mouseenter', function() {
+            clearTimeout(hoverTimeout);
+            detailsRow.style.display = '';
+            mainRow.classList.add('hover-row');
         });
 
-        tr.addEventListener('mouseleave', function() {
-            // Show original cells
-            dateCell.style.display = '';
-            deliveryCell.style.display = '';
-            siteCell.style.display = '';
-            fuelCell.style.display = '';
-            // Hide transformed cell
-            transformedCell.style.display = 'none';
+        mainRow.addEventListener('mouseleave', function() {
+            hoverTimeout = setTimeout(() => {
+                detailsRow.style.display = 'none';
+                mainRow.classList.remove('hover-row');
+            }, 100); // Small delay to prevent rapid toggling
         });
 
-        tableBody.appendChild(tr);
+        // Also handle mouse events for the details row
+        detailsRow.addEventListener('mouseenter', function() {
+            clearTimeout(hoverTimeout);
+            detailsRow.style.display = '';
+            mainRow.classList.add('hover-row');
+        });
+
+        detailsRow.addEventListener('mouseleave', function() {
+            hoverTimeout = setTimeout(() => {
+                detailsRow.style.display = 'none';
+                mainRow.classList.remove('hover-row');
+            }, 100);
+        });
+
+        // Append both rows to the table
+        tableBody.appendChild(mainRow);
+        tableBody.appendChild(detailsRow);
     });
 }
 

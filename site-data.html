@@ -399,7 +399,7 @@
         th, td {
             font-family: 'Mulish', sans-serif;
             text-align: center;
-            padding: 1.5vh 0.5vw;
+            padding: 8px !important;
             width: 25%; /* Equal width for all columns */
         }
         table th {
@@ -519,6 +519,49 @@
         }
         .show {
             display: block;
+        }
+        /* Add styles for hover effect */
+        .main-row {
+            transition: background-color 0.3s ease;
+            position: relative;
+        }
+        .hover-row {
+            background-color: #f8f9fa !important;
+        }
+        .hover-row td {
+            text-align: center !important;
+        }
+        .details-row {
+            background-color: #f8f9fa;
+            transition: opacity 0.3s ease;
+        }
+        .details-cell {
+            padding: 0px 15px 8px 15px !important;
+            text-align: left;
+            color: #000000;
+            white-space: pre-line;
+            line-height: 1;
+        }
+        .details-header {
+            color: #014B96;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .details-content {
+            color: #000000;
+            line-height: 1;
+        }
+        .details-cell .label {
+            color: #014B96;
+            font-weight: bold;
+        }
+        .details-cell .separator {
+            color: #014B96;
+        }
+        /* Ensure consistent cell padding and text alignment */
+        td {
+            padding: 8px !important;
+            text-align: center;
         }
     </style>
 </head>
