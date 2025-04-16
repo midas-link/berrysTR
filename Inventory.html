@@ -25,7 +25,6 @@
         main {
             flex: 1; /* Allow main to grow and fill the space */
             background-color: #F9BC39;
-            min-height: 70vh;
         }
         ::placeholder {
             color: #FFFFFF;
@@ -354,7 +353,7 @@
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            max-height: 400px; /* Set a maximum height for the container */
+            max-height: 500px; /* Increased from 500px to 700px */
             display: flex;
             flex-direction: column;
         }
@@ -406,6 +405,10 @@
         .inventory-table td:nth-child(3) {
             width: 30%;
         }
+        .inventory-table th:nth-child(4),
+        .inventory-table td:nth-child(4) {
+            width: 10%;
+        }
     </style>
 </head>
 <body>
@@ -418,8 +421,9 @@
             <div class="header">
                 <div class="header-background"></div>
                 <a href="home.html">Home</a>
-                <a href="manageAcc.html">Manage Account</a>
-                <a href="Inventory.html">Inventory</a>
+                <a href="cross-drops.html">Cross-drop</a>
+                <a href="vehicle-logging.html">Vehicle Logging</a>
+                <a href="site-data.html"> Site Data</a>
                 <a href="Analytics.html">Analytics</a>
                 <input type="text" placeholder="Search...">
                 <img src="images/Midas_Link_logo.png" alt="Berrys Logo">
@@ -465,7 +469,8 @@
                 <table class="inventory-table">
                     <thead>
                         <tr>
-                            <th>Serial No.</th>
+                            <th>Midas #1</th>
+                            <th>Midas #2</th>
                             <th>Trailer</th>
                             <th>Location</th>
                         </tr>

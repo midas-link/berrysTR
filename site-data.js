@@ -8,7 +8,10 @@ async function fetchAndPopulateTable() {
         }
         const siteData = await response.json();
         populateTable(siteData);
-        createCityDropdown(siteData); // Create city dropdown after populating table
+        createCityDropdown(siteData);
+        createBuDropdown(siteData); 
+        createStateDropdown(siteData);
+        createSiteDropdown(siteData);
         disableBrowserAutocomplete(); // Disable browser autocomplete for all inputs
     } catch (error) {
         console.error('Error fetching site data:', error);
@@ -21,7 +24,10 @@ async function fetchAndPopulateTable() {
                 try {
                     const siteData = JSON.parse(xhr.responseText);
                     populateTable(siteData);
-                    createCityDropdown(siteData); // Create city dropdown after populating table
+                    createCityDropdown(siteData);
+                    createBuDropdown(siteData); // Create city dropdown after populating table
+                    createStateDropdown(siteData);
+                    createSiteDropdown(siteData);
                     disableBrowserAutocomplete(); // Disable browser autocomplete for all inputs
                 } catch (e) {
                     console.error('Error parsing JSON:', e);
@@ -128,7 +134,7 @@ function populateTable(siteData) {
             hoverTimeout = setTimeout(() => {
                 detailsRow.style.display = 'none';
                 mainRow.classList.remove('hover-row');
-            }, 50); // Small delay to prevent rapid toggling
+            }, ); // Small delay to prevent rapid toggling
         });
 
         // Also handle mouse events for the details row
@@ -142,7 +148,7 @@ function populateTable(siteData) {
             hoverTimeout = setTimeout(() => {
                 detailsRow.style.display = 'none';
                 mainRow.classList.remove('hover-row');
-            }, 50);
+            }, );
         });
 
         // Append both rows to the table
@@ -228,7 +234,234 @@ function createCityDropdown(siteData) {
         dropdownContent.classList.add('show');
     });
 }
-
+function createBuDropdown(siteData) {
+    // Extract all unique cities from the data
+    const uniqueBUs = [...new Set(siteData.map(row => row.BusinessUnitName).filter(BU => BU && BU.trim() !== ''))];
+    
+    // Get the city input field and dropdown container
+    const BuInput = document.getElementById('Business-unit');
+    const dropdownContent = document.getElementById('BuDropdown');
+    
+    // Prevent browser autocomplete
+    BuInput.setAttribute('autocomplete', 'off');
+    BuInput.setAttribute('autocorrect', 'off');
+    BuInput.setAttribute('autocapitalize', 'off');
+    BuInput.setAttribute('spellcheck', 'false');
+    
+    // Add a random name to prevent browser autocomplete
+    const randomName = 'bu_' + Math.random().toString(36).substring(2, 9);
+    BuInput.setAttribute('name', randomName);
+    
+    // Add options for each unique city
+    uniqueBUs.forEach(BU => {
+        const item = document.createElement('div');
+        item.className = 'dropdown-item';
+        item.textContent = BU;
+        item.addEventListener('click', function() {
+            BuInput.value = BU;
+            dropdownContent.classList.remove('show');
+            filterTable(); // Apply the filter when a city is selected
+        });
+        dropdownContent.appendChild(item);
+    });
+    
+    // Toggle dropdown on input click
+    BuInput.addEventListener('click', function(e) {
+        e.stopPropagation(); // Prevent the click from being captured by the document
+       // dropdownContent.classList.toggle('show');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.matches('#Businnes-Unit') && !event.target.matches('.dropdown-item')) {
+            dropdownContent.classList.remove('show');
+        }
+    });
+    // Filter dropdown items when typing
+    BuInput.addEventListener('input', function() {
+        const filter = BuInput.value.toLowerCase();
+        const items = dropdownContent.getElementsByClassName('dropdown-item');
+        
+        for (let i = 0; i < items.length; i++) {
+            const txtValue = items[i].textContent || items[i].innerText;
+            if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                items[i].style.display = "";
+            } else {
+                items[i].style.display = "none";
+            }
+        }
+        
+        // Show dropdown when typing
+        dropdownContent.classList.add('show');
+        
+        // Apply filter to table
+        filterTable();
+    });
+    
+    // Add a dropdown indicator to show it's clickable
+    BuInput.style.backgroundImage = "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23014B96\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg>')";
+    BuInput.style.backgroundRepeat = "no-repeat";
+    BuInput.style.backgroundPosition = "right 8px center";
+    BuInput.style.backgroundSize = "16px";
+    BuInput.style.paddingRight = "30px";
+    
+    // Make sure the dropdown is visible when clicking on the input
+    BuInput.addEventListener('focus', function() {
+        dropdownContent.classList.add('show');
+    });
+}
+function createStateDropdown(siteData) {
+    // Extract all unique cities from the data
+    const uniqueStates = [...new Set(siteData.map(row => row.State).filter(State => State && State.trim() !== ''))];
+    
+    // Get the city input field and dropdown container
+    const StateInput = document.getElementById('State');
+    const dropdownContent = document.getElementById('StateDropdown');
+    
+    // Prevent browser autocomplete
+    StateInput.setAttribute('autocomplete', 'off');
+    StateInput.setAttribute('autocorrect', 'off');
+    StateInput.setAttribute('autocapitalize', 'off');
+    StateInput.setAttribute('spellcheck', 'false');
+    
+    // Add a random name to prevent browser autocomplete
+    const randomName = 'bu_' + Math.random().toString(36).substring(2, 9);
+    StateInput.setAttribute('name', randomName);
+    
+    // Add options for each unique city
+    uniqueStates.forEach(state => {
+        const item = document.createElement('div');
+        item.className = 'dropdown-item';
+        item.textContent = state;
+        item.addEventListener('click', function() {
+            StateInput.value = state;
+            dropdownContent.classList.remove('show');
+            filterTable(); // Apply the filter when a city is selected
+        });
+        dropdownContent.appendChild(item);
+    });
+    
+    // Toggle dropdown on input click
+    StateInput.addEventListener('click', function(e) {
+        e.stopPropagation(); // Prevent the click from being captured by the document
+       // dropdownContent.classList.toggle('show');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.matches('#State') && !event.target.matches('.dropdown-item')) {
+            dropdownContent.classList.remove('show');
+        }
+    });
+    // Filter dropdown items when typing
+    StateInput.addEventListener('input', function() {
+        const filter = StateInput.value.toLowerCase();
+        const items = dropdownContent.getElementsByClassName('dropdown-item');
+        
+        for (let i = 0; i < items.length; i++) {
+            const txtValue = items[i].textContent || items[i].innerText;
+            if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                items[i].style.display = "";
+            } else {
+                items[i].style.display = "none";
+            }
+        }
+        
+        // Show dropdown when typing
+        dropdownContent.classList.add('show');
+        
+        // Apply filter to table
+        filterTable();
+    });
+    
+    // Add a dropdown indicator to show it's clickable
+    StateInput.style.backgroundImage = "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23014B96\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg>')";
+    StateInput.style.backgroundRepeat = "no-repeat";
+    StateInput.style.backgroundPosition = "right 8px center";
+    StateInput.style.backgroundSize = "16px";
+    StateInput.style.paddingRight = "30px";
+    
+    // Make sure the dropdown is visible when clicking on the input
+    StateInput.addEventListener('focus', function() {
+        dropdownContent.classList.add('show');
+    });
+}
+function createSiteDropdown(siteData) {
+    // Extract all unique cities from the data
+    const uniqueSites = [...new Set(siteData.map(row => row.SiteCode).filter(Site => Site && Site.trim() !== ''))];
+    
+    // Get the city input field and dropdown container
+    const SiteInput = document.getElementById('Site');
+    const dropdownContent = document.getElementById('SiteDropdown');
+    
+    // Prevent browser autocomplete
+    SiteInput.setAttribute('autocomplete', 'off');
+    SiteInput.setAttribute('autocorrect', 'off');
+    SiteInput.setAttribute('autocapitalize', 'off');
+    SiteInput.setAttribute('spellcheck', 'false');
+    
+    // Add a random name to prevent browser autocomplete
+    const randomName = 'bu_' + Math.random().toString(36).substring(2, 9);
+    SiteInput.setAttribute('name', randomName);
+    
+    // Add options for each unique city
+    uniqueSites.forEach(site => {
+        const item = document.createElement('div');
+        item.className = 'dropdown-item';
+        item.textContent = site;
+        item.addEventListener('click', function() {
+            SiteInput.value = site;
+            dropdownContent.classList.remove('show');
+            filterTable(); // Apply the filter when a city is selected
+        });
+        dropdownContent.appendChild(item);
+    });
+    
+    // Toggle dropdown on input click
+    SiteInput.addEventListener('click', function(e) {
+        e.stopPropagation(); // Prevent the click from being captured by the document
+       // dropdownContent.classList.toggle('show');
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.matches('#State') && !event.target.matches('.dropdown-item')) {
+            dropdownContent.classList.remove('show');
+        }
+    });
+    // Filter dropdown items when typing
+    SiteInput.addEventListener('input', function() {
+        const filter = SiteInput.value.toLowerCase();
+        const items = dropdownContent.getElementsByClassName('dropdown-item');
+        
+        for (let i = 0; i < items.length; i++) {
+            const txtValue = items[i].textContent || items[i].innerText;
+            if (txtValue.toLowerCase().indexOf(filter) > -1) {
+                items[i].style.display = "";
+            } else {
+                items[i].style.display = "none";
+            }
+        }
+        
+        // Show dropdown when typing
+        dropdownContent.classList.add('show');
+        
+        // Apply filter to table
+        filterTable();
+    });
+    
+    // Add a dropdown indicator to show it's clickable
+    SiteInput.style.backgroundImage = "url('data:image/svg+xml;utf8,<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"%23014B96\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"6 9 12 15 18 9\"></polyline></svg>')";
+    SiteInput.style.backgroundRepeat = "no-repeat";
+    SiteInput.style.backgroundPosition = "right 8px center";
+    SiteInput.style.backgroundSize = "16px";
+    SiteInput.style.paddingRight = "30px";
+    
+    // Make sure the dropdown is visible when clicking on the input
+    SiteInput.addEventListener('focus', function() {
+        dropdownContent.classList.add('show');
+    });
+}
 // Function to filter the table based on search inputs
 function filterTable() {
     const businessUnit = document.getElementById('Business-unit').value.toLowerCase();
@@ -241,6 +474,9 @@ function filterTable() {
     const fuel = document.getElementById('Fuel').value.toLowerCase();
 
     const rows = document.querySelectorAll('table tbody tr.main-row');
+    
+    // Track visible rows for re-styling
+    let visibleRowCount = 0;
     
     rows.forEach(row => {
         const cells = row.getElementsByTagName('td');
@@ -269,7 +505,24 @@ function filterTable() {
         // Show/hide both the main row and its details row
         row.style.display = shouldShow ? '' : 'none';
         if (detailsRow) {
-            detailsRow.style.display = shouldShow ? 'none' : 'none';
+            detailsRow.style.display = 'none'; // Always initially hide details rows
+        }
+        
+        // Apply alternating styles manually to visible rows
+        if (shouldShow) {
+            // Apply styling based on the visible row count
+            if (visibleRowCount % 2 === 0) {
+                row.style.backgroundColor = '#f8f9fa';
+            } else {
+                row.style.backgroundColor = '#EAF3FC';
+            }
+            visibleRowCount++;
+            
+            // IMPORTANT: Set the details row background to match its main row
+            if (detailsRow) {
+                const mainRow = detailsRow.previousElementSibling;
+                detailsRow.style.backgroundColor = mainRow.style.backgroundColor;
+            }
         }
     });
 }
@@ -291,7 +544,7 @@ function disableBrowserAutocomplete() {
         input.setAttribute('name', randomName);
 
         // Special handling for state and zip fields
-        if (input.id === 'State' || input.id === 'Zip' || input.id === 'Business-unit' || input.id === 'ST-address') {
+        if (input.id === 'State' || input.id === 'Zip' || input.id === 'Business-unit' || input.id === 'ST-address' || input.id ==='City') {
             input.setAttribute('autocomplete', 'new-password');
             input.setAttribute('data-lpignore', 'true');
             input.setAttribute('data-form-type', 'other');
@@ -323,14 +576,25 @@ function addClearButtonFunctionality() {
             input.value = '';
         });
         
-        // Show all rows in the table
+        // Show all rows in the table and reset styling
+        let count = 0;
         const rows = document.querySelectorAll('table tbody tr');
         rows.forEach(row => {
             if (row.classList.contains('main-row')) {
                 row.style.display = '';
                 row.classList.remove('hover-row');
+                // Reset background based on alternating pattern
+                if (count % 2 === 0) {
+                    row.style.backgroundColor = '#f8f9fa';
+                } else {
+                    row.style.backgroundColor = '#EAF3FC';
+                }
+                count++;
             } else if (row.classList.contains('details-row')) {
                 row.style.display = 'none';
+                // Make sure details row has same background as its main row
+                const mainRow = row.previousElementSibling;
+                row.style.backgroundColor = mainRow.style.backgroundColor;
             }
         });
         

@@ -13,7 +13,8 @@ async function loadInventoryData() {
         data.forEach(item => {
             const row = document.createElement('tr');
             row.innerHTML = `
-                <td>${item['Serial No.']}</td>
+                <td>${item['Midas #1']}</td>
+                <td>${item['Midas #2']}</td>
                 <td>${item['Trailer ']}</td>
                 <td>${item['Location ']}</td>
             `;
