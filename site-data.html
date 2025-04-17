@@ -821,6 +821,17 @@ function toggleLiveStatus() {
 document.querySelectorAll('.search-fields input').forEach(input => {
     input.addEventListener('input', toggleLiveStatus);
 });
+document.querySelectorAll('.dropdown-content').forEach(dropdown => {
+    // Assuming you're using click events on dropdown items
+    dropdown.addEventListener('click', function(event) {
+        // If the click was on a dropdown item
+        if (event.target.matches('.dropdown-item') || event.target.parentElement.matches('.dropdown-item')) {
+            // Call toggleLiveStatus after the associated input value is updated
+            setTimeout(toggleLiveStatus, 0);
+        }
+    });
+});
+
 
 // Add event listener to search button
 document.querySelector('.search-button').addEventListener('click', toggleLiveStatus);
