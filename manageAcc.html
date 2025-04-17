@@ -130,12 +130,22 @@
                 margin-left: 5%;
             }
             .header img {
-                height: 1%;
-                width: 20%;
+                max-height: 6vh; /* Maintain height relative to viewport */
+                max-width: 100%; /* Ensure it doesn't exceed the width of its container */
+                height: auto; /* Maintain aspect ratio */
+                width: auto ;
+                scale:1.2;
             }
             .header-background {
                 top: 45%;
                 height: 90%;
+            }
+            .header a {
+                white-space: nowrap;
+                padding-left: 1.5vw;
+            }
+            .header input[type="text"] {
+                display:none;
             }
             .sub-header {
                 padding-left: 1vh;
@@ -155,6 +165,12 @@
             }
             .sub-header-container .header-background {
                 top: 40%;
+            }
+            footer img { 
+                max-height: 6vh; /* Maintain height relative to viewport */
+                max-width: 20%; /* Ensure it doesn't exceed the width of its container */
+                height: auto; /* Maintain aspect ratio */
+                width: auto !important;
             }
         }
         .header a:hover {

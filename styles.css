@@ -41,7 +41,8 @@ body {
     background-image: url('images/Sign-in-page.jpg');
     background-size: cover;
     background-repeat: no-repeat;
-    min-height: 100vh;
+    min-height: 70vh;
+    max-height: 100vh;
     display: flex;
     flex-direction: column;
     margin: 0;
@@ -52,7 +53,8 @@ main {
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    min-height: 70vh;
+    max-height: 90vh;
     padding: 2rem 0;
 }
 
@@ -215,7 +217,39 @@ footer img {
     font-family: 'Inter';
     color:#737373;
 }
+.popup {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
+.popup-content {
+    background-color: white;
+    padding: 2vh 2vw;
+    border-radius: 5px;
+    text-align: center;
+    font-family : 'Mulish';
+    white-space: nowrap;
+}
+.wrong-credentials {
+    color: red;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+.wrong-credentials.show {
+    opacity: 1;
+}
+.close {
+    cursor: pointer;
+    float: right;
+}
 /* Custom Checkbox Styles */
 .checkbox-container input[type="checkbox"] {
     display: none;
@@ -247,4 +281,26 @@ footer img {
     border: solid white;
     border-width: 0 2px 2px 0;
     transform: rotate(45deg);
+}
+
+.loading-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3); /* Light border for the spinner */
+    border-top: 4px solid #014B96; /* Top border color for the spinner */
+    border-radius: 50%; /* Make it circular */
+    width: 24px; /* Size of the spinner */
+    height: 24px; /* Size of the spinner */
+    animation: spin 1s linear infinite; /* Animation for spinning */
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); } /* Start at 0 degrees */
+    100% { transform: rotate(360deg); } /* End at 360 degrees */
 }

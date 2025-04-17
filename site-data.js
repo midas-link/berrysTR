@@ -474,7 +474,8 @@ function filterTable() {
     const fuel = document.getElementById('Fuel').value.toLowerCase();
 
     const rows = document.querySelectorAll('table tbody tr.main-row');
-    
+    const statePattern = new RegExp(`\\b${state}\\b`, 'i');
+
     // Track visible rows for re-styling
     let visibleRowCount = 0;
     
@@ -498,7 +499,7 @@ function filterTable() {
             rowData.fuelDropped.includes(fuel) &&
             detailsText.includes(businessUnit) &&
             detailsText.includes(city) &&
-            detailsText.includes(state) &&
+            statePattern.test(detailsText) &&
             detailsText.includes(zip)
         );
 
