@@ -6,10 +6,8 @@ async function loadInventoryData() {
         
         const tableBody = document.getElementById('inventoryTableBody');
         
-        // Clear existing table content
         tableBody.innerHTML = '';
         
-        // Add each row to the table
         data.forEach(item => {
             const row = document.createElement('tr');
             row.innerHTML = `

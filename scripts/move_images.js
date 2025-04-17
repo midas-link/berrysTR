@@ -24,11 +24,11 @@ function swapContent(container1, container2) {
 
 function moveContainers(direction) {
     if (direction === 'left') {
-        // Swap left and middle, then middle and right
+        // Swap left and middle, then left and right
         swapContent(leftContainer, middleContainer);
         swapContent(leftContainer, rightContainer);
     } else if (direction === 'right') {
-        // Swap right and middle, then middle and left
+        // Swap right and middle, then right and left
         swapContent(rightContainer, middleContainer);
         swapContent(rightContainer, leftContainer);
     }

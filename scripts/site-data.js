@@ -123,32 +123,19 @@ function populateTable(siteData) {
         detailsRow.appendChild(detailsCell);
         
         // Add hover event listeners
-        let hoverTimeout;
-        mainRow.addEventListener('mouseenter', function() {
-            clearTimeout(hoverTimeout);
-            detailsRow.style.display = '';
-            mainRow.classList.add('hover-row');
-        });
-
-        mainRow.addEventListener('mouseleave', function() {
-            hoverTimeout = setTimeout(() => {
-                detailsRow.style.display = 'none';
+        mainRow.addEventListener('click', function() {
+            if(detailsRow.style.display === '') {
+                detailsRow.style.display ='none'
                 mainRow.classList.remove('hover-row');
-            }, ); // Small delay to prevent rapid toggling
+            } else {
+                detailsRow.style.display = '';
+                mainRow.classList.add('hover-row');
+            }
         });
 
-        // Also handle mouse events for the details row
-        detailsRow.addEventListener('mouseenter', function() {
-            clearTimeout(hoverTimeout);
-            detailsRow.style.display = '';
-            mainRow.classList.add('hover-row');
-        });
-
-        detailsRow.addEventListener('mouseleave', function() {
-            hoverTimeout = setTimeout(() => {
-                detailsRow.style.display = 'none';
-                mainRow.classList.remove('hover-row');
-            }, );
+        detailsRow.addEventListener('click', function() {
+            detailsRow.style.display = 'none';
+            mainRow.classList.remove('hover-row');
         });
 
         // Append both rows to the table
@@ -568,23 +555,19 @@ function addFilterFunctionality() {
     });
 }
 
-// Add functionality to the clear button
 function addClearButtonFunctionality() {
     const clearButton = document.querySelector('.clear-button');
     clearButton.addEventListener('click', function() {
-        // Clear all input fields
         document.querySelectorAll('.search-fields input').forEach(input => {
             input.value = '';
         });
         
-        // Show all rows in the table and reset styling
         let count = 0;
         const rows = document.querySelectorAll('table tbody tr');
         rows.forEach(row => {
             if (row.classList.contains('main-row')) {
                 row.style.display = '';
                 row.classList.remove('hover-row');
-                // Reset background based on alternating pattern
                 if (count % 2 === 0) {
                     row.style.backgroundColor = '#f8f9fa';
                 } else {
@@ -593,20 +576,17 @@ function addClearButtonFunctionality() {
                 count++;
             } else if (row.classList.contains('details-row')) {
                 row.style.display = 'none';
-                // Make sure details row has same background as its main row
                 const mainRow = row.previousElementSibling;
                 row.style.backgroundColor = mainRow.style.backgroundColor;
             }
         });
         
-        // Reset the city dropdown to show all cities
         const cityDropdown = document.getElementById('cityDropdown');
         const dropdownItems = cityDropdown.getElementsByClassName('dropdown-item');
         for (let i = 0; i < dropdownItems.length; i++) {
             dropdownItems[i].style.display = '';
         }
         
-        // Show live status and update table
         toggleLiveStatus();
     });
 }

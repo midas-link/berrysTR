@@ -74,14 +74,11 @@ setInterval(updateDateTime, 1000);
 
 // Function to export table to CSV
 function exportTableToCSV() {
-    // Get the table
     const table = document.querySelector('table');
     const rows = table.querySelectorAll('tr');
     
-    // Create CSV content
     let csv = [];
     
-    // Get headers
     const headers = [];
     const headerCells = rows[0].querySelectorAll('th');
     headerCells.forEach(cell => {
@@ -89,7 +86,6 @@ function exportTableToCSV() {
     });
     csv.push(headers.join(','));
     
-    // Get data rows
     for (let i = 1; i < rows.length; i++) {
         const row = [];
         const cells = rows[i].querySelectorAll('td');
@@ -103,17 +99,14 @@ function exportTableToCSV() {
         }
     }
     
-    // Create blob
     const csvContent = csv.join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     
-    // Generate filename with current date and time
     const date = new Date();
     const formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD
     const formattedTime = date.toTimeString().split(' ')[0].replace(/:/g, '-'); // HH-MM-SS
     const fileName = `vehicle_logging_${formattedDate}_${formattedTime}.csv`;
 
-    // Try to use the modern File System Access API if available
     if ('showSaveFilePicker' in window) {
         async function saveToDisk() {
             try {
@@ -132,14 +125,12 @@ function exportTableToCSV() {
                 await writable.close();
             } catch (err) {
                 if (err.name !== 'AbortError') {
-                    // Fall back to traditional method if there's an error
                     fallbackSave();
                 }
             }
         }
         saveToDisk();
     } else {
-        // Fall back to traditional method for browsers that don't support File System Access API
         fallbackSave();
     }
 
@@ -158,21 +149,17 @@ async function exportTableToPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
-    // Get table data
     const table = document.querySelector('table');
     
-    // Add title
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(16);
     doc.text('Vehicle Logging Data', 14, 15);
     
-    // Add timestamp
     const timestamp = new Date().toLocaleString();
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
     doc.text(`Generated: ${timestamp}`, 14, 25);
     
-    // Create the PDF table
     doc.autoTable({
         html: table,
         startY: 30,
@@ -195,16 +182,13 @@ async function exportTableToPDF() {
         margin: { top: 30 }
     });
 
-    // Generate filename
     const date = new Date();
     const formattedDate = date.toISOString().split('T')[0];
     const formattedTime = date.toTimeString().split(' ')[0].replace(/:/g, '-');
     const fileName = `vehicle_logging_${formattedDate}_${formattedTime}.pdf`;
 
-    // Get the PDF as blob
     const pdfBlob = new Blob([doc.output('blob')], { type: 'application/pdf' });
 
-    // Try to use the modern File System Access API if available
     if ('showSaveFilePicker' in window) {
         try {
             const handle = await window.showSaveFilePicker({
@@ -222,27 +206,22 @@ async function exportTableToPDF() {
             await writable.close();
         } catch (err) {
             if (err.name !== 'AbortError') {
-                // Fall back to traditional method if there's an error
                 fallbackSavePDF(doc, fileName);
             }
         }
     } else {
-        // Fall back to traditional method for browsers that don't support File System Access API
         fallbackSavePDF(doc, fileName);
     }
 }
 
-// Fallback save method for PDF
 function fallbackSavePDF(doc, fileName) {
     doc.save(fileName);
 }
 
-// Function to toggle dropdown menu
 function toggleDropdown() {
     document.getElementById("exportDropdown").classList.toggle("show");
 }
 
-// Close dropdown when clicking outside
 window.onclick = function(event) {
     if (!event.target.matches('.export-button')) {
         var dropdowns = document.getElementsByClassName("dropdown-content");
@@ -255,7 +234,6 @@ window.onclick = function(event) {
     }
 }
 
-// Function to filter table rows based on search criteria
 function filterTable() {
     const searchInputs = {
         'ST-address': document.getElementById('ST-address').value.toLowerCase(),
@@ -273,7 +251,6 @@ function filterTable() {
         const cells = row.getElementsByTagName('td');
         let shouldShow = true;
 
-        // Check each search field against corresponding table column
         if (searchInputs['ST-address'] && !cells[2].textContent.toLowerCase().includes(searchInputs['ST-address'])) {
             shouldShow = false;
         }
@@ -299,29 +276,22 @@ function filterTable() {
 
 // Add event listeners when the DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Populate the table with data
     populateTable();
     
-    // Add event listeners for search functionality
     document.querySelector('.search-button').addEventListener('click', filterTable);
     
-    // Add event listeners for clear button
     document.querySelector('.clear-button').addEventListener('click', function() {
-        // Clear all search inputs
         document.querySelectorAll('.search-fields input').forEach(input => {
             input.value = '';
         });
-        // Show all rows
         const tbody = document.querySelector('tbody');
         const rows = tbody.getElementsByTagName('tr');
         for (let row of rows) {
             row.style.display = '';
         }
-        // Show live status
         document.querySelector('.live-status').style.display = 'block';
     });
 
-    // Add event listeners for real-time search as user types
     document.querySelectorAll('.search-fields input').forEach(input => {
         input.addEventListener('input', filterTable);
     });

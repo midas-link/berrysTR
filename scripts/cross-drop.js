@@ -89,32 +89,19 @@ function populateTable() {
 
         detailsRow.appendChild(detailsCell);
 
-        let hoverTimeout;
-        mainRow.addEventListener('mouseenter', function() {
-            clearTimeout(hoverTimeout);
-            detailsRow.style.display = '';
-            mainRow.classList.add('hover-row');
-        });
-
-        mainRow.addEventListener('mouseleave', function() {
-            hoverTimeout = setTimeout(() => {
-                detailsRow.style.display = 'none';
+        mainRow.addEventListener('click', function() {
+            if(detailsRow.style.display === '') {
+                detailsRow.style.display ='none'
                 mainRow.classList.remove('hover-row');
-            }, ); // Small delay to prevent rapid toggling
+            } else {
+                detailsRow.style.display = '';
+                mainRow.classList.add('hover-row');
+            }
         });
 
-        // Also handle mouse events for the details row
-        detailsRow.addEventListener('mouseenter', function() {
-            clearTimeout(hoverTimeout);
-            detailsRow.style.display = '';
-            mainRow.classList.add('hover-row');
-        });
-
-        detailsRow.addEventListener('mouseleave', function() {
-            hoverTimeout = setTimeout(() => {
-                detailsRow.style.display = 'none';
-                mainRow.classList.remove('hover-row');
-            }, );
+        detailsRow.addEventListener('click', function() {
+            detailsRow.style.display = 'none';
+            mainRow.classList.remove('hover-row');
         });
 
         // Append both rows to the table
