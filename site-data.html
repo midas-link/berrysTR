@@ -244,7 +244,8 @@
             padding-top: 2vh;
         }
         .sub-header span {
-            padding-left: 10%;
+            padding-top: 2vh;
+            padding-left: 5vw;
             font-family: 'Mulish', sans-serif;
         }
 
@@ -295,12 +296,14 @@
         }
         .search-fields {
             padding-left: 0.5%;
+            display:flex;
         }
         .search-fields label {
             font-family: 'Mulish', sans-serif;
             font-weight: 400;
             font-size: 1rem;
             padding-left: 1vw;
+            padding-top:0.5vh;
         }
         .search-fields input{
             background-color: #EAF3FC;
@@ -364,15 +367,16 @@
         .search-button{
         background-color: #014B96;
             color: white;
-            padding: 1vh 4vh 1vh 4vh;
             border-radius: 4px;
             font-family: 'Mulish', sans-serif;
             font-weight: 400;
             font-size: 1rem;
-            margin-top: 5vh;
+            margin-top: 2vh;
             text-transform: uppercase;
             display: inline-block;
             margin-right: 2vh;
+            max-height: fit-content;
+            padding: 0.25vh 1vw;
         }
         .search-button:hover{
             background-color: #012F5E;
@@ -380,14 +384,15 @@
         .clear-button{
             background-color: #014B96;
             color: white;
-            padding: 1vh 4vh 1vh 4vh;
             border-radius: 4px;
             font-family: 'Mulish', sans-serif;
             font-weight: 400;
             font-size: 1rem;
-            margin-top: 5vh;
+            margin-top: 2vh;
             text-transform: uppercase;
             display: inline-block;
+            max-height: fit-content;
+            padding: 0.25vh 1vw;
         }
         .clear-button:hover{
             background-color: #012F5E;
@@ -396,7 +401,7 @@
             display: flex;
             justify-content: center;
             width: 100%;
-            margin-top: 5vh;
+            margin-bottom: 2vh;
         }
         .table-type {
             font-family: 'Mulish', sans-serif;
@@ -664,11 +669,11 @@
              </div>
              
              <label for="Zip">Zip</label>
-             <input type="text" id="Zip" name="Zip" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+             <input type="text" id="Zip" name="Zip" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" >
              <label for="Date">Date</label>
-             <input type="text" id="Date" name="Date" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+             <input type="text" id="Date" name="Date" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="DD/MM/YYYY">
              <label for="Fuel">Fuel</label>
-             <input type="text" id="Fuel" name="Fuel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+             <input type="text" id="Fuel" name="Fuel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" >
            </div>
            <div class="button-container">
             <button class="search-button">Search</button>       

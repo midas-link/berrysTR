@@ -30,7 +30,8 @@
             background-color: #F9BC39;
         }
         ::placeholder {
-            color: #FFFFFF;
+            color: #5e5e5e;
+            font-size: 0.875rem;
         }
         .header-container {
             width: 100%;
@@ -231,7 +232,7 @@
         }
         .sub-header span {
             padding-top: 2vh;
-            padding-left: 2vw;
+            padding-left: 5vw;
             font-family: 'Mulish', sans-serif;
         }
         .sub-header h1 {
@@ -301,15 +302,16 @@
         .search-button{
             background-color: #014B96;
             color: white;
-            padding: 1vh 4vh 1vh 4vh;
             border-radius: 4px;
             font-family: 'Mulish', sans-serif;
             font-weight: 400;
             font-size: 1rem;
-            margin-top: 5vh;
+            margin-top: 2vh;
             text-transform: uppercase;
             display: inline-block;
             margin-right: 2vh;
+            max-height: fit-content;
+            padding: 0.25vh 1vw;
         }
         .search-button:hover{
             background-color: #012F5E;
@@ -317,14 +319,15 @@
         .clear-button{
             background-color: #014B96;
             color: white;
-            padding: 1vh 4vh 1vh 4vh;
             border-radius: 4px;
             font-family: 'Mulish', sans-serif;
             font-weight: 400;
             font-size: 1rem;
-            margin-top: 5vh;
+            margin-top: 2vh;
             text-transform: uppercase;
             display: inline-block;
+            max-height: fit-content;
+            padding: 0.25vh 1vw;
         }
         .clear-button:hover{
             background-color: #012F5E;
@@ -499,7 +502,7 @@
              <label for="Zip">Zip</label>
              <input type="text" id="Zip" name="Zip">
              <label for="Date">Date</label>
-             <input type="text" id="Date" name="Date">
+             <input type="text" id="Date" name="Date" placeholder="DD/MM/YYYY">
              <label for="Fuel">Fuel</label>
              <input type="text" id="Fuel" name="Fuel">
            </div>

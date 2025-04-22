@@ -265,7 +265,7 @@ function filterTable() {
 // Add event listeners when the DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     populateTable();
-    
+    disableBrowserAutocomplete();
     // Add event listener to search button to filter when clicked
     document.querySelector('.search-button').addEventListener('click', filterTable);
     
@@ -284,3 +284,20 @@ document.addEventListener('DOMContentLoaded', function() {
         // Remove the existing input event listener that calls filterTable
     });
 }); 
+function disableBrowserAutocomplete() {
+    // Get all input fields in the search fields section
+    const inputs = document.querySelectorAll('.search-fields input');
+    
+    inputs.forEach(input => {
+        // Set attributes to prevent browser autocomplete
+        
+        // Add a random name to prevent browser autocomplete
+        const randomName = input.id + '_' + Math.random().toString(36).substring(2, 9);
+        input.setAttribute('name', randomName); 
+        if (input.id === 'State' || input.id === 'Zip' || input.id === 'Date' || input.id === 'ST-address' || input.id ==='City' || input.id ==='Fuel') {
+            input.setAttribute('autocomplete', 'new-password');
+            input.setAttribute('data-lpignore', 'true');
+            input.setAttribute('data-form-type', 'other');
+        }
+    });
+}
