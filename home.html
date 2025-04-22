@@ -90,11 +90,12 @@
             font-family: 'Mulish', sans-serif;
             font-weight: 700;
             transition: all 0.3s ease;
+            white-space: nowrap;
         }
         .header a:nth-child(2) {
             margin-left: 30%;
         }
-        @media (max-width: 900px) {
+        @media (max-width: 1000px) {
             .header a:nth-child(2) {
                 margin-left: 5%;
             }
@@ -103,25 +104,18 @@
                 max-width: 100%; /* Ensure it doesn't exceed the width of its container */
                 height: auto; /* Maintain aspect ratio */
                 width: auto ;
-                scale:1.2;
+                scale:1.1;
+                margin-left:auto;
             }
             .header-background {
                 top: 50%;
                 height: 90%;
             }
             .header a {
-                white-space: nowrap;
-                padding-left: 0.5vw;
+                display:none;
             }
-            .header input[type="text"] {
-                width: 15%;
-                padding-left: 2vw !important;
-                background-size: 10px !important;
-                background-position: 0.5vh center !important;
-            }
-            .header input[type="text"]::placeholder {
-                padding-left: 2vw !important;
-                font-size: 0.75rem !important;
+            .header input {
+                display:none;
             }
             .sub-header {
                 padding-left: 1vh;
@@ -166,6 +160,9 @@
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
         }
+        .header input {
+            width: 8vw;
+        }
         .header input[type="text"] {
             padding: 1vh 1.5vw 1vh 1.5vw;
             border-radius: 4px;
@@ -199,7 +196,7 @@
         }
         .sub-header div {
             text-align: center;
-            padding-left: 1vw;
+            padding-left: 0.5vw;
             padding-bottom: 1vh;
             font-family: 'Mulish', sans-serif;
             font-weight: 600;
@@ -221,7 +218,7 @@
             justify-content: space-between;
             align-items: flex-start;
             padding: 0 2vh;
-            margin-top: 5vh;
+            margin-top: 10vh;
         }
         .main-container div {
             display: flex;
@@ -345,7 +342,7 @@
             </div>
             <div class="sub-header-company">
                 <img class="company-logo" src="images/circle-k-logo.png" alt="company-logo">
-                <div class="sub-header-role">(Area Manager)</div>
+                <div class="sub-header-role">( Area Manager )</div>
             </div>
         </div>
         <div class="dropdown-menu" id="dropdownMenu">

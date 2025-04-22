@@ -1,3 +1,6 @@
+// Store the site data globally so we can access it for filtering
+let globalSiteData = [];
+
 // Function to fetch and populate the table with data from site_data.json
 async function fetchAndPopulateTable() {
     try {
@@ -7,6 +10,7 @@ async function fetchAndPopulateTable() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const siteData = await response.json();
+        globalSiteData = siteData; // Store data globally
         populateTable(siteData);
         createCityDropdown(siteData);
         createBuDropdown(siteData); 
@@ -23,6 +27,7 @@ async function fetchAndPopulateTable() {
             if (xhr.status === 200) {
                 try {
                     const siteData = JSON.parse(xhr.responseText);
+                    globalSiteData = siteData; // Store data globally
                     populateTable(siteData);
                     createCityDropdown(siteData);
                     createBuDropdown(siteData); // Create city dropdown after populating table
@@ -115,7 +120,7 @@ function populateTable(siteData) {
         detailsCell.innerHTML = `<div class="details-header">Details:</div> <div class="details-content">
             ${formatDate(row.Date)} | ${row['Delivery Start '] || ''} to ${row['Delivery End'] || ''}
             \n<span class="label">Site code:</span> ${row.SiteCode || ''} | <span class="label">Business Unit:</span> ${row.BusinessUnitName || ''}
-            \n${row.Address || ''} , ${row.City} ${row.State} | ${row.Zip}
+            \n<span class="label">Full Address:</span> ${row.Address || ''} , ${row.City} ${row.State} | ${row.Zip}
             \n<span class="label">Fuel dropped:</span> ${row.Delivered || ''} | <span class="label">Tank:</span> T${row.TankNumber || ''}
         </div>`;
         detailsCell.className = 'details-cell';
@@ -171,7 +176,6 @@ function createCityDropdown(siteData) {
         item.addEventListener('click', function() {
             cityInput.value = city;
             dropdownContent.classList.remove('show');
-            filterTable(); // Apply the filter when a city is selected
         });
         dropdownContent.appendChild(item);
     });
@@ -204,9 +208,6 @@ function createCityDropdown(siteData) {
         
         // Show dropdown when typing
         dropdownContent.classList.add('show');
-        
-        // Apply filter to table
-        filterTable();
     });
     
     // Add a dropdown indicator to show it's clickable
@@ -247,7 +248,6 @@ function createBuDropdown(siteData) {
         item.addEventListener('click', function() {
             BuInput.value = BU;
             dropdownContent.classList.remove('show');
-            filterTable(); // Apply the filter when a city is selected
         });
         dropdownContent.appendChild(item);
     });
@@ -280,9 +280,6 @@ function createBuDropdown(siteData) {
         
         // Show dropdown when typing
         dropdownContent.classList.add('show');
-        
-        // Apply filter to table
-        filterTable();
     });
     
     // Add a dropdown indicator to show it's clickable
@@ -323,7 +320,6 @@ function createStateDropdown(siteData) {
         item.addEventListener('click', function() {
             StateInput.value = state;
             dropdownContent.classList.remove('show');
-            filterTable(); // Apply the filter when a city is selected
         });
         dropdownContent.appendChild(item);
     });
@@ -356,9 +352,6 @@ function createStateDropdown(siteData) {
         
         // Show dropdown when typing
         dropdownContent.classList.add('show');
-        
-        // Apply filter to table
-        filterTable();
     });
     
     // Add a dropdown indicator to show it's clickable
@@ -399,7 +392,6 @@ function createSiteDropdown(siteData) {
         item.addEventListener('click', function() {
             SiteInput.value = site;
             dropdownContent.classList.remove('show');
-            filterTable(); // Apply the filter when a city is selected
         });
         dropdownContent.appendChild(item);
     });
@@ -432,9 +424,6 @@ function createSiteDropdown(siteData) {
         
         // Show dropdown when typing
         dropdownContent.classList.add('show');
-        
-        // Apply filter to table
-        filterTable();
     });
     
     // Add a dropdown indicator to show it's clickable
@@ -460,59 +449,24 @@ function filterTable() {
     const date = document.getElementById('Date').value.toLowerCase();
     const fuel = document.getElementById('Fuel').value.toLowerCase();
 
-    const rows = document.querySelectorAll('table tbody tr.main-row');
-    const statePattern = new RegExp(`\\b${state}\\b`, 'i');
-
-    // Track visible rows for re-styling
-    let visibleRowCount = 0;
-    
-    rows.forEach(row => {
-        const cells = row.getElementsByTagName('td');
-        const rowData = {
-            date: cells[0].textContent.toLowerCase(),
-            deliveredAt: cells[1].textContent.toLowerCase(),
-            siteCode: cells[2].textContent.toLowerCase(),
-            fuelDropped: cells[3].textContent.toLowerCase()
-        };
-
-        // Get the details row that follows this main row
-        const detailsRow = row.nextElementSibling;
-        const detailsText = detailsRow ? detailsRow.textContent.toLowerCase() : '';
-
-        const shouldShow = (
-            rowData.date.includes(date) &&
-            rowData.deliveredAt.includes(stAddress) &&
-            rowData.siteCode.includes(site) &&
-            rowData.fuelDropped.includes(fuel) &&
-            detailsText.includes(businessUnit) &&
-            detailsText.includes(city) &&
-            statePattern.test(detailsText) &&
-            detailsText.includes(zip)
+    // Filter the original data directly
+    const filteredData = globalSiteData.filter(row => {
+        // Check if row matches all the filter criteria
+        return (
+            // Only check if there's a value to filter on
+            (date === '' || (row.Date && row.Date.toLowerCase().includes(date))) &&
+            (stAddress === '' || (row.Address && row.Address.toLowerCase().includes(stAddress))) &&
+            (site === '' || (row.SiteCode && row.SiteCode.toLowerCase().includes(site))) &&
+            (fuel === '' || (row.Delivered && row.Delivered.toLowerCase().includes(fuel))) &&
+            (businessUnit === '' || (row.BusinessUnitName && row.BusinessUnitName.toLowerCase().includes(businessUnit))) &&
+            (city === '' || (row.City && row.City.toLowerCase().includes(city))) &&
+            (state === '' || (row.State && row.State.toLowerCase().includes(state))) &&
+            (zip === '' || (row.Zip && row.Zip.toString().includes(zip)))
         );
-
-        // Show/hide both the main row and its details row
-        row.style.display = shouldShow ? '' : 'none';
-        if (detailsRow) {
-            detailsRow.style.display = 'none'; // Always initially hide details rows
-        }
-        
-        // Apply alternating styles manually to visible rows
-        if (shouldShow) {
-            // Apply styling based on the visible row count
-            if (visibleRowCount % 2 === 0) {
-                row.style.backgroundColor = '#f8f9fa';
-            } else {
-                row.style.backgroundColor = '#EAF3FC';
-            }
-            visibleRowCount++;
-            
-            // IMPORTANT: Set the details row background to match its main row
-            if (detailsRow) {
-                const mainRow = detailsRow.previousElementSibling;
-                detailsRow.style.backgroundColor = mainRow.style.backgroundColor;
-            }
-        }
     });
+
+    // Clear and repopulate the table with filtered data
+    populateTable(filteredData);
 }
 
 // Function to disable browser autocomplete for all input fields
@@ -543,15 +497,16 @@ function disableBrowserAutocomplete() {
 // Initialize when the page loads
 document.addEventListener('DOMContentLoaded', function() {
     fetchAndPopulateTable();
-    addFilterFunctionality();
+    addSearchButtonFunctionality();
     addClearButtonFunctionality();
 });
 
-// Add event listeners for search functionality
-function addFilterFunctionality() {
-    const inputs = document.querySelectorAll('.search-fields input');
-    inputs.forEach(input => {
-        input.addEventListener('input', filterTable);
+// Add event listeners for search button functionality
+function addSearchButtonFunctionality() {
+    const searchButton = document.querySelector('.search-button');
+    searchButton.addEventListener('click', function() {
+        filterTable();
+        // The toggleLiveStatus is now handled in the HTML script
     });
 }
 
@@ -562,24 +517,8 @@ function addClearButtonFunctionality() {
             input.value = '';
         });
         
-        let count = 0;
-        const rows = document.querySelectorAll('table tbody tr');
-        rows.forEach(row => {
-            if (row.classList.contains('main-row')) {
-                row.style.display = '';
-                row.classList.remove('hover-row');
-                if (count % 2 === 0) {
-                    row.style.backgroundColor = '#f8f9fa';
-                } else {
-                    row.style.backgroundColor = '#EAF3FC';
-                }
-                count++;
-            } else if (row.classList.contains('details-row')) {
-                row.style.display = 'none';
-                const mainRow = row.previousElementSibling;
-                row.style.backgroundColor = mainRow.style.backgroundColor;
-            }
-        });
+        // Repopulate table with all data
+        populateTable(globalSiteData);
         
         const cityDropdown = document.getElementById('cityDropdown');
         const dropdownItems = cityDropdown.getElementsByClassName('dropdown-item');

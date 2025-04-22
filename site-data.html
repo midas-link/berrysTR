@@ -104,7 +104,7 @@
                 max-width: 100%; /* Ensure it doesn't exceed the width of its container */
                 height: auto; /* Maintain aspect ratio */
                 width: auto ;
-                scale:1.2;
+                scale:1.1;
             }
             main {
                 flex: 1;
@@ -190,10 +190,16 @@
                 height: auto; /* Maintain aspect ratio */
                 width: auto !important;
             }
+            .custom-dropdown{
+                display:none;
+            }
         }
         .header a:hover {
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
+        }
+        .header input {
+            width: 8vw;
         }
         .header input[type="text"] {
             padding: 1vh 3vh 1vh 3vh;
@@ -288,7 +294,7 @@
             margin-bottom: 2vh;
         }
         .search-fields {
-            padding-left: 5%;
+            padding-left: 2.5%;
         }
         .search-fields label {
             font-family: 'Mulish', sans-serif;
@@ -394,8 +400,9 @@
         }
         .table-type {
             font-family: 'Mulish', sans-serif;
-            font-size: 1.25rem;
+            font-size: 1.75rem;
             font-weight: 400;
+            color:#014B96;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -412,12 +419,13 @@
             margin-top: 1vh;
             margin-left: auto;
             margin-right: auto;
-            max-height: 50vh;
+            max-height: 70vh;
             overflow-y: auto;
             border-collapse: collapse;
             width: 95%;
             border-radius: 10px;
             position: relative;
+            margin-bottom: 5vh;
         }
         thead {
             position: sticky;
@@ -590,7 +598,13 @@
             text-align: center;
             vertical-align: middle;
         }
-
+        .current-time {
+            font-family: 'Mulish', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+            color:#014B96;
+            padding-left: 1vw;
+        }
     </style>
 </head>
 <body>
@@ -665,7 +679,7 @@
                 <label for="table-type" class="table-type">
                     LIVE
                     <span class="live-indicator"></span>
-                    <span id="current-datetime" style="color: #014B96;font-weight:700;margin-left: 15px; font-size: 0.9rem;"></span>
+                    <span id="current-datetime" class="current-time"></span>
                 </label>
             </div>
             <div class="export-dropdown">
@@ -808,41 +822,45 @@ function hasSearchInput() {
 }
 
 // Function to toggle live indicator visibility
-function toggleLiveStatus() {
+function toggleLiveStatus(forceShow = false) {
     const liveStatus = document.querySelector('.live-status');
-    if (hasSearchInput()) {
+    if (!forceShow && hasSearchInput()) {
         liveStatus.style.display = 'none';
     } else {
         liveStatus.style.display = 'block';
     }
 }
 
-// Add event listeners to all search inputs
+// Remove event listeners that toggle the live status on input
+// We don't want the indicator to change when typing
 document.querySelectorAll('.search-fields input').forEach(input => {
-    input.addEventListener('input', toggleLiveStatus);
+    // Remove input event listener for toggleLiveStatus
+    // We'll only toggle it on search button click
 });
+
+// Remove the dropdown click handlers that would affect the live status
 document.querySelectorAll('.dropdown-content').forEach(dropdown => {
-    // Assuming you're using click events on dropdown items
     dropdown.addEventListener('click', function(event) {
-        // If the click was on a dropdown item
-        if (event.target.matches('.dropdown-item') || event.target.parentElement.matches('.dropdown-item')) {
-            // Call toggleLiveStatus after the associated input value is updated
-            setTimeout(toggleLiveStatus, 0);
-        }
+        // Don't toggle live status on dropdown selection
     });
 });
 
+// Add event listener to search button to hide live status when search is executed
+document.querySelector('.search-button').addEventListener('click', function() {
+    // Hide the live indicator when search is clicked
+    toggleLiveStatus(false);
+});
 
-// Add event listener to search button
-document.querySelector('.search-button').addEventListener('click', toggleLiveStatus);
-
-// Add event listener to clear all inputs and show live status again
-document.querySelectorAll('.search-fields input').forEach(input => {
-    input.addEventListener('input', function() {
-        if (!hasSearchInput()) {
-            toggleLiveStatus();
-        }
+// Update clear button to show live status
+document.querySelector('.clear-button').addEventListener('click', function() {
+    // Clear all input fields
+    document.querySelectorAll('.search-fields input').forEach(input => {
+        input.value = '';
     });
+    
+    // Show live status when cleared
+    toggleLiveStatus(true);
+    // Let the JavaScript function handle showing all rows
 });
 
 // Toggle dropdown menu
@@ -947,15 +965,5 @@ async function exportTableToPDF() {
 function fallbackSavePDF(doc, fileName) {
     doc.save(fileName);
 }
-document.querySelector('.clear-button').addEventListener('click', function() {
-    // Clear all input fields
-    document.querySelectorAll('.search-fields input').forEach(input => {
-        input.value = '';
-    });
-    
-    
-    // Show live status and update table
-    toggleLiveStatus();
-});
 </script>
 </html>

@@ -39,7 +39,7 @@ body {
     color: var(--text-color);
     background-color: var(--background-color);
     background-image: url('images/Sign-in-page.jpg');
-    background-size: cover;
+    background-size: 100% 99%;
     background-repeat: no-repeat;
     min-height: 70vh;
     max-height: 100vh;
@@ -85,7 +85,7 @@ footer img {
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .hero {
         padding: 2rem 0;
         padding-left: 1rem;
@@ -99,6 +99,9 @@ footer img {
     
     .content {
         padding: 1rem 0;
+    }
+    body {
+        background-size: cover;
     }
 }
 

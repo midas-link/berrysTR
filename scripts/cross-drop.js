@@ -45,13 +45,11 @@ function formatDate(dateString) {
     return date.toLocaleDateString('en-US', options);
 }
 // Function to populate the table
-function populateTable() {
+function populateTable(data = tableData) {
     const tableBody = document.querySelector('table tbody');
     tableBody.innerHTML = ''; // Clear existing table data
 
-
-    tableData.forEach(row => {
-
+    data.forEach(row => {
         const mainRow  = document.createElement('tr');
         mainRow.className = 'main-row';
 
@@ -67,7 +65,6 @@ function populateTable() {
         const fuelCell = document.createElement('td');
         fuelCell.textContent = row.preventedDelivery || '';
 
-
         mainRow.appendChild(dateCell);
         mainRow.appendChild(timeCell);
         mainRow.appendChild(zipCell);
@@ -81,7 +78,7 @@ function populateTable() {
         detailsCell.colSpan = 4 ;
         detailsCell.innerHTML = `<div class="details-header">Details:</div> <div class="details-content">
             ${formatDate(row.date)} | ${row.time || ''} 
-            \n${row.address || ''} , ${row.city} ${row.state} | ${row.zip}
+            \n<span class="label">Full Address:</span> ${row.address || ''} , ${row.city} ${row.state} | ${row.zip}
             \n<span class="label">Tank Grade:</span> ${row.tankGrade || ''} | <span class="label">Tank No.:</span> ${row.tankNo || ''}
             \n<span class="label">Fuel Prevented:</span> ${row.preventedDelivery || ''}
         </div>`;
@@ -118,10 +115,24 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function addFilterFunctionality() {
-    const inputs = document.querySelectorAll('.search-fields input');
-    inputs.forEach(input => {
-        input.addEventListener('input', filterTable);
-    });
+    // Remove input event listeners and only add click event to search button
+    const searchButton = document.querySelector('.search-button');
+    if (searchButton) {
+        searchButton.addEventListener('click', filterTable);
+    }
+    
+    // Keep the clear button functionality
+    const clearButton = document.querySelector('.clear-button');
+    if (clearButton) {
+        clearButton.addEventListener('click', function() {
+            // Clear all input fields
+            document.querySelectorAll('.search-fields input').forEach(input => {
+                input.value = '';
+            });
+            // Repopulate the table with all data
+            populateTable();
+        });
+    }
 }
 
 function filterTable() {
@@ -141,62 +152,25 @@ function filterTable() {
     const date = dateInput ? dateInput.value.toLowerCase() : '';
     const fuel = fuelInput ? fuelInput.value.toLowerCase() : '';
 
-    const rows = document.querySelectorAll('table tbody tr.main-row');
-    let visibleRowCount = 0;
-    
-    rows.forEach(row => {
-        const cells = row.getElementsByTagName('td');
-        const rowData = {
-            date: cells[0].textContent.toLowerCase().includes(date), // Date
-            time: cells[1].textContent.toLowerCase().includes(time), // Time
-            zip: cells[2].textContent.toLowerCase().includes(zip),   // Zip
-            fuel: cells[3].textContent.toLowerCase().includes(fuel)  // Prevented Delivery
-        };
-
-        const detailsRow = row.nextElementSibling; 
-        const detailsText = detailsRow ? detailsRow.textContent.toLowerCase() : '';
-
-        const shouldShow = (
-            rowData.date &&
-            rowData.time &&
-            rowData.zip &&
-            rowData.fuel &&
-            detailsText.includes(stAddress) &&
-            detailsText.includes(state) &&
-            detailsText.includes(city)
+    // Filter the original data directly
+    const filteredData = tableData.filter(row => {
+        // Check if row matches all the filter criteria
+        return (
+            // Only check if there's a value to filter on
+            (date === '' || (row.date && row.date.toLowerCase().includes(date))) &&
+            (time === '' || (row.time && row.time.toLowerCase().includes(time))) &&
+            (city === '' || (row.city && row.city.toLowerCase().includes(city))) &&
+            (state === '' || (row.state && row.state.toLowerCase().includes(state))) &&
+            (stAddress === '' || (row.address && row.address.toLowerCase().includes(stAddress))) &&
+            (zip === '' || (row.zip && row.zip.toString().includes(zip))) &&
+            (fuel === '' || (row.preventedDelivery && row.preventedDelivery.toLowerCase().includes(fuel)))
         );
-
-        row.style.display = shouldShow ? '' : 'none';
-        if (detailsRow) {
-            detailsRow.style.display = 'none';
-        }
-        
-        // Apply alternating styles manually to visible rows
-        if (shouldShow) {
-            // Apply styling based on the visible row count
-            if (visibleRowCount % 2 === 0) {
-                row.style.backgroundColor = '#f8f9fa';
-            } else {
-                row.style.backgroundColor = '#EAF3FC';
-            }
-            visibleRowCount++;
-            
-            // IMPORTANT: Set the details row background to match its main row
-            if (detailsRow) {
-                const mainRow = detailsRow.previousElementSibling;
-                detailsRow.style.backgroundColor = mainRow.style.backgroundColor;
-            }
-        }
-
-        console.log('Filtering:', {
-            date: cells[0].textContent.toLowerCase(),
-            time: cells[1].textContent.toLowerCase(),
-            zip: cells[2].textContent.toLowerCase(),
-            fuel: cells[3].textContent.toLowerCase(),
-            searchValues: { date, time, zip, fuel }
-        });
     });
+
+    // Clear and repopulate the table with filtered data
+    populateTable(filteredData);
 }
+
 function disableBrowserAutocomplete() {
     // Get all input fields in the search fields section
     const inputs = document.querySelectorAll('.search-fields input');

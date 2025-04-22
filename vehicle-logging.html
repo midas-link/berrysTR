@@ -145,25 +145,30 @@
                 margin-top: 0  !important;
             }
             .search-fields {
-                display: flex; 
-                flex-wrap: wrap; 
-                justify-content: space-between; 
-                padding-left: 0 !important; 
+                display: flex;
+                flex-wrap: wrap;
+                padding-left: 10% !important;
             }
             .search-fields label {
-                flex: 1 1 5%;
-                margin-bottom: 0;
-                margin-top: 1vh;
-                margin-left: 1.25%;
-                margin-right: 1.25%;
+                width: 25%;
+                margin: 2vh 0 1vh;
             }
             .search-fields input {
-                width: 10vw !important;
-                flex: 1 1 40%; 
-                margin-left: 0 !important;
-                margin-right: 0 !important; 
-                margin-bottom: 1vh;
-                padding-left: 0.5vw !important; 
+                width: 60% !important;
+                margin: 1vh 5% 1vh 0 !important;
+                padding-left: 0.5vw !important;
+            }
+            .search-fields label,
+            .search-fields input {
+                flex: 0 0 auto;
+            }
+            .search-fields label:nth-child(4n+1),
+            .search-fields label:nth-child(4n+3) {
+                flex-basis: 15%;
+            }
+            .search-fields input:nth-child(4n+2),
+            .search-fields input:nth-child(4n+4) {
+                flex-basis: 25%;
             }
             .button-container{
                 margin-top: 1vh !important;
@@ -178,6 +183,9 @@
         .header a:hover {
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
+        }
+        .header input {
+            width: 8vw;
         }
         .header input[type="text"] {
             padding: 1vh 3vh 1vh 3vh;
@@ -271,7 +279,8 @@
             margin-bottom: 2vh;
         }
         .search-fields {
-            padding-left: 10%;
+            padding-left:15%;
+            padding-right:15%;
         }
         .search-fields label {
             font-family: 'Mulish', sans-serif;
@@ -327,8 +336,9 @@
         }
         .table-type {
             font-family: 'Mulish', sans-serif;
-            font-size: 1.25rem;
+            font-size: 1.75rem;
             font-weight: 400;
+            color:#014B96;
             display: flex;
             align-items: center;
             gap: 10px;
@@ -346,11 +356,12 @@
             margin-top: 1vh;
             margin-left: auto;
             margin-right: auto;
-            max-height: 50vh; /* This sets the maximum height of the table */
+            max-height: 70vh; /* This sets the maximum height of the table */
             overflow-y: auto; /* This enables vertical scrolling */
             border-collapse: collapse;
             width: 90%; /* Adjust width as needed */
             border-radius: 10px;
+            margin-bottom: 5vh;
         }
         thead {
             position: sticky;
@@ -436,6 +447,13 @@
         .show {
             display: block;
         }
+        .current-time {
+            font-family: 'Mulish', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 400;
+            color:#014B96;
+            padding-left: 1vw;
+        }
     </style>
 </head>
 <body>
@@ -493,7 +511,7 @@
                 <label for="table-type" class="table-type">
                     LIVE
                     <span class="live-indicator"></span>
-                    <span id="current-datetime" style="color: #014B96;font-weight:700;margin-left: 15px; font-size: 0.9rem;"></span>
+                    <span id="current-datetime" class="current-time"></span>
                 </label>
             </div>
             <div class="export-dropdown">
@@ -531,5 +549,32 @@
         </div>
     </footer>
     <script src="scripts/vehicle-logging.js"></script>
+    <script>
+        // Function to check if any search field has input
+        function hasSearchInput() {
+            const searchInputs = document.querySelectorAll('.search-fields input');
+            return Array.from(searchInputs).some(input => input.value.trim() !== '');
+        }
+
+        // Function to toggle live indicator visibility
+        function toggleLiveStatus(forceShow = false) {
+            const liveStatus = document.querySelector('.live-status');
+            if (!forceShow && hasSearchInput()) {
+                liveStatus.style.display = 'none';
+            } else {
+                liveStatus.style.display = 'block';
+            }
+        }
+
+        // Add event listener to search button to hide live status when clicked
+        document.querySelector('.search-button').addEventListener('click', function() {
+            toggleLiveStatus(false); // Hide live status when search is clicked
+        });
+
+        // Update clear button to show live status when clicked
+        document.querySelector('.clear-button').addEventListener('click', function() {
+            toggleLiveStatus(true); // Force show live status
+        });
+    </script>
 </body>
 </html>

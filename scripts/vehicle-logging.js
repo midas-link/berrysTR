@@ -31,11 +31,11 @@ const tableData = [
     { date: "04.28.24", time: "18:40", address: "31700 INTERSTATE 10 W", city: "Boerne", state: "TX", zip: "78006", tankGrade: "GAS 87 NO ETH 9.0 RVP ", tankNo: "4", preventedDelivery: "DIESEL" }
 ];
 // Function to populate the table
-function populateTable() {
+function populateTable(data = tableData) {
     const tableBody = document.querySelector('table tbody');
     tableBody.innerHTML = ''; // Clear existing table data
 
-    tableData.forEach(row => {
+    data.forEach(row => {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${row.date}</td>
@@ -235,64 +235,52 @@ window.onclick = function(event) {
 }
 
 function filterTable() {
-    const searchInputs = {
-        'ST-address': document.getElementById('ST-address').value.toLowerCase(),
-        'State': document.getElementById('State').value.toLowerCase(),
-        'City': document.getElementById('City').value.toLowerCase(),
-        'Zip': document.getElementById('Zip').value.toLowerCase(),
-        'Date': document.getElementById('Date').value.toLowerCase(),
-        'Fuel': document.getElementById('Fuel').value.toLowerCase()
-    };
+    // Get values from search inputs
+    const stAddress = document.getElementById('ST-address').value.toLowerCase();
+    const state = document.getElementById('State').value.toLowerCase();
+    const city = document.getElementById('City').value.toLowerCase();
+    const zip = document.getElementById('Zip').value.toLowerCase();
+    const date = document.getElementById('Date').value.toLowerCase();
+    const fuel = document.getElementById('Fuel').value.toLowerCase();
 
-    const tbody = document.querySelector('tbody');
-    const rows = tbody.getElementsByTagName('tr');
+    // Filter the original data directly
+    const filteredData = tableData.filter(row => {
+        // Check if row matches all the filter criteria
+        return (
+            // Only check if there's a value to filter on
+            (date === '' || (row.date && row.date.toLowerCase().includes(date))) &&
+            (stAddress === '' || (row.address && row.address.toLowerCase().includes(stAddress))) &&
+            (city === '' || (row.city && row.city.toLowerCase().includes(city))) &&
+            (state === '' || (row.state && row.state.toLowerCase().includes(state))) &&
+            (zip === '' || (row.zip && row.zip.toString().includes(zip))) &&
+            (fuel === '' || (row.tankGrade && row.tankGrade.toLowerCase().includes(fuel)) || 
+                           (row.preventedDelivery && row.preventedDelivery.toLowerCase().includes(fuel)))
+        );
+    });
 
-    for (let row of rows) {
-        const cells = row.getElementsByTagName('td');
-        let shouldShow = true;
-
-        if (searchInputs['ST-address'] && !cells[2].textContent.toLowerCase().includes(searchInputs['ST-address'])) {
-            shouldShow = false;
-        }
-        if (searchInputs['State'] && !cells[4].textContent.toLowerCase().includes(searchInputs['State'])) {
-            shouldShow = false;
-        }
-        if (searchInputs['City'] && !cells[3].textContent.toLowerCase().includes(searchInputs['City'])) {
-            shouldShow = false;
-        }
-        if (searchInputs['Zip'] && !cells[5].textContent.toLowerCase().includes(searchInputs['Zip'])) {
-            shouldShow = false;
-        }
-        if (searchInputs['Date'] && !cells[0].textContent.toLowerCase().includes(searchInputs['Date'])) {
-            shouldShow = false;
-        }
-        if (searchInputs['Fuel'] && !cells[6].textContent.toLowerCase().includes(searchInputs['Fuel'])) {
-            shouldShow = false;
-        }
-
-        row.style.display = shouldShow ? '' : 'none';
-    }
+    // Clear and repopulate the table with filtered data
+    populateTable(filteredData);
 }
 
 // Add event listeners when the DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     populateTable();
     
+    // Add event listener to search button to filter when clicked
     document.querySelector('.search-button').addEventListener('click', filterTable);
     
+    // Update clear button to reset the table
     document.querySelector('.clear-button').addEventListener('click', function() {
         document.querySelectorAll('.search-fields input').forEach(input => {
             input.value = '';
         });
-        const tbody = document.querySelector('tbody');
-        const rows = tbody.getElementsByTagName('tr');
-        for (let row of rows) {
-            row.style.display = '';
-        }
-        document.querySelector('.live-status').style.display = 'block';
+        populateTable(); // Reset table with all data
+        
+        // The live status update is handled in the HTML
     });
 
+    // Remove input event listeners to prevent auto-filtering
     document.querySelectorAll('.search-fields input').forEach(input => {
-        input.addEventListener('input', filterTable);
+        // Remove the existing input event listener that calls filterTable
     });
 }); 
