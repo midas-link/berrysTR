@@ -77,6 +77,41 @@ function formatDate(dateString) {
     
     if (isNaN(date.getTime())) return dateString; // Return original if invalid date
     
+    const now = new Date();
+    const timeDiff = now - date;
+    const minutesDiff = timeDiff / (1000 * 60);
+    
+    // Check if date is within 30 minutes of current time
+    if (minutesDiff <= 30) {
+        return 'Just now';
+    }
+    
+    // Check if it's the same day
+    if (date.getDate() === now.getDate() && 
+        date.getMonth() === now.getMonth() && 
+        date.getFullYear() === now.getFullYear()) {
+        return 'Today';
+    }
+    
+    // Check if it's yesterday
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    if (date.getDate() === yesterday.getDate() && 
+        date.getMonth() === yesterday.getMonth() && 
+        date.getFullYear() === yesterday.getFullYear()) {
+        return 'Yesterday';
+    }
+    
+    // Check if it's two days ago
+    const twoDaysAgo = new Date(now);
+    twoDaysAgo.setDate(now.getDate() - 2);
+    if (date.getDate() === twoDaysAgo.getDate() && 
+        date.getMonth() === twoDaysAgo.getMonth() && 
+        date.getFullYear() === twoDaysAgo.getFullYear()) {
+        return 'Two days ago';
+    }
+    
+    // Use original formatting for older dates
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
 }
@@ -85,7 +120,18 @@ function formatDate(dateString) {
 function populateTable(siteData) {
     const tableBody = document.querySelector('table tbody');
     tableBody.innerHTML = ''; // Clear existing table data
-
+    // Check if data array is empty
+    if (siteData.length === 0) {
+            const noResultsRow = document.createElement('tr');
+            const noResultsCell = document.createElement('td');
+            noResultsCell.colSpan = 4; // Span all columns
+            noResultsCell.textContent = 'No results found';
+            noResultsCell.style.textAlign = 'center';
+            noResultsCell.style.padding = '20px';
+            noResultsRow.appendChild(noResultsCell);
+            tableBody.appendChild(noResultsRow);
+            return;
+        }
     siteData.forEach(row => {
         // Create the main row
         const mainRow = document.createElement('tr');

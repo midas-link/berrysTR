@@ -9,8 +9,8 @@ const tableData = [
     { date: "06.03.2025", time: "17:04", address: "11102 IH-37 Access", city: "Corpus Christi", state: "TX", zip: "78401", tankGrade: "GAS 87 OCTANE 10.0% ETHANOL 9.0 RVP", tankNo: "5", preventedDelivery: "DIESEL" },
     { date: "05.19.2025", time: "13:52", address: "2202 HOLLY ROAD", city: "Corpus Christi", state: "TX", zip: "78415", tankGrade: "Gas 93 OCTANE 10% ETH 9.0RVP", tankNo: "5", preventedDelivery: "DIESEL" },
     { date: "05.14.2025", time: "10:40", address: "9111 N. Interstate 35", city: "Jarrell", state: "TX", zip: "76537", tankGrade: "Gas 93 OCTANE 10% ETH 9.0RVP", tankNo: "7", preventedDelivery: "DIESEL" },
-    { date: "04.18.2025", time: "7:28", address: "16555 HUEBNER RD", city: "San Antonio", state: "TX", zip: "78248", tankGrade: "Gas 93 OCTANE 10% ETH 9.0RVP", tankNo: "3", preventedDelivery: "DIESEL" },
-    { date: "04.12.2025", time: "4:16", address: "1301 N LOOP 340", city: "LACY LAKEVIEW", state: "TX", zip: "76705", tankGrade: "GAS 87 NO ETH 9.0 RVP ", tankNo: "6", preventedDelivery: "DIESEL" },
+    { date: "04.23.2025", time: "7:28", address: "16555 HUEBNER RD", city: "San Antonio", state: "TX", zip: "78248", tankGrade: "Gas 93 OCTANE 10% ETH 9.0RVP", tankNo: "3", preventedDelivery: "DIESEL" },
+    { date: "04.22.2025", time: "4:16", address: "1301 N LOOP 340", city: "LACY LAKEVIEW", state: "TX", zip: "76705", tankGrade: "GAS 87 NO ETH 9.0 RVP ", tankNo: "6", preventedDelivery: "DIESEL" },
     { date: "04.04.2025", time: "1:04", address: "720 SPRING VALLEY", city: "Hewitt", state: "TX", zip: "76643", tankGrade: "Diesel #2", tankNo: "5", preventedDelivery: "GASOLINE" },
     { date: "02.22.2025", time: "21:52", address: "3225 E EXPY 83", city: "Weslaco", state: "TX", zip: "78596", tankGrade: "Diesel #2", tankNo: "4", preventedDelivery: "GASOLINE" },
     { date: "02.11.2025", time: "18:40", address: "101 N WATER ST", city: "Burnet", state: "TX", zip: "78611", tankGrade: "GAS 91 NO ETH 9.0 RVP", tankNo: "5", preventedDelivery: "DIESEL" },
@@ -34,13 +34,48 @@ function formatDate(dateString) {
     if (!dateString) return '';
     
     // Split the date string into day, month, year
-    const [day, month, year] = dateString.split('.');
+    const [month, day, year] = dateString.split('.');
     
     // Create a new date object (month is 0-based in JavaScript)
     const date = new Date(year, month - 1, day);
     
     if (isNaN(date.getTime())) return dateString; // Return original if invalid date
     
+    const now = new Date();
+    const timeDiff = now - date;
+    const minutesDiff = timeDiff / (1000 * 60);
+    
+    // Check if date is within 30 minutes of current time
+    if (minutesDiff <= 30) {
+        return 'Just now';
+    }
+    
+    // Check if it's the same day
+    if (date.getDate() === now.getDate() && 
+        date.getMonth() === now.getMonth() && 
+        date.getFullYear() === now.getFullYear()) {
+        return 'Today';
+    }
+    
+    // Check if it's yesterday
+    const yesterday = new Date(now);
+    yesterday.setDate(now.getDate() - 1);
+    if (date.getDate() === yesterday.getDate() && 
+        date.getMonth() === yesterday.getMonth() && 
+        date.getFullYear() === yesterday.getFullYear()) {
+        return 'Yesterday';
+    }
+    
+    // Check if it's two days ago
+    const twoDaysAgo = new Date(now);
+    twoDaysAgo.setDate(now.getDate() - 2);
+    if (date.getDate() === twoDaysAgo.getDate() && 
+        date.getMonth() === twoDaysAgo.getMonth() && 
+        date.getFullYear() === twoDaysAgo.getFullYear()) {
+        return 'Two days ago';
+    }
+    
+    // Use original formatting for older dates
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
 }
@@ -49,12 +84,25 @@ function populateTable(data = tableData) {
     const tableBody = document.querySelector('table tbody');
     tableBody.innerHTML = ''; // Clear existing table data
 
+    // Check if data array is empty
+    if (data.length === 0) {
+        const noResultsRow = document.createElement('tr');
+        const noResultsCell = document.createElement('td');
+        noResultsCell.colSpan = 4; // Span all columns
+        noResultsCell.textContent = 'No results found';
+        noResultsCell.style.textAlign = 'center';
+        noResultsCell.style.padding = '20px';
+        noResultsRow.appendChild(noResultsCell);
+        tableBody.appendChild(noResultsRow);
+        return;
+    }
+
     data.forEach(row => {
         const mainRow  = document.createElement('tr');
         mainRow.className = 'main-row';
 
         const dateCell = document.createElement('td');
-        dateCell.textContent = row.date || '';
+        dateCell.textContent = formatDate(row.date) || '';
 
         const timeCell = document.createElement('td');
         timeCell.textContent = row.time || '';
@@ -77,7 +125,7 @@ function populateTable(data = tableData) {
         const detailsCell = document.createElement('td');
         detailsCell.colSpan = 4 ;
         detailsCell.innerHTML = `<div class="details-header">Details:</div> <div class="details-content">
-            ${formatDate(row.date)} | ${row.time || ''} 
+            ${row.date} | ${row.time || ''} 
             \n<span class="label">Full Address:</span> ${row.address || ''} , ${row.city} ${row.state} | ${row.zip}
             \n<span class="label">Tank Grade:</span> ${row.tankGrade || ''} | <span class="label">Tank No.:</span> ${row.tankNo || ''}
             \n<span class="label">Fuel Prevented:</span> ${row.preventedDelivery || ''}

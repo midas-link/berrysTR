@@ -610,6 +610,13 @@
             color:#014B96;
             padding-left: 1vw;
         }
+        .live-status {
+            display: flex;
+            align-items: center;
+        }
+        .toggle-live {
+            margin-right: 15px;
+        }
     </style>
 </head>
 <body>
@@ -681,12 +688,16 @@
            </div>
            <div class="table-header">
             <div class="live-status">
-                <label for="table-type" class="table-type">
-                    LIVE
-                    <span class="live-indicator"></span>
-                    <span id="current-datetime" class="current-time"></span>
-                </label>
-            </div>
+                <div class="toggle-live">
+                    <label for="table-type" class="table-type">
+                        LIVE
+                        <span class="live-indicator"></span>
+                    </label>
+                </div>
+                     <label for="table-type" class="table-type">
+                         <span id="current-datetime" class="current-time"></span>
+                     </label>
+             </div>
             <div class="export-dropdown">
                 <button class="export-button" onclick="toggleDropdown()">Export As ▼</button>
                 <div class="dropdown-content" id="exportDropdown">
@@ -828,7 +839,7 @@ function hasSearchInput() {
 
 // Function to toggle live indicator visibility
 function toggleLiveStatus(forceShow = false) {
-    const liveStatus = document.querySelector('.live-status');
+    const liveStatus = document.querySelector('.toggle-live');
     if (!forceShow && hasSearchInput()) {
         liveStatus.style.display = 'none';
     } else {
