@@ -92,7 +92,6 @@
             font-weight: 700;
             transition: all 0.3s ease;
             white-space: nowrap;
-            padding-left: 2vw;
         }
         .header a:nth-child(3) {
             margin-left: 10%;
@@ -261,12 +260,12 @@
         .sub-header {
             display: flex;
             background-color: #F5F5F5;
+            gap: 1vw;
             padding-left: 2.5vw;
             padding-top: 2vh;
         }
         .sub-header div {
             text-align: center;
-            padding-left: 0.5vw;
             padding-bottom: 1vh;
             font-family: 'Mulish', sans-serif;
             font-weight: 600;
@@ -281,14 +280,14 @@
             height: 6vh !important;
         }
         .sub-header-profile-name {
-            margin-top: 1vh;
+            margin: 1vh auto 0vh auto;
         }
         .main-container {
             display: flex;  
             justify-content: space-between;
             align-items: flex-start;
             padding: 0 2vh;
-            margin-top: 10vh;
+            margin-top: 9vh;
         }
         .main-container div {
             display: flex;
@@ -362,7 +361,7 @@
             display: none;
             position: absolute;
             top: 100%;
-            left: 8vh;
+            left: 2vw;
             background-color: #014B96;
             border: 1px solid #ccc;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -370,7 +369,7 @@
         }
         .dropdown-menu a {
             display: block;
-            padding: 2vh 4vh 2vh 4vh;
+            padding: 2vh 3vw 2vh 3vw;
             font-family: 'Mulish', sans-serif;
             font-size: 1rem;
             color: #FFFFFF;
@@ -418,8 +417,6 @@
         <a href="site-data.html">Site Data</a>
         <a href="Inventory.html">Inventory</a>
         <a href="Analytics.html">Analytics</a>
-        <a href="https://berrys.com">berrys.com</a>
-        <a href="contact.html">Contact Us</a>
     </div>
     
     <div class="overlay" id="overlay"></div>
@@ -427,7 +424,7 @@
     <div class="sub-header-container">
         <div class="sub-header">
             <div class="sub-header-profile">
-                <img src="images/NicePng_gray.png" alt="profile-logo">
+                <img class="profile-pic" src="images/NicePng_gray.png" alt="profile-logo">
                 <div class="sub-header-profile-name">Darren Keane</div>
             </div>
             <div class="sub-header-company">

@@ -139,7 +139,7 @@ function populateTable(siteData) {
         
         // Create the original cells
         const dateCell = document.createElement('td');
-        dateCell.textContent = row.Date || '';
+        dateCell.textContent = formatDate(row.Date) || '';
         
         const deliveryCell = document.createElement('td');
         deliveryCell.textContent = row['Delivery End'] || '';
@@ -164,7 +164,7 @@ function populateTable(siteData) {
         const detailsCell = document.createElement('td');
         detailsCell.colSpan = 4;
         detailsCell.innerHTML = `<div class="details-header">Details:</div> <div class="details-content">
-            ${formatDate(row.Date)} | ${row['Delivery Start '] || ''} to ${row['Delivery End'] || ''}
+            ${row.Date} | ${row['Delivery Start '] || ''} to ${row['Delivery End'] || ''}
             \n<span class="label">Site code:</span> ${row.SiteCode || ''} | <span class="label">Business Unit:</span> ${row.BusinessUnitName || ''}
             \n<span class="label">Full Address:</span> ${row.Address || ''} , ${row.City} ${row.State} | ${row.Zip}
             \n<span class="label">Fuel dropped:</span> ${row.Delivered || ''} | <span class="label">Tank:</span> T${row.TankNumber || ''}

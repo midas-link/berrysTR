@@ -216,6 +216,7 @@ footer img {
 .no-account{
     font-size:0.875rem;
     font-family: 'Inter';
+    margin-bottom: 1vh;
     color:#737373;
 }
 .popup {

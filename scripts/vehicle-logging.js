@@ -6,7 +6,7 @@ async function fetchAndPopulateTable() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const vehicleData = await response.json();
-        globalSiteData = vehicleData; // Store data globally
+        globalVehicleData = vehicleData; // Store data globally
         populateTable(vehicleData);
         disableBrowserAutocomplete(); // Disable browser autocomplete for all inputs
     } catch (error) {
@@ -91,20 +91,76 @@ function formatDate(dateString) {
 function populateTable(data) {
     const tableBody = document.querySelector('table tbody');
     tableBody.innerHTML = ''; // Clear existing table data
-
+    if (data.length === 0) {
+        const noResultsRow = document.createElement('tr');
+        const noResultsCell = document.createElement('td');
+        noResultsCell.colSpan = 4; // Span all columns
+        noResultsCell.textContent = 'No results found';
+        noResultsCell.style.textAlign = 'center';
+        noResultsCell.style.padding = '20px';
+        noResultsRow.appendChild(noResultsCell);
+        tableBody.appendChild(noResultsRow);
+        return;
+    }
     data.forEach(row => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${row.Date}</td>
-            <td>${row.Time}</td>
-            <td>${row["Trailer No."]}</td>
-            <td>${row.Address}</td>
-            <td>${row.City}</td>
-            <td>${row.State}</td>
-            <td>${row["Tank No. "]}</td>
-            <td>${row["Prevented Delivery "]}</td>
-        `;
-        tableBody.appendChild(tr);
+        const mainRow = document.createElement('tr');
+        mainRow.className = 'main-row';
+        
+        // Create the original cells
+        const dateCell = document.createElement('td');
+        dateCell.textContent = formatDate(row.Date) || '';
+        
+        const deliveryCell = document.createElement('td');
+        deliveryCell.textContent = row.Time || '';
+        
+        const cityCell = document.createElement('td');
+        cityCell.textContent = row.City || '';
+        
+        const fuelCell = document.createElement('td');
+        fuelCell.textContent = row["Prevented Delivery "] || '';
+        
+        // Append cells to main row
+        mainRow.appendChild(dateCell);
+        mainRow.appendChild(deliveryCell);
+        mainRow.appendChild(cityCell);
+        mainRow.appendChild(fuelCell);
+        
+        // Create the details row
+        const detailsRow = document.createElement('tr');
+        detailsRow.className = 'details-row';
+        detailsRow.style.display = 'none';
+        
+        const detailsCell = document.createElement('td');
+        detailsCell.colSpan = 4;
+        detailsCell.innerHTML = `<div class="details-header">Details:</div> <div class="details-content">
+            ${row.Date} | ${row.Time || ''} 
+            \n<span class="label">Trailer No.:</span> ${row["Trailer No."] || ''}
+            \n<span class="label">Full Address:</span> ${row.Address || ''} , ${row.City} ${row.State}
+            \n<span class="label">Prevented Fuel:</span> ${row["Prevented Delivery "] || ''} | <span class="label">Tank:</span> T${row["Tank No. "] || ''}
+        </div>`;
+        detailsCell.className = 'details-cell';
+        
+        detailsRow.appendChild(detailsCell);
+        
+        // Add hover event listeners
+        mainRow.addEventListener('click', function() {
+            if(detailsRow.style.display === '') {
+                detailsRow.style.display ='none'
+                mainRow.classList.remove('hover-row');
+            } else {
+                detailsRow.style.display = '';
+                mainRow.classList.add('hover-row');
+            }
+        });
+
+        detailsRow.addEventListener('click', function() {
+            detailsRow.style.display = 'none';
+            mainRow.classList.remove('hover-row');
+        });
+
+        // Append both rows to the table
+        tableBody.appendChild(mainRow);
+        tableBody.appendChild(detailsRow);
     });
 }
 
@@ -295,20 +351,20 @@ function filterTable() {
     const stAddress = document.getElementById('ST-address').value.toLowerCase();
     const state = document.getElementById('State').value.toLowerCase();
     const city = document.getElementById('City').value.toLowerCase();
-    const zip = document.getElementById('Zip').value.toLowerCase();
+    const Trailer_No = document.getElementById('Trailer_No').value.toLowerCase();
     const date = document.getElementById('Date').value.toLowerCase();
     const fuel = document.getElementById('Fuel').value.toLowerCase();
 
     // Filter the original data directly
-    const filteredData = tableData.filter(row => {
+    const filteredData = globalVehicleData.filter(row => {
         // Check if row matches all the filter criteria
         return (
             // Only check if there's a value to filter on
-            (date === '' || (row.date && row.date.toLowerCase().includes(date))) &&
-            (stAddress === '' || (row.address && row.address.toLowerCase().includes(stAddress))) &&
-            (city === '' || (row.city && row.city.toLowerCase().includes(city))) &&
-            (state === '' || (row.state && row.state.toLowerCase().includes(state))) &&
-            (zip === '' || (row.zip && row.zip.toString().includes(zip))) &&
+            (date === '' || (row.Date && row.Date.toLowerCase().includes(date))) &&
+            (stAddress === '' || (row.Address && row.Address.toLowerCase().includes(stAddress))) &&
+            (city === '' || (row.City && row.City.toLowerCase().includes(city))) &&
+            (state === '' || (row.State && row.State.toLowerCase().includes(state))) &&
+            (Trailer_No === '' || (row["Trailer No."] && row["Trailer No."].toString().toLowerCase().includes(Trailer_No))) &&
             (fuel === '' || (row.tankGrade && row.tankGrade.toLowerCase().includes(fuel)) || 
                            (row.preventedDelivery && row.preventedDelivery.toLowerCase().includes(fuel)))
         );
@@ -330,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.search-fields input').forEach(input => {
             input.value = '';
         });
-        populateTable(); // Reset table with all data
+        populateTable(globalVehicleData); // Reset table with all data
         
         // The live status update is handled in the HTML
     });

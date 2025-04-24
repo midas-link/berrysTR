@@ -292,11 +292,11 @@
         .search-fields input{
             background-color: #EAF3FC;
             border:none;
-            margin-left:1vh;
-            margin-right:1vh;
+            margin-left:1vw;
+            margin-right:1vw;
             padding-top: 1vh;
             padding-bottom: 1vh;
-            padding-left: 1vh;
+            padding-left:0.2vw;
             width: 7vw;
         }
         .search-button{
@@ -458,6 +458,74 @@
             color:#014B96;
             padding-left: 1vw;
         }
+        .live-status {
+            display: flex;
+            align-items: center;
+        }
+        .toggle-live {
+            margin-right: 15px;
+        }
+        .search-fields input::placeholder{
+            font-size: 0.75rem;
+            text-align: center;
+        }
+        .main-row:nth-child(4n+1) {
+            transition: background-color 0.3s ease;
+            position: relative;
+            padding-bottom: 3vh;
+            background-color: #f8f9fa;
+        }
+        .main-row:nth-child(4n+3) {
+            transition: background-color 0.3s ease;
+            position: relative;
+            padding-bottom: 3vh;
+            background-color: #EAF3FC;
+        }
+        .details-row:nth-child(4n+2){
+            background-color: #f8f9fa ;
+            padding-top: 2vh;
+            padding-bottom: 2vh;
+        }
+        .details-row:nth-child(4n){
+            background-color: #EAF3FC ;
+            padding-top: 2vh;
+            padding-bottom: 2vh;
+        }
+        .hover-row:nth-child(4n+2){
+            background-color: #f8f9fa;
+        }
+        .hover-row:nth-child(4n){
+            background-color: #EAF3FC ;
+        }
+        .hover-row td {
+            text-align: center !important;
+        }
+        .details-row {
+            background-color: inherit;
+            transition: opacity 0.3s ease;
+        }
+        .details-cell {
+            padding: 8px 15px !important;
+            text-align: left;
+            color: #000000;
+            white-space: pre-line;
+            line-height: 1;
+            vertical-align: top;
+        }
+        .details-header {
+            color: #014B96;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 4px;
+        }
+        .details-content {
+            color: #000000;
+            line-height: 1;
+        }
+        .details-content .label {
+            color: #000000;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -499,8 +567,8 @@
              <input type="text" id="State" name="State">
              <label for="City"> City</label>
              <input type="text" id="City" name="City">
-             <label for="Zip">Zip</label>
-             <input type="text" id="Zip" name="Zip">
+             <label for="Trailer_No">Trailer No</label>
+             <input type="text" id="Trailer_No" name="Trailer_No">
              <label for="Date">Date</label>
              <input type="text" id="Date" name="Date" placeholder="DD/MM/YYYY">
              <label for="Fuel">Fuel</label>
@@ -512,12 +580,16 @@
            </div>
            <div class="table-header">
             <div class="live-status">
-                <label for="table-type" class="table-type">
-                    LIVE
-                    <span class="live-indicator"></span>
-                    <span id="current-datetime" class="current-time"></span>
-                </label>
-            </div>
+                <div class="toggle-live">
+                    <label for="table-type" class="table-type">
+                        LIVE
+                        <span class="live-indicator"></span>
+                    </label>
+                </div>
+                     <label for="table-type" class="table-type">
+                         <span id="current-datetime" class="current-time"></span>
+                     </label>
+             </div>
             <div class="export-dropdown">
                 <button class="export-button" onclick="toggleDropdown()">Export As ▼</button>
                 <div class="dropdown-content" id="exportDropdown">
@@ -531,11 +603,7 @@
                 <tr>
                     <th>Date</th>
                     <th>Time</th>
-                    <th>Trailer No.</th>
-                    <th>Address</th>
                     <th>City</th>
-                    <th>State</th>
-                    <th>Tank No.</th>
                     <th>Prevented Delivery</th>
                 </tr>
             </thead>
