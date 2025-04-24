@@ -355,44 +355,59 @@
             display: inline-block;
         }
         table {
-
             display: block;
             margin-top: 1vh;
             margin-left: auto;
             margin-right: auto;
-            max-height: 70vh; /* This sets the maximum height of the table */
-            overflow-y: auto; /* This enables vertical scrolling */
+            max-height: 70vh;
+            overflow-y: auto;
             border-collapse: collapse;
-            width: 90%; /* Adjust width as needed */
+            width: 95%;
             border-radius: 10px;
+            position: relative;
             margin-bottom: 5vh;
         }
         thead {
             position: sticky;
             top: 0;
-            z-index: 0;
+            z-index: 1;
+            background-color: #004B96;
         }
         tbody {
             display: block;
-            overflow-y: scroll;
+            overflow-y: auto;
             width: 100%;
         }
-        thead, tbody tr {
+        thead tr, tbody tr {
             display: table;
             width: 100%;
             table-layout: fixed;
         }
+        thead tr {
+            width: calc(100% - 1px);
+        }
+        tbody tr {
+            width: 100%;
+        }
         th, td {
             font-family: 'Mulish', sans-serif;
             text-align: center;
-            padding: 1.5vh 2vh;
-            width: calc(100% / 9); /* Divides space equally among 9 columns */
+            padding: 16px !important;
+            width: 25%;
         }
         table th {
-            padding-left: 1vh;
-            padding-right: 1vh;
+            padding-left: 1vw;
+            padding-right: 1vw;
             background-color: #004B96;
             color: white;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        tr {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            
         }
         tr:nth-child(odd) {
             background-color: #EAF3FC;
