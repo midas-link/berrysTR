@@ -116,6 +116,9 @@ function populateTable(data) {
         const cityCell = document.createElement('td');
         cityCell.textContent = row.City || '';
         
+        const vehicleCell = document.createElement('td');
+        vehicleCell.textContent = row["Trailer No."] || '';
+
         const fuelCell = document.createElement('td');
         fuelCell.textContent = row["Prevented Delivery "] || '';
         
@@ -123,6 +126,7 @@ function populateTable(data) {
         mainRow.appendChild(dateCell);
         mainRow.appendChild(deliveryCell);
         mainRow.appendChild(cityCell);
+        mainRow.appendChild(vehicleCell);
         mainRow.appendChild(fuelCell);
         
         // Create the details row
@@ -136,7 +140,7 @@ function populateTable(data) {
             ${row.Date} | ${row.Time || ''} 
             \n<span class="label">Trailer No.:</span> ${row["Trailer No."] || ''}
             \n<span class="label">Full Address:</span> ${row.Address || ''} , ${row.City} ${row.State}
-            \n<span class="label">Prevented Fuel:</span> ${row["Prevented Delivery "] || ''} | <span class="label">Tank:</span> T${row["Tank No. "] || ''}
+            \n<span class="label">Delivered:</span> ${row["Prevented Delivery "] || ''} | <span class="label">Tank:</span> T${row["Tank No. "] || ''}
         </div>`;
         detailsCell.className = 'details-cell';
         
