@@ -1,14 +1,13 @@
 import adapter from '@sveltejs/adapter-static';
 
+/** @type {import('@sveltejs/kit').Config} */
 const config = {
   kit: {
-    adapter: adapter({
-      fallback: 'index.html' // enables SPA fallback for dynamic routes
-    }),
+    adapter: adapter(),
     paths: {
-      base: '/berrys'
-    }
-  }
+      base: '/berrys',  // This matches your GitHub Pages path
+    },
+  },
 };
 
 export default config;

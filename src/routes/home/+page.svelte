@@ -1,7 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  export const prerender = true;
-  // Variables for container references (will be set in onMount)
+  import { base } from '$app/paths';
   let leftContainer;
   let middleContainer;
   let rightContainer;
@@ -50,11 +49,11 @@
     
     // Determine which page to redirect to based on the current middle image
     if (imageSrc.includes('Truck_graphic')) {
-      window.location.href = '/vehicle-logging';
+      window.location.href = `${base}/vehicle-logging`;
     } else if (imageSrc.includes('Cross-drop')) {
-      window.location.href = '/cross-drops';
+      window.location.href = `${base}/cross-drops`;
     } else if (imageSrc.includes('Gas_station_graphic')) {
-      window.location.href = '/site-data';
+      window.location.href = `${base}/site-data`;
     }
   }
 
@@ -62,11 +61,11 @@
     const leftImage = leftContainer.querySelector('img');
     const leftImageSrc = leftImage.getAttribute('src');
     if (leftImageSrc.includes('Truck_graphic')) {
-      window.location.href = '/vehicle-logging';
+      window.location.href = `${base}/vehicle-logging`;
     } else if (leftImageSrc.includes('Cross-drop')) {
-      window.location.href = '/cross-drops';
+      window.location.href = `${base}/cross-drops`;
     } else if (leftImageSrc.includes('Gas_station_graphic')) {
-      window.location.href = '/site-data';
+      window.location.href = `${base}/site-data`;
     }
   }
 
@@ -74,11 +73,11 @@
     const rightImage = rightContainer.querySelector('img');
     const rightImageSrc = rightImage.getAttribute('src');
     if (rightImageSrc.includes('Truck_graphic')) {
-      window.location.href = '/vehicle-logging';
+      window.location.href = `${base}/vehicle-logging`;
     } else if (rightImageSrc.includes('Cross-drop')) {
-      window.location.href = '/cross-drops';
+      window.location.href = `${base}/cross-drops`;
     } else if (rightImageSrc.includes('Gas_station_graphic')) {
-      window.location.href = '/site-data';
+      window.location.href = `${base}/site-data`;
     }
   }
 
@@ -157,7 +156,7 @@
     <div class="header-container">
       <div class="top-header">
         <a class="top-header-link" href="https://berrys.com">berrys.com</a>
-        <a class="top-header-link" href="contact.html">Contact Us</a>
+        <a class="top-header-link" href=" ">Contact Us</a>
       </div>
       <div class="header">
         <div class="header-background"></div>
@@ -166,26 +165,26 @@
           <span></span>
           <span></span>
         </div>
-        <a href="/home">Home</a>
-        <a href="/vehicle-logging">Vehicle Logging</a>
-        <a href="/cross-drops">Cross-Drop Prevention</a>
-        <a href="/site-data">Site Data</a>
-        <a href="/inventory">Inventory</a>
-        <a href="/analytics">Analytics</a>
+        <a href="{base}/home">Home</a>
+        <a href="{base}/vehicle-logging">Vehicle Logging</a>
+        <a href="{base}/cross-drops">Cross-Drop Prevention</a>
+        <a href="{base}/site-data">Site Data</a>
+        <a href="{base}/inventory">Inventory</a>
+        <a href="{base}/analytics">Analytics</a>
         <input type="text" placeholder="Search...">
-        <img src="/images/Midas_Link_logo.png" alt="Berrys Logo">
+        <img src="{base}/images/Midas_Link_logo.png" alt="Berrys Logo">
       </div>
     </div>
   </header>
   
   <!-- Mobile sidebar navigation -->
   <div class="mobile-sidebar" id="mobile-sidebar">
-    <a href="/home">Home</a>
-    <a href="/vehicle-logging">Vehicle Logging</a>
-    <a href="/cross-drops">Cross-Drop Prevention</a>
-    <a href="/site-data">Site Data</a>
-    <a href="/inventory">Inventory</a>
-    <a href="/analytics">Analytics</a>
+    <a href="{base}/home">Home</a>
+    <a href="{base}/vehicle-logging">Vehicle Logging</a>
+    <a href="{base}/cross-drops">Cross-Drop Prevention</a>
+    <a href="{base}/site-data">Site Data</a>
+    <a href="{base}/inventory">Inventory</a>
+    <a href="{base}/analytics">Analytics</a>
   </div>
   
   <div class="overlay" id="overlay"></div>
@@ -193,45 +192,45 @@
   <div class="sub-header-container">
     <div class="sub-header">
       <div class="sub-header-profile">
-        <img class="profile-pic" src="/images/NicePng_gray.png" alt="profile-logo">
+        <img class="profile-pic" src="{base}/images/NicePng_gray.png" alt="profile-logo">
         <div class="sub-header-profile-name">Darren Keane</div>
       </div>
       <div class="sub-header-company">
-        <img class="company-logo" src="/images/circle-k-logo.png" alt="company-logo">
+        <img class="company-logo" src="{base}/images/circle-k-logo.png" alt="company-logo">
         <div class="sub-header-role">( Area Manager )</div>
       </div>
     </div>
     <div class="dropdown-menu" id="dropdownMenu">
-      <a href="/login" id="logout">Logout</a>
-      <a href="/manageAcc">Manage Account</a>
+      <a href="{base}/login" id="logout">Logout</a>
+      <a href="{base}/manageAcc">Manage Account</a>
     </div>
   </div>
   
   <main>
     <div class="main-container">
-      <img src="/svg/left-arrow.svg" alt="left-arrow" class="left-arrow">
+      <img src="{base}/svg/left-arrow.svg" alt="left-arrow" class="left-arrow">
       <div class="main-container-left" on:click={handleLeftClick}>
-        <img src="/images/Truck_graphic.png" alt="Truck Graphic" />
+        <img src="{base}/images/Truck_graphic.png" alt="Truck Graphic" />
         <span class="main-container-left-sub-title">Vehicle Logging</span>
       </div>
       
       <div class="main-container-middle" on:click={handleMiddleClick}>
-        <img src="/images/Cross-drop graphic.png" alt="Cross-drop" />
+        <img src="{base}/images/Cross-drop graphic.png" alt="Cross-drop" />
         <span class="main-container-middle-sub-title">Cross-Drop Prevention</span>
       </div>
       
       <div class="main-container-right" on:click={handleRightClick}>
-        <img src="/images/Gas_station_graphic.png" alt="Gas Station Graphic" />
+        <img src="{base}/images/Gas_station_graphic.png" alt="Gas Station Graphic" />
         <span class="main-container-right-sub-title">Site Data</span>
       </div>
-      <img src="/svg/right-arrow.svg" alt="right-arrow" class="right-arrow">
+      <img src="{base}/svg/right-arrow.svg" alt="right-arrow" class="right-arrow">
     </div>
   </main>
   
   <footer>
     <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
       <span style="font-size: 1rem; font-family: Mulish;">@copyrights Berrys Global Innovations</span>
-      <img src="/images/logo.png" alt="Berrys Logo">
+      <img src="{base}/images/logo.png" alt="Berrys Logo">
     </div>
   </footer>
   

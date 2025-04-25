@@ -1,16 +1,15 @@
-<script context="module">
-    export const prerender = true;
-</script>
+<script>
+      import { base } from '$app/paths';
 
-<head>
+</script>
+<svelte:head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
-    <link rel="stylesheet" href="register.css">
     <script src="scripts/script.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Mulish' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
-</head>
+</svelte:head>
 
     <main>
         <div class="register-container">
@@ -54,7 +53,7 @@
                     <label class="checkbox-container">
                         <input type="checkbox" id="terms" name="terms" required>
                         <span class="checkmark"></span>
-                        I accept the <a href="#">terms and conditions</a>
+                        I accept the <a href=" ">terms and conditions</a>
                     </label>
                 </div>
                 <div class="form-group">
@@ -66,14 +65,14 @@
                 </div>
                 <div class="button-signin-container">
                     <button type="submit" class="register-button">Register</button>
-                    <div class="signin-container">Already registered? <a href="/login" style="padding-left:0.1vw">Sign in</a></div>
+                    <div class="signin-container">Already registered? <a href="{base}/login" style="padding-left:0.1vw">Sign in</a></div>
                 </div>
             </form>
         </div>
     </main>
 
     <footer>
-        <img src="images/logo.png" alt="logo">
+        <img src="{base}/images/logo.png" alt="logo">
     </footer>
 
 

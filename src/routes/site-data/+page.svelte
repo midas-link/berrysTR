@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import DropdownField from "./DropdownField.svelte";
-  export const prerender = true;
+  import { base } from '$app/paths';
 
   import * as siteDataFuncs from "$lib/scripts/site-data";
   let rows = []
@@ -403,17 +403,17 @@ function toggleDetails(index) {
         <div class="header-container">
             <div class="top-header">
                 <a class="top-header-link" href="https://berrys.com">berrys.com</a>
-                <a class="top-header-link" href="contact.html">Contact Us</a>
+                <a class="top-header-link" href=" ">Contact Us</a>
             </div>
             <div class="header">
                 <div class="header-background"></div>
-                <a href="/home">Home</a>
-                <a href="/inventory">Inventory</a>
-                <a href="/cross-drops">Cross-drop</a>
-                <a href="/vehicle-logging">Vehicle Logging</a>
-                <a href="/analytics">Analytics</a>
+                <a href="{base}/home">Home</a>
+                <a href="{base}/inventory">Inventory</a>
+                <a href="{base}/cross-drops">Cross-drop</a>
+                <a href="{base}/vehicle-logging">Vehicle Logging</a>
+                <a href="{base}/analytics">Analytics</a>
                 <input type="text" placeholder="Search...">
-                <img src="images/Midas_Link_logo.png" alt="Berrys Logo">
+                <img src="{base}/images/Midas_Link_logo.png" alt="Berrys Logo">
             </div>
         </div>
     </header>
@@ -424,7 +424,7 @@ function toggleDetails(index) {
               
         </div>
         <div class="breadcrumb">
-            <a href="home.html">Home</a> / <span>Site Data</span>
+            <a href="{base}/home">Home</a> / <span>Site Data</span>
         </div> 
     </div>
     <main>
@@ -587,7 +587,7 @@ function toggleDetails(index) {
     <footer>
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
             <span style="font-size: 1rem; font-family: Mulish;">@copyrights Berrys Global Innovations</span>
-            <img src="images/logo.png" alt="Berrys Logo" >
+            <img src="{base}/images/logo.png" alt="Berrys Logo" >
         </div>
     </footer>
 <style>

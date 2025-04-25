@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  export const prerender = true;
+  import { base } from '$app/paths';
     function initializeFormValidation() {
     const form = document.querySelector('.sign-in-form');
     const signInButton = document.querySelector('.sign-in-button');
@@ -18,7 +18,7 @@
                 popup.style.display = 'flex';
 
                 setTimeout(() => {
-                    window.location.href = '/home';
+                    window.location.href = `${base}/home`;
                 }, 2000); // Delay of 2000 milliseconds (2 seconds)
             } else {
                 wrongLogin.innerHTML = `<div class='wrong-credentials'>Invalid credentials. Please try again.</div>`;
@@ -75,10 +75,10 @@ onMount(()=>{
                             <span class="checkmark"></span>
                             Remember me
                         </label>
-                        <a href="/forgot-password" class="forgot-password">Forgot Password?</a>
+                        <a href=" " class="forgot-password">Forgot Password?</a>
                     </div>
                     <button type="submit" class="sign-in-button">Sign In</button>
-                    <div class="no-account">Don't have an account? <a class="sign-up-link" href="/register">Sign up</a></div>
+                    <div class="no-account">Don't have an account? <a class="sign-up-link" href="{base}/register">Sign up</a></div>
                 </form>
                 <div id="popup" class="popup" style="display: none;">
                     <div class="popup-content">
@@ -95,7 +95,7 @@ onMount(()=>{
     </main>
 </div>
     <footer>
-         <img src="images/logo.png" alt="logo">
+         <img src="{base}/images/logo.png" alt="logo">
     </footer>
 
 <style>

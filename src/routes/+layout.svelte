@@ -1,7 +1,5 @@
 <!-- src/routes/+layout.svelte -->
 <script>
-  // Any imports or JavaScript for the layout
-  export const prerender = true;
 
 </script>
 

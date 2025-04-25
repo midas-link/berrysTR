@@ -1,7 +1,8 @@
 <script>
 import { onMount } from 'svelte';
+import { base } from '$app/paths';
+
 let rows = [];
-export const prerender = true;
 onMount(async () => {
   const res = await fetch('/table_data/inventory_data.json');
   rows = await res.json();
@@ -23,17 +24,17 @@ onMount(async () => {
         <div class="header-container">
             <div class="top-header">
                 <a class="top-header-link" href="https://berrys.com">berrys.com</a>
-                <a class="top-header-link" href="/contact">Contact Us</a>
+                <a class="top-header-link" href=" ">Contact Us</a>
             </div>
             <div class="header">
                 <div class="header-background"></div>
-                <a href="/home">Home</a>
-                <a href="/cross-drops">Cross-drop</a>
-                <a href="/vehicle-logging">Vehicle Logging</a>
-                <a href="/site-data"> Site Data</a>
-                <a href="/analytics">Analytics</a>
+                <a href="{base}/home">Home</a>
+                <a href="{base}/cross-drops">Cross-drop</a>
+                <a href="{base}/vehicle-logging">Vehicle Logging</a>
+                <a href="{base}/site-data"> Site Data</a>
+                <a href="{base}/analytics">Analytics</a>
                 <input type="text" placeholder="Search...">
-                <img src="images/Midas_Link_logo.png" alt="Berrys Logo">
+                <img src="{base}/images/Midas_Link_logo.png" alt="Berrys Logo">
             </div>
         </div>
     </header>
@@ -44,30 +45,30 @@ onMount(async () => {
               
         </div>
         <div class="breadcrumb">
-            <a href="/home">Home</a> / <span>Inventory</span>
+            <a href="{base}/home">Home</a> / <span>Inventory</span>
         </div> 
     </div>
     <main>
         <div class="main-container">
             <div class="profile-details">
                 <div class="header-profile">
-                    <img src="images/NicePng_gray.png" alt="profile-logo">
+                    <img src="{base}/images/NicePng_gray.png" alt="profile-logo">
                     <div class="header-profile-name">Darren Keane</div>
                 </div>
                 <div class="header-company">
-                    <img class="company-logo" src="images/circle-k-logo.png" alt="company-logo">
+                    <img class="company-logo" src="{base}/images/circle-k-logo.png" alt="company-logo">
                     <div class="header-role">(Area Manager)</div>
                 </div>
             </div>
             <div class="trailer-container">
                 <div class="trailer-container-content">
-                    <img src="images/Link_device.png" alt="Link_device">
+                    <img src="{base}/images/Link_device.png" alt="Link_device">
                     <span class="trailers-count"> Active Trailers </span> <span class="trailers-count-number"> 100</span>
                 </div>
             </div>
             <div class="midas-container"> 
                 <div class="midas-container-content">
-                    <img src="images/Midas_Elbow_close_up.png" alt="Midas_Elbow_close_up">
+                    <img src="{base}/images/Midas_Elbow_close_up.png" alt="Midas_Elbow_close_up">
                     <span class="midas-count"> Active Midas </span> <span class="midas-count-number"> 52</span>
                 </div>
             </div>
@@ -99,7 +100,7 @@ onMount(async () => {
     <footer>
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
             <span style="font-size: 1rem; font-family: Mulish;">@copyrights Berrys Global Innovations</span>
-            <img src="images/logo.png" alt="Berrys Logo" >
+            <img src="{base}/images/logo.png" alt="Berrys Logo" >
         </div>
     </footer>
     <style>

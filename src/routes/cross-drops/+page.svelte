@@ -1,7 +1,7 @@
 <script>
     import { onMount } from 'svelte';
-    export const prerender = true;
     import * as crossdrop from '$lib/scripts/cross-drop.js'
+    import { base } from '$app/paths';
     let rows =  [];  
     let filteredRows = [];
     let detailsVisible = [];
@@ -366,17 +366,17 @@ function closeDropdown(event) {
         <div class="header-container">
             <div class="top-header">
                 <a class="top-header-link" href="https://berrys.com">berrys.com</a>
-                <a class="top-header-link" href="contact.html">Contact Us</a>
+                <a class="top-header-link" href=" ">Contact Us</a>
             </div>
             <div class="header">
                 <div class="header-background"></div>
-                <a href="/home">Home</a>
-                <a href="/inventory">Inventory</a>
-                <a href="/vehicle-logging">Vehicle Logging</a>
-                <a href="/site-data">Site Data</a>
-                <a href="/analytics">Analytics</a>
+                <a href="{base}/home">Home</a>
+                <a href="{base}/inventory">Inventory</a>
+                <a href="{base}/vehicle-logging">Vehicle Logging</a>
+                <a href="{base}/site-data">Site Data</a>
+                <a href="{base}/analytics">Analytics</a>
                 <input type="text" placeholder="Search...">
-                <img src="images/Midas_Link_logo.png" alt="Berrys Logo">
+                <img src="{base}/images/Midas_Link_logo.png" alt="Berrys Logo">
             </div>
         </div>
     </header>
@@ -387,7 +387,7 @@ function closeDropdown(event) {
               
         </div>
         <div class="breadcrumb">
-            <a href="/home">Home</a> / <span>cross-drop prevention</span>
+            <a href="{base}/home">Home</a> / <span>cross-drop prevention</span>
         </div> 
     </div>
     <main>
@@ -482,7 +482,7 @@ function closeDropdown(event) {
     <footer>
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
             <span style="font-size: 1rem; font-family: Mulish;">@copyrights Berrys Global Innovations</span>
-            <img src="images/logo.png" alt="Berrys Logo" >
+            <img src="{base}/images/logo.png" alt="Berrys Logo" >
         </div>
     </footer>
 

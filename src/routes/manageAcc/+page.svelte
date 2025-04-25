@@ -1,6 +1,7 @@
 <script>
   import { onMount } from "svelte";
-  export const prerender = true;
+  import { base } from '$app/paths';
+
      function setupMobileMenu() {
     const hamburger = document.getElementById('hamburger-menu');
     const sidebar = document.getElementById('mobile-sidebar');
@@ -41,7 +42,7 @@ setupMobileMenu();
         <div class="header-container">
             <div class="top-header">
                 <a class="top-header-link" href="https://berrys.com">berrys.com</a>
-                <a class="top-header-link" href="contact.html">Contact Us</a>
+                <a class="top-header-link" href=" ">Contact Us</a>
             </div>
             <div class="header">
                 <div class="header-background"></div>
@@ -50,24 +51,24 @@ setupMobileMenu();
                     <span></span>
                     <span></span>
                   </div>
-                <a href="/home">Home</a>
-                <a href="/cross-drops">Cross-drop</a>
-                <a href="/vehicle-logging">Vehicle Logging</a>
-                <a href="/site-data">Site Data</a>
-                <a href="/inventory">Inventory</a>
-                <a href="/analytics">Analytics</a>
+                <a href="{base}/home">Home</a>
+                <a href="{base}/cross-drops">Cross-drop</a>
+                <a href="{base}/vehicle-logging">Vehicle Logging</a>
+                <a href="{base}/site-data">Site Data</a>
+                <a href="{base}/inventory">Inventory</a>
+                <a href="{base}/analytics">Analytics</a>
                 <input type="text" placeholder="Search...">
-                <img src="images/Midas_Link_logo.png" alt="Berrys Logo">
+                <img src="{base}/images/Midas_Link_logo.png" alt="Berrys Logo">
             </div>
         </div>
     </header>
     <div class="mobile-sidebar" id="mobile-sidebar">
-        <a href="/home">Home</a>
-        <a href="/vehicle-logging">Vehicle Logging</a>
-        <a href="/cross-drops">Cross-Drop Prevention</a>
-        <a href="/site-data">Site Data</a>
-        <a href="/inventory">Inventory</a>
-        <a href="/analytics">Analytics</a>
+        <a href="{base}/home">Home</a>
+        <a href="{base}/vehicle-logging">Vehicle Logging</a>
+        <a href="{base}/cross-drops">Cross-Drop Prevention</a>
+        <a href="{base}/site-data">Site Data</a>
+        <a href="{base}/inventory">Inventory</a>
+        <a href="{base}/analytics">Analytics</a>
       </div>
       <div class="overlay" id="overlay"></div>
     <div class="sub-header-container">
@@ -77,7 +78,7 @@ setupMobileMenu();
               
         </div>
         <div class="breadcrumb">
-            <a href="/home">Home</a> / <span>Manage Account</span>
+            <a href="{base}/home">Home</a> / <span>Manage Account</span>
         </div> 
     </div>
     <main>
@@ -111,7 +112,7 @@ setupMobileMenu();
     <footer>
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
             <span style="font-size: 1rem; font-family: Mulish;">@copyrights Berrys Global Innovations</span>
-            <img src="images/logo.png" alt="Berrys Logo" >
+            <img src="{base}/images/logo.png" alt="Berrys Logo" >
         </div>
     </footer>
     <style>
