@@ -1,7 +1,7 @@
 <script>
 import { onMount } from 'svelte';
 let rows = [];
-
+export const prerender = true;
 onMount(async () => {
   const res = await fetch('/table_data/inventory_data.json');
   rows = await res.json();

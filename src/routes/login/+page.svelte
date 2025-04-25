@@ -1,5 +1,6 @@
 <script>
   import { onMount } from "svelte";
+  export const prerender = true;
     function initializeFormValidation() {
     const form = document.querySelector('.sign-in-form');
     const signInButton = document.querySelector('.sign-in-button');

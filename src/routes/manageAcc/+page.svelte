@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-
+  export const prerender = true;
      function setupMobileMenu() {
     const hamburger = document.getElementById('hamburger-menu');
     const sidebar = document.getElementById('mobile-sidebar');

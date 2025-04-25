@@ -1,14 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
+<script context="module">
+    export const prerender = true;
+</script>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
     <link rel="stylesheet" href="register.css">
+    <script src="scripts/script.js"></script>
     <link href='https://fonts.googleapis.com/css?family=Mulish' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
 </head>
-<body>
+
     <main>
         <div class="register-container">
             <form class="register-form">
@@ -72,9 +75,9 @@
     <footer>
         <img src="images/logo.png" alt="logo">
     </footer>
-    <script src="scripts/script.js"></script>
-</body>
-</html>
+
+
+
 <style>
     /* CSS Variables */
 :root {

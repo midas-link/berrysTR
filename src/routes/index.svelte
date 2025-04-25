@@ -1,1 +1,1 @@
-<a href="login.html"> Click here to redirect to login page.</a>
+<a href="/login"> Click here to redirect to login page.</a>

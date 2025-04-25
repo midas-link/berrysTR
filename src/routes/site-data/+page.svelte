@@ -1,6 +1,8 @@
 <script>
   import { onMount } from "svelte";
   import DropdownField from "./DropdownField.svelte";
+  export const prerender = true;
+
   import * as siteDataFuncs from "$lib/scripts/site-data";
   let rows = []
   let filteredRows = [];

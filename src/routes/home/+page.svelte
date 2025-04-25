@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-
+  export const prerender = true;
   // Variables for container references (will be set in onMount)
   let leftContainer;
   let middleContainer;

@@ -1,5 +1,6 @@
 <script>
     import { onMount } from 'svelte';
+    export const prerender = true;
     import * as crossdrop from '$lib/scripts/cross-drop.js'
     let rows =  [];  
     let filteredRows = [];

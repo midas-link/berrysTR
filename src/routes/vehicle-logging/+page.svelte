@@ -1,6 +1,8 @@
 <script>
     import {onMount} from "svelte";
     import * as vehicleFuncs from "$lib/scripts/vehicle-logging";
+    export const prerender = true;
+
     let rows = [];
     let filteredRows = [];
     let detailsVisible = [];

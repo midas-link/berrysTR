@@ -1,14 +1,12 @@
 import adapter from '@sveltejs/adapter-static';
 
-/** @type {import('@sveltejs/kit').Config} */
 const config = {
   kit: {
-    adapter: adapter(),
+    adapter: adapter({
+      fallback: 'index.html' // enables SPA fallback for dynamic routes
+    }),
     paths: {
-      base: '/AlirezaModiriyan/berrys'
-    },
-    prerender: {
-      entries: ['*']
+      base: '/berrys'
     }
   }
 };

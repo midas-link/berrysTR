@@ -6,7 +6,8 @@
     export let options = [];
     export let value = "";
     export let onChange = () => {};
-  
+    export const prerender = true;
+
     let showDropdown = false;
     let inputElement;
     let filteredOptions = [...options];
