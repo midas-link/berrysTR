@@ -1,14 +1,13 @@
-async function fetchAndPopulateTable() {
+export async function fetchVehicleData() {
     try {
         // Try to fetch from the server first
-        const response = await fetch('table_data/vehicle_logging.json');
+        const response = await fetch('/table_data/vehicle_logging.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const vehicleData = await response.json();
-        globalVehicleData = vehicleData; // Store data globally
-        populateTable(vehicleData);
-        disableBrowserAutocomplete(); // Disable browser autocomplete for all inputs
+        return vehicleData;
+
     } catch (error) {
         console.error('Error fetching Vehicle Data:', error);
         
@@ -19,9 +18,7 @@ async function fetchAndPopulateTable() {
             if (xhr.status === 200) {
                 try {
                     const vehicleData = JSON.parse(xhr.responseText);
-                    globalSiteData = vehicleData; // Store data globally
-                    populateTable(vehicleData);
-                    disableBrowserAutocomplete(); // Disable browser autocomplete for all inputs
+                    resolveConfig(vehicleData)
                 } catch (e) {
                     console.error('Error parsing JSON:', e);
                     showErrorMessage();
@@ -38,7 +35,7 @@ async function fetchAndPopulateTable() {
         xhr.send();
     }
 }
-function formatDate(dateString) {
+export function formatDate(dateString) {
     if (!dateString) return '';
     
     // Split the date string into day, month, year
@@ -87,89 +84,10 @@ function formatDate(dateString) {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
 }
-// Function to populate the table
-function populateTable(data) {
-    const tableBody = document.querySelector('table tbody');
-    tableBody.innerHTML = ''; // Clear existing table data
-    if (data.length === 0) {
-        const noResultsRow = document.createElement('tr');
-        const noResultsCell = document.createElement('td');
-        noResultsCell.colSpan = 4; // Span all columns
-        noResultsCell.textContent = 'No results found';
-        noResultsCell.style.textAlign = 'center';
-        noResultsCell.style.padding = '20px';
-        noResultsRow.appendChild(noResultsCell);
-        tableBody.appendChild(noResultsRow);
-        return;
-    }
-    data.forEach(row => {
-        const mainRow = document.createElement('tr');
-        mainRow.className = 'main-row';
-        
-        // Create the original cells
-        const dateCell = document.createElement('td');
-        dateCell.textContent = formatDate(row.Date) || '';
-        
-        const deliveryCell = document.createElement('td');
-        deliveryCell.textContent = row.Time || '';
-        
-        const cityCell = document.createElement('td');
-        cityCell.textContent = row.City || '';
-        
-        const vehicleCell = document.createElement('td');
-        vehicleCell.textContent = row["Trailer No."] || '';
 
-        const fuelCell = document.createElement('td');
-        fuelCell.textContent = row["Prevented Delivery "] || '';
-        
-        // Append cells to main row
-        mainRow.appendChild(dateCell);
-        mainRow.appendChild(deliveryCell);
-        mainRow.appendChild(cityCell);
-        mainRow.appendChild(vehicleCell);
-        mainRow.appendChild(fuelCell);
-        
-        // Create the details row
-        const detailsRow = document.createElement('tr');
-        detailsRow.className = 'details-row';
-        detailsRow.style.display = 'none';
-        
-        const detailsCell = document.createElement('td');
-        detailsCell.colSpan = 4;
-        detailsCell.innerHTML = `<div class="details-header">Details:</div> <div class="details-content">
-            ${row.Date} | ${row.Time || ''} 
-            \n<span class="label">Trailer No.:</span> ${row["Trailer No."] || ''}
-            \n<span class="label">Full Address:</span> ${row.Address || ''} , ${row.City} ${row.State}
-            \n<span class="label">Delivered:</span> ${row["Prevented Delivery "] || ''} | <span class="label">Tank:</span> T${row["Tank No. "] || ''}
-        </div>`;
-        detailsCell.className = 'details-cell';
-        
-        detailsRow.appendChild(detailsCell);
-        
-        // Add hover event listeners
-        mainRow.addEventListener('click', function() {
-            if(detailsRow.style.display === '') {
-                detailsRow.style.display ='none'
-                mainRow.classList.remove('hover-row');
-            } else {
-                detailsRow.style.display = '';
-                mainRow.classList.add('hover-row');
-            }
-        });
-
-        detailsRow.addEventListener('click', function() {
-            detailsRow.style.display = 'none';
-            mainRow.classList.remove('hover-row');
-        });
-
-        // Append both rows to the table
-        tableBody.appendChild(mainRow);
-        tableBody.appendChild(detailsRow);
-    });
-}
 
 // Function to update date and time
-function updateDateTime() {
+export function updateDateTime() {
     const now = new Date();
     const options = { 
         weekday: 'long', 
@@ -184,12 +102,9 @@ function updateDateTime() {
     document.getElementById('current-datetime').textContent = now.toLocaleDateString('en-US', options);
 }
 
-// Initialize date/time and set interval
-updateDateTime();
-setInterval(updateDateTime, 1000);
 
 // Function to export table to CSV
-function exportTableToCSV() {
+export function exportTableToCSV() {
     const table = document.querySelector('table');
     const rows = table.querySelectorAll('tr');
     
@@ -261,7 +176,7 @@ function exportTableToCSV() {
 }
 
 // Function to export table to PDF
-async function exportTableToPDF() {
+export async function exportTableToPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
     
@@ -330,77 +245,16 @@ async function exportTableToPDF() {
     }
 }
 
-function fallbackSavePDF(doc, fileName) {
+export function fallbackSavePDF(doc, fileName) {
     doc.save(fileName);
 }
 
-function toggleDropdown() {
+export function toggleDropdown() {
     document.getElementById("exportDropdown").classList.toggle("show");
 }
 
-window.onclick = function(event) {
-    if (!event.target.matches('.export-button')) {
-        var dropdowns = document.getElementsByClassName("dropdown-content");
-        for (var i = 0; i < dropdowns.length; i++) {
-            var openDropdown = dropdowns[i];
-            if (openDropdown.classList.contains('show')) {
-                openDropdown.classList.remove('show');
-            }
-        }
-    }
-}
 
-function filterTable() {
-    // Get values from search inputs
-    const stAddress = document.getElementById('ST-address').value.toLowerCase();
-    const state = document.getElementById('State').value.toLowerCase();
-    const city = document.getElementById('City').value.toLowerCase();
-    const Trailer_No = document.getElementById('Trailer_No').value.toLowerCase();
-    const date = document.getElementById('Date').value.toLowerCase();
-    const fuel = document.getElementById('Fuel').value.toLowerCase();
-
-    // Filter the original data directly
-    const filteredData = globalVehicleData.filter(row => {
-        // Check if row matches all the filter criteria
-        return (
-            // Only check if there's a value to filter on
-            (date === '' || (row.Date && row.Date.toLowerCase().includes(date))) &&
-            (stAddress === '' || (row.Address && row.Address.toLowerCase().includes(stAddress))) &&
-            (city === '' || (row.City && row.City.toLowerCase().includes(city))) &&
-            (state === '' || (row.State && row.State.toLowerCase().includes(state))) &&
-            (Trailer_No === '' || (row["Trailer No."] && row["Trailer No."].toString().toLowerCase().includes(Trailer_No))) &&
-            (fuel === '' || (row.tankGrade && row.tankGrade.toLowerCase().includes(fuel)) || 
-                           (row.preventedDelivery && row.preventedDelivery.toLowerCase().includes(fuel)))
-        );
-    });
-
-    // Clear and repopulate the table with filtered data
-    populateTable(filteredData);
-}
-
-// Add event listeners when the DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-    fetchAndPopulateTable();
-    disableBrowserAutocomplete();
-    // Add event listener to search button to filter when clicked
-    document.querySelector('.search-button').addEventListener('click', filterTable);
-    
-    // Update clear button to reset the table
-    document.querySelector('.clear-button').addEventListener('click', function() {
-        document.querySelectorAll('.search-fields input').forEach(input => {
-            input.value = '';
-        });
-        populateTable(globalVehicleData); // Reset table with all data
-        
-        // The live status update is handled in the HTML
-    });
-
-    // Remove input event listeners to prevent auto-filtering
-    document.querySelectorAll('.search-fields input').forEach(input => {
-        // Remove the existing input event listener that calls filterTable
-    });
-}); 
-function disableBrowserAutocomplete() {
+export function disableBrowserAutocomplete() {
     // Get all input fields in the search fields section
     const inputs = document.querySelectorAll('.search-fields input');
     

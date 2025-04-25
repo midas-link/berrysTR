@@ -1,30 +1,130 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<script>
+  import { onMount } from "svelte";
+
+     function setupMobileMenu() {
+    const hamburger = document.getElementById('hamburger-menu');
+    const sidebar = document.getElementById('mobile-sidebar');
+    const overlay = document.getElementById('overlay');
+    
+    hamburger.addEventListener('click', function() {
+      sidebar.classList.toggle('active');
+      overlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
+    });
+    
+    overlay.addEventListener('click', function() {
+      sidebar.classList.remove('active');
+      overlay.style.display = 'none';
+    });
+    
+    // Close the sidebar when clicking on a link
+    const sidebarLinks = sidebar.querySelectorAll('a');
+    sidebarLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        sidebar.classList.remove('active');
+        overlay.style.display = 'none';
+      });
+    });
+  }
+  onMount(() =>{
+setupMobileMenu();
+  });
+</script>
+<svelte:head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://fonts.googleapis.com/css?family=Mulish' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
     <title>Manage Account</title>
+</svelte:head>
+
+    <header>
+        <div class="header-container">
+            <div class="top-header">
+                <a class="top-header-link" href="https://berrys.com">berrys.com</a>
+                <a class="top-header-link" href="contact.html">Contact Us</a>
+            </div>
+            <div class="header">
+                <div class="header-background"></div>
+                <div class="hamburger-menu" id="hamburger-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
+                <a href="/home">Home</a>
+                <a href="/cross-drops">Cross-drop</a>
+                <a href="/vehicle-logging">Vehicle Logging</a>
+                <a href="/site-data">Site Data</a>
+                <a href="/inventory">Inventory</a>
+                <a href="/analytics">Analytics</a>
+                <input type="text" placeholder="Search...">
+                <img src="images/Midas_Link_logo.png" alt="Berrys Logo">
+            </div>
+        </div>
+    </header>
+    <div class="mobile-sidebar" id="mobile-sidebar">
+        <a href="/home">Home</a>
+        <a href="/vehicle-logging">Vehicle Logging</a>
+        <a href="/cross-drops">Cross-Drop Prevention</a>
+        <a href="/site-data">Site Data</a>
+        <a href="/inventory">Inventory</a>
+        <a href="/analytics">Analytics</a>
+      </div>
+      <div class="overlay" id="overlay"></div>
+    <div class="sub-header-container">
+        <div class="sub-header">
+                <h1> Manage Account </h1>
+                <span> Change your password, your new password will be assigned to the email address you used to sign in. </span>
+              
+        </div>
+        <div class="breadcrumb">
+            <a href="/home">Home</a> / <span>Manage Account</span>
+        </div> 
+    </div>
+    <main>
+        <div class="main-container">
+            <div class="profile-details">
+                <div class="header-profile">
+                    <img src="images/NicePng_gray.png" alt="profile-logo">
+                    <div class="header-profile-name">Darren Keane</div>
+                </div>
+                <div class="header-company">
+                    <img class="company-logo" src="images/circle-k-logo.png" alt="company-logo">
+                    <div class="header-role">(Area Manager)</div>
+                </div>
+            </div>
+            <div class="form-container">
+                <form action="">
+                    <div class="form-row">
+                        <label for="change-password">Change Password:</label>
+                        <input type="password" id="change-password" name="change-password">
+                    </div>
+                    <div class="form-row">
+                        <label for="confirm-password">Confirm Password:</label>
+                        <input type="password" id="confirm-password" name="confirm-password">
+                    </div>
+                    <button type="submit">Reset</button>
+                </form>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
+            <span style="font-size: 1rem; font-family: Mulish;">@copyrights Berrys Global Innovations</span>
+            <img src="images/logo.png" alt="Berrys Logo" >
+        </div>
+    </footer>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        html, body {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-        }
-        body {
-            display: flex;
-            flex-direction: column;
-        }
         main {
             flex: 1; /* Allow main to grow and fill the space */
             background-color: #F9BC39;
+            flex-direction: column;
+            margin-bottom: 5vh;
         }
         ::placeholder {
             color: #FFFFFF;
@@ -90,90 +190,55 @@
             font-weight: 700;
             transition: all 0.3s ease;
         }
-        .header a:nth-child(2) {
+        .header a:nth-child(3) {
             margin-left: 30%;
         }
-        @media (max-width: 1000px) and (max-height: 900px) {    
+        
+        @media (max-width: 1000px) {    
             .header a:nth-child(2) {
-                margin-left: 5%;
-            }
-            .header img {
-                height: 1%;
-                width: 20%;
-            }
-            .header-background {
-                top: 25%;
-                height: 90%;
-            }
-            .sub-header {
-                padding-left: 1vh;
-            }
-            .sub-header img {
-                width: 3vh !important;
-                height: 3vh !important;
-            }
-            .sub-header-profile-name {
-                font-size: 0.8rem;
-            }
-            .sub-header-role {
-                font-size: 0.8rem;
-            }
-            * {
-                font-size: 0.75rem !important;
-            }
-            .sub-header-container .header-background {
-                top: 30%;
-            }
-           
+        margin-left: 5%;
+      }
+      .header img {
+        max-height: 6vh; /* Maintain height relative to viewport */
+        max-width: 100%; /* Ensure it doesn't exceed the width of its container */
+        height: auto; /* Maintain aspect ratio */
+        width: auto;
+        scale:1.1;
+        margin-left:auto;
+      }
+      .header-background {
+        top: 50%;
+        height: 90%;
+      }
+      .header a {
+        display:none;
+      }
+      .header input {
+        display:none;
+      }
+      .hamburger-menu {
+        display: block !important;
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+  
+      .sub-header {
+        padding-left: 1vh;
+      }
+      * {
+        font-size: 0.75rem !important;
+      }
+
+      footer img { 
+        max-height: 6vh; /* Maintain height relative to viewport */
+        max-width: 20%; /* Ensure it doesn't exceed the width of its container */
+        height: auto; /* Maintain aspect ratio */
+        width: auto !important;
+      }
         }
-        @media (max-width: 1000px) and (max-height: 1000px) {
-            .header a:nth-child(2) {
-                margin-left: 5%;
-            }
-            .header img {
-                max-height: 6vh; /* Maintain height relative to viewport */
-                max-width: 100%; /* Ensure it doesn't exceed the width of its container */
-                height: auto; /* Maintain aspect ratio */
-                width: auto ;
-                scale:1.2;
-            }
-            .header-background {
-                top: 45%;
-                height: 90%;
-            }
-            .header a {
-                white-space: nowrap;
-                padding-left: 1.5vw;
-            }
-            .header input[type="text"] {
-                display:none;
-            }
-            .sub-header {
-                padding-left: 1vh;
-            }
-            .sub-header img {
-                width: 3vh !important;
-                height: 3vh !important;
-            }
-            .sub-header-profile-name {
-                font-size: 0.8rem;
-            }
-            .sub-header-role {
-                font-size: 0.8rem;
-            }
-            * {
-                font-size: 0.75rem !important;
-            }
-            .sub-header-container .header-background {
-                top: 40%;
-            }
-            footer img { 
-                max-height: 6vh; /* Maintain height relative to viewport */
-                max-width: 20%; /* Ensure it doesn't exceed the width of its container */
-                height: auto; /* Maintain aspect ratio */
-                width: auto !important;
-            }
-        }
+
         .header a:hover {
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
@@ -255,6 +320,64 @@
         .breadcrumb a:hover {
         text-decoration: underline;
         }
+        .hamburger-menu {
+        display: none;
+        cursor: pointer;
+        z-index: 1000;
+        }
+    
+        .hamburger-menu span {
+        display: block;
+        width: 25px;
+        height: 3px;
+        margin: 5px 0;
+        background-color: white;
+        border-radius: 3px;
+        transition: 0.3s;
+        }
+        
+        .mobile-sidebar {
+        position: fixed;
+        top: 0;
+        left:-250px;
+        width: 250px;
+        height: 100vh;
+        background: linear-gradient(to bottom, #001338 0%, #014B96 100%);
+        z-index: 999;
+        transition: left 0.3s ease;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+        padding-top: 60px;
+        overflow-y: auto;
+        }
+        :global(.mobile-sidebar.active) {
+        left: 0;
+        }
+    
+    .mobile-sidebar a {
+      display: block;
+      padding: 15px 20px;
+      font-family: 'Mulish', sans-serif;
+      font-weight: 600;
+      color: white;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .mobile-sidebar a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 998;
+      display: none;
+    }
+    
         .main-container {
             display: flex;
             flex-direction: column;
@@ -338,71 +461,5 @@
         .form-container button:hover {
             background-color: #012F5E;
         }
+
     </style>
-</head>
-<body>
-    <header>
-        <div class="header-container">
-            <div class="top-header">
-                <a class="top-header-link" href="https://berrys.com">berrys.com</a>
-                <a class="top-header-link" href="contact.html">Contact Us</a>
-            </div>
-            <div class="header">
-                <div class="header-background"></div>
-                <a href="home.html">Home</a>
-                <a href="cross-drops.html">Cross-drop</a>
-                <a href="vehicle-logging.html">Vehicle Logging</a>
-                <a href="site-data.html">Site Data</a>
-                <a href="Inventory.html">Inventory</a>
-                <a href="Analytics.html">Analytics</a>
-                <input type="text" placeholder="Search...">
-                <img src="images/Midas_Link_logo.png" alt="Berrys Logo">
-            </div>
-        </div>
-    </header>
-    <div class="sub-header-container">
-        <div class="sub-header">
-                <h1> Manage Account </h1>
-                <span> Change your password, your new password will be assigned to the email address you used to sign in. </span>
-              
-        </div>
-        <div class="breadcrumb">
-            <a href="home.html">Home</a> / <span>Manage Account</span>
-        </div> 
-    </div>
-    <main>
-        <div class="main-container">
-            <div class="profile-details">
-                <div class="header-profile">
-                    <img src="images/NicePng_gray.png" alt="profile-logo">
-                    <div class="header-profile-name">Darren Keane</div>
-                </div>
-                <div class="header-company">
-                    <img class="company-logo" src="images/circle-k-logo.png" alt="company-logo">
-                    <div class="header-role">(Area Manager)</div>
-                </div>
-            </div>
-            <div class="form-container">
-                <form action="">
-                    <div class="form-row">
-                        <label for="change-password">Change Password:</label>
-                        <input type="password" id="change-password" name="change-password">
-                    </div>
-                    <div class="form-row">
-                        <label for="confirm-password">Confirm Password:</label>
-                        <input type="password" id="confirm-password" name="confirm-password">
-                    </div>
-                    <button type="submit">Reset</button>
-                </form>
-            </div>
-        </div>
-    </main>
-    
-    <footer>
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
-            <span style="font-size: 1rem; font-family: Mulish;">@copyrights Berrys Global Innovations</span>
-            <img src="images/logo.png" alt="Berrys Logo" >
-        </div>
-    </footer>
-</body>
-</html>

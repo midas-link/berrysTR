@@ -1,26 +1,112 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<script>
+import { onMount } from 'svelte';
+let rows = [];
+
+onMount(async () => {
+  const res = await fetch('/table_data/inventory_data.json');
+  rows = await res.json();
+});
+</script>
+
+
+
+<svelte:head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://fonts.googleapis.com/css?family=Mulish' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
     <title>Inventory</title>
+
+  </svelte:head>
+
+    <header>
+        <div class="header-container">
+            <div class="top-header">
+                <a class="top-header-link" href="https://berrys.com">berrys.com</a>
+                <a class="top-header-link" href="/contact">Contact Us</a>
+            </div>
+            <div class="header">
+                <div class="header-background"></div>
+                <a href="/home">Home</a>
+                <a href="/cross-drops">Cross-drop</a>
+                <a href="/vehicle-logging">Vehicle Logging</a>
+                <a href="/site-data"> Site Data</a>
+                <a href="/analytics">Analytics</a>
+                <input type="text" placeholder="Search...">
+                <img src="images/Midas_Link_logo.png" alt="Berrys Logo">
+            </div>
+        </div>
+    </header>
+    <div class="sub-header-container">
+        <div class="sub-header">
+                <h1> Inventory </h1>
+                <span> View your inventory - each Elbow is assigned a trailer that can be identified from the UID on the Link box. This way, you can manage how many trailer's and Elbow's are being discovered, as well as which trailers your Midas Elbows are assigned too.  </span>
+              
+        </div>
+        <div class="breadcrumb">
+            <a href="/home">Home</a> / <span>Inventory</span>
+        </div> 
+    </div>
+    <main>
+        <div class="main-container">
+            <div class="profile-details">
+                <div class="header-profile">
+                    <img src="images/NicePng_gray.png" alt="profile-logo">
+                    <div class="header-profile-name">Darren Keane</div>
+                </div>
+                <div class="header-company">
+                    <img class="company-logo" src="images/circle-k-logo.png" alt="company-logo">
+                    <div class="header-role">(Area Manager)</div>
+                </div>
+            </div>
+            <div class="trailer-container">
+                <div class="trailer-container-content">
+                    <img src="images/Link_device.png" alt="Link_device">
+                    <span class="trailers-count"> Active Trailers </span> <span class="trailers-count-number"> 100</span>
+                </div>
+            </div>
+            <div class="midas-container"> 
+                <div class="midas-container-content">
+                    <img src="images/Midas_Elbow_close_up.png" alt="Midas_Elbow_close_up">
+                    <span class="midas-count"> Active Midas </span> <span class="midas-count-number"> 52</span>
+                </div>
+            </div>
+            
+            <div class="inventory-table-container">
+                <table class="inventory-table">
+                    <thead>
+                        <tr><th>Midas #1</th>
+                        <th>Midas #2</th>
+                        <th>Trailer</th>
+                        <th>Location</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                      {#each rows as item}
+                        <tr>
+                          <td>{item['Midas #1']}</td>
+                          <td>{item['Midas #2']}</td>
+                          <td>{item['Trailer ']}</td>
+                          <td>{item['Location ']}</td>
+                        </tr>
+                      {/each}
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </main>
+    
+    <footer>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
+            <span style="font-size: 1rem; font-family: Mulish;">@copyrights Berrys Global Innovations</span>
+            <img src="images/logo.png" alt="Berrys Logo" >
+        </div>
+    </footer>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-        html, body {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-        }
-        body {
-            display: flex;
-            flex-direction: column;
         }
         main {
             flex: 1; /* Allow main to grow and fill the space */
@@ -106,22 +192,11 @@
             .sub-header {
                 padding-left: 1vh;
             }
-            .sub-header img {
-                width: 3vh !important;
-                height: 3vh !important;
-            }
-            .sub-header-profile-name {
-                font-size: 0.8rem;
-            }
-            .sub-header-role {
-                font-size: 0.8rem;
-            }
+
             * {
                 font-size: 0.75rem !important;
             }
-            .sub-header-container .header-background {
-                top: 30%;
-            }
+
            
         }
         @media (max-width: 1000px) and (max-height: 1000px) {
@@ -149,22 +224,10 @@
             .sub-header {
                 padding-left: 1vh;
             }
-            .sub-header img {
-                width: 3vh !important;
-                height: 3vh !important;
-            }
-            .sub-header-profile-name {
-                font-size: 0.8rem;
-            }
-            .sub-header-role {
-                font-size: 0.8rem;
-            }
             * {
                 font-size: 0.75rem !important;
             }
-            .sub-header-container .header-background {
-                top: 40%;
-            }
+
             footer img { 
                 max-height: 6vh; /* Maintain height relative to viewport */
                 max-width: 20%; /* Ensure it doesn't exceed the width of its container */
@@ -214,10 +277,6 @@
             position: relative;
             background-color: #F5F5F5;
             z-index: 1;
-        }
-
-        .sub-header-container.header-background {
-            background-color: #F5F5F5;
         }
         .sub-header {
             display: flex;
@@ -432,85 +491,3 @@
             width: 10%;
         }
     </style>
-</head>
-<body>
-    <header>
-        <div class="header-container">
-            <div class="top-header">
-                <a class="top-header-link" href="https://berrys.com">berrys.com</a>
-                <a class="top-header-link" href="contact.html">Contact Us</a>
-            </div>
-            <div class="header">
-                <div class="header-background"></div>
-                <a href="home.html">Home</a>
-                <a href="cross-drops.html">Cross-drop</a>
-                <a href="vehicle-logging.html">Vehicle Logging</a>
-                <a href="site-data.html"> Site Data</a>
-                <a href="Analytics.html">Analytics</a>
-                <input type="text" placeholder="Search...">
-                <img src="images/Midas_Link_logo.png" alt="Berrys Logo">
-            </div>
-        </div>
-    </header>
-    <div class="sub-header-container">
-        <div class="sub-header">
-                <h1> Inventory </h1>
-                <span> View your inventory - each Elbow is assigned a trailer that can be identified from the UID on the Link box. This way, you can manage how many trailer's and Elbow's are being discovered, as well as which trailers your Midas Elbows are assigned too.  </span>
-              
-        </div>
-        <div class="breadcrumb">
-            <a href="home.html">Home</a> / <span>Inventory</span>
-        </div> 
-    </div>
-    <main>
-        <div class="main-container">
-            <div class="profile-details">
-                <div class="header-profile">
-                    <img src="images/NicePng_gray.png" alt="profile-logo">
-                    <div class="header-profile-name">Darren Keane</div>
-                </div>
-                <div class="header-company">
-                    <img class="company-logo" src="images/circle-k-logo.png" alt="company-logo">
-                    <div class="header-role">(Area Manager)</div>
-                </div>
-            </div>
-            <div class="trailer-container">
-                <div class="trailer-container-content">
-                    <img src="images/Link_device.png" alt="Link_device">
-                    <span class="trailers-count"> Active Trailers </span> <span class="trailers-count-number"> 100</span>
-                </div>
-            </div>
-            <div class="midas-container"> 
-                <div class="midas-container-content">
-                    <img src="images/Midas_Elbow_close_up.png" alt="Midas_Elbow_close_up">
-                    <span class="midas-count"> Active Midas </span> <span class="midas-count-number"> 52</span>
-                </div>
-            </div>
-            
-            <div class="inventory-table-container">
-                <table class="inventory-table">
-                    <thead>
-                        <tr>
-                            <th>Midas #1</th>
-                            <th>Midas #2</th>
-                            <th>Trailer</th>
-                            <th>Location</th>
-                        </tr>
-                    </thead>
-                    <tbody id="inventoryTableBody">
-                        <!-- Table content will be populated by JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </main>
-    
-    <footer>
-        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
-            <span style="font-size: 1rem; font-family: Mulish;">@copyrights Berrys Global Innovations</span>
-            <img src="images/logo.png" alt="Berrys Logo" >
-        </div>
-    </footer>
-    <script src="scripts/inventory.js"></script>
-</body>
-</html>
