@@ -75,6 +75,9 @@ function clearSearch() {
     // Force show live status
     toggleLiveStatus(true);
   }
+  function toggleDropdown() {
+      showDropdown = !showDropdown;
+    }
 function hasSearchInput() {
         const searchInputs = document.querySelectorAll('.search-fields input');
         return Array.from(searchInputs).some(input => input.value.trim() !== '');
@@ -85,6 +88,172 @@ function toggleDetails(index) {
         newDetailsVisible[index] = !newDetailsVisible[index];
         detailsVisible = newDetailsVisible;
 }
+function exportTableToCSV() {
+        // Get the table
+        const table = document.querySelector('table');
+        const rows = table.querySelectorAll('tr');
+        
+        // Create CSV content
+        let csv = [];
+        
+        // Get headers
+        const headers = [];
+        const headerCells = rows[0].querySelectorAll('th');
+        headerCells.forEach(cell => {
+            headers.push(cell.textContent.trim());
+        });
+        csv.push(headers.join(','));
+        
+        // Get data rows
+        for (let i = 1; i < rows.length; i++) {
+            const row = [];
+            const cells = rows[i].querySelectorAll('td');
+            cells.forEach(cell => {
+                // Escape quotes and wrap content in quotes to handle commas in content
+                let content = cell.textContent.trim().replace(/"/g, '""');
+                row.push(`"${content}"`);
+            });
+            if (row.length > 0) {  // Only add non-empty rows
+                csv.push(row.join(','));
+            }
+        }
+        
+        // Create blob
+        const csvContent = csv.join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        
+        // Generate filename with current date and time
+        const date = new Date();
+        const formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD
+        const formattedTime = date.toTimeString().split(' ')[0].replace(/:/g, '-'); // HH-MM-SS
+        // Customize filename based on the current page
+        const pageType = document.location.pathname.includes('vehicle-logging') ? 'vehicle_logging' : 'site_data';
+        const fileName = `${pageType}_${formattedDate}_${formattedTime}.csv`;
+    
+        // Try to use the modern File System Access API if available
+        if ('showSaveFilePicker' in window) {
+            async function saveToDisk() {
+                try {
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: fileName,
+                        types: [{
+                            description: 'CSV File',
+                            accept: {
+                                'text/csv': ['.csv'],
+                            },
+                        }],
+                    });
+                    
+                    const writable = await handle.createWritable();
+                    await writable.write(blob);
+                    await writable.close();
+                } catch (err) {
+                    if (err.name !== 'AbortError') {
+                        // Fall back to traditional method if there's an error
+                        // (other than user cancelling)
+                        fallbackSave();
+                    }
+                }
+            }
+            saveToDisk();
+        } else {
+            // Fall back to traditional method for browsers that don't support File System Access API
+            fallbackSave();
+        }
+    
+        function fallbackSave() {
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.setAttribute('download', fileName);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    }
+       // Function to export table to PDF
+       async function exportTableToPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        
+        // Get table data
+        const table = document.querySelector('table');
+        
+        // Add title
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(16);
+        doc.text('Cross Drop Prevention Data', 14, 15);
+        
+        // Add timestamp
+        const timestamp = new Date().toLocaleString();
+        doc.setFontSize(10);
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Generated: ${timestamp}`, 14, 25);
+        
+        // Create the PDF table
+        doc.autoTable({
+            html: table,
+            startY: 30,
+            styles: {
+                fontSize: 8,
+                cellPadding: 2,
+                overflow: 'linebreak',
+                halign: 'center'
+            },
+            headStyles: {
+                fillColor: [1, 75, 150],
+                textColor: 255,
+                fontSize: 8,
+                fontStyle: 'bold',
+                halign: 'center'
+            },
+            alternateRowStyles: {
+                fillColor: [234, 243, 252]
+            },
+            margin: { top: 30 }
+        });
+    
+        // Generate filename
+        const date = new Date();
+        const formattedDate = date.toISOString().split('T')[0];
+        const formattedTime = date.toTimeString().split(' ')[0].replace(/:/g, '-');
+        const fileName = `cross_drop_data_${formattedDate}_${formattedTime}.pdf`;
+    
+        // Get the PDF as blob
+        const pdfBlob = new Blob([doc.output('blob')], { type: 'application/pdf' });
+    
+        // Try to use the modern File System Access API if available
+        if ('showSaveFilePicker' in window) {
+            try {
+                const handle = await window.showSaveFilePicker({
+                    suggestedName: fileName,
+                    types: [{
+                        description: 'PDF File',
+                        accept: {
+                            'application/pdf': ['.pdf'],
+                        },
+                    }],
+                });
+                
+                const writable = await handle.createWritable();
+                await writable.write(pdfBlob);
+                await writable.close();
+            } catch (err) {
+                if (err.name !== 'AbortError') {
+                    // Fall back to traditional method if there's an error
+                    // (other than user cancelling)
+                    fallbackSavePDF(doc, fileName);
+                }
+            }
+        } else {
+            // Fall back to traditional method for browsers that don't support File System Access API
+            fallbackSavePDF(doc, fileName);
+        }
+    }
+    
+    // Fallback save method for PDF
+    function fallbackSavePDF(doc, fileName) {
+        doc.save(fileName);
+    }
 function toggleLiveStatus(forceShow = false) {
     const liveStatus = document.querySelector('.toggle-live');
     if (!liveStatus) return;

@@ -5,10 +5,13 @@ const config = {
   kit: {
     adapter: adapter({
       fallback: 'index.html', // Important for routing to work on GitHub Pages
+      assets: 'build', // Set the assets directory
+      pages: 'build', // Set the pages directory
     }),
     paths: {
-      base: '/berrys', // This matches your GitHub Pages path
+      base: process.env.NODE_ENV === 'production' ? '/berrys' : '',
     },
+    appDir: 'internal', // Changes the _app directory name to avoid GitHub Pages issues
   },
 };
 
