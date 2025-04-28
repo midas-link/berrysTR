@@ -2,6 +2,4 @@
       import { base } from '$app/paths';
     
 </script>
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
-<p> <a href="{base}/home">home page </a> </p>
+<p> <a href="{base}/home">click here to get redirected to the login page </a> </p>

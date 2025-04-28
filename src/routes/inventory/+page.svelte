@@ -27,7 +27,7 @@ onMount(async () => {
                 <a class="top-header-link" href=" ">Contact Us</a>
             </div>
             <div class="header">
-                <div class="header-background"></div>
+                <div class="header-background" style="      background: url({base}/svg/Vector_1.svg) no-repeat left center; mask-image: url({base}/svg/Vector_1.svg'); -webkit-mask-image: url({base}/svg/Vector_1.svg);"></div>
                 <a href="{base}/home">Home</a>
                 <a href="{base}/cross-drops">Cross-drop</a>
                 <a href="{base}/vehicle-logging">Vehicle Logging</a>
@@ -151,10 +151,7 @@ onMount(async () => {
             left: 0;
             width: 100%;
             height: 70%;
-            background: url('svg/Vector_1.svg') no-repeat left center;
             background-size: contain;
-            mask-image: url('svg/Vector_1.svg');
-            -webkit-mask-image: url('svg/Vector_1.svg');
             z-index: -1;
             opacity: 1;
         }

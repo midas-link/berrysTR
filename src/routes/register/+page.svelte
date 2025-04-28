@@ -11,7 +11,7 @@
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
 </svelte:head>
 
-    <main>
+    <main style="background-image: url({base}/images/Sign-in-page.jpg)">
         <div class="register-container">
             <form class="register-form">
                 <p class="register-title">Register your account to view delivery logs</p>
@@ -109,19 +109,7 @@ label {
     box-sizing: border-box;
 }
 
-body {
-    font-family: var(--font-family);
-    line-height: 1.6;
-    color: var(--text-color);
-    background: linear-gradient(to right, #999999 0%, #EAF3FC 0%);
-    background-color: var(--background-color);
-    background-image: url('images/Sign-in-page.jpg');
-    background-size:cover;
-    background-repeat: no-repeat;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
+
 
 main {
     flex: 1;

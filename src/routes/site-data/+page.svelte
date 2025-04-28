@@ -2,7 +2,17 @@
   import { onMount } from "svelte";
   import DropdownField from "./DropdownField.svelte";
   import { base } from '$app/paths';
+  import { goto } from '$app/navigation';
 
+  function openDetails(row) {
+    goto(`/deliveryDetail/${row.SiteCode}`, {
+      state: {
+        address: row.Address,
+        city: row.City,
+        state: row.State
+      }
+    });
+  }
   import * as siteDataFuncs from "$lib/scripts/site-data";
   let rows = []
   let filteredRows = [];
@@ -406,7 +416,7 @@ function toggleDetails(index) {
                 <a class="top-header-link" href=" ">Contact Us</a>
             </div>
             <div class="header">
-                <div class="header-background"></div>
+                <div class="header-background" style="      background: url({base}/svg/Vector_1.svg) no-repeat left center; mask-image: url({base}/svg/Vector_1.svg'); -webkit-mask-image: url({base}/svg/Vector_1.svg);"></div>
                 <a href="{base}/home">Home</a>
                 <a href="{base}/inventory">Inventory</a>
                 <a href="{base}/cross-drops">Cross-drop</a>
@@ -569,8 +579,14 @@ function toggleDetails(index) {
                         <span class="label">Full Address:</span> {row.Address || ''} , {row.City} {row.State} | {row.Zip}
                         <br>
                         <span class="label">Fuel dropped:</span> {row.Delivered || ''} | <span class="label">Tank:</span> T{row.TankNumber || ''}
+                        
                     </div>
+                   
                 </td>
+                <td>
+                    <button on:click={() => openDetails(row)} class="more-details">
+                        Expand details
+                      </button>                </td>
             </tr>
         {/if}
                 {/each}
@@ -638,10 +654,7 @@ function toggleDetails(index) {
         left: 0;
         width: 100%;
         height: 70%;
-        background: url('svg/Vector_1.svg') no-repeat left center;
         background-size: contain;
-        mask-image: url('svg/Vector_1.svg');
-        -webkit-mask-image: url('svg/Vector_1.svg');
         z-index: -1;
         opacity: 1;
     }
@@ -1168,5 +1181,21 @@ function toggleDetails(index) {
     }
     .toggle-live {
         margin-right: 15px;
+    }
+    .more-details{
+        background-color: #014B96;
+        color: white;
+        padding: 0.5vh 2vh;
+        border-radius: 4px;
+        font-family: 'Mulish', sans-serif;
+        font-weight: 400;
+        font-size: 1rem;
+        border: none;
+        cursor: pointer;
+        margin-left: auto;
+        transition: background-color 0.3s ease;
+    }
+    .more-details:hover{
+        background-color: #013b77;
     }
 </style>

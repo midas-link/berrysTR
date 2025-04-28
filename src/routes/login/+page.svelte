@@ -55,7 +55,7 @@ onMount(()=>{
     <link href='https://fonts.googleapis.com/css?family=Mulish' rel='stylesheet'>
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
 </svelte:head>
-<div class="body-container">
+<div class="body-container" style="background-image: url({base}/images/Sign-in-page.jpg)">
     <main>
         <div class="content">
             <div class="sign-in-container">
@@ -128,7 +128,7 @@ onMount(()=>{
         line-height: 1.6;
         color: var(--text-color);
         background-color: var(--background-color);
-        background-image: url('images/Sign-in-page.jpg');
+ 
         background-size:cover;
         background-repeat: no-repeat;
         max-height: 100vh;

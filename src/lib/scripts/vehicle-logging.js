@@ -1,40 +1,50 @@
+let globalVehicleData = [];
 export async function fetchVehicleData() {
+    // If data is already loaded, return it
+    if (globalVehicleData.length > 0) {
+        return globalVehicleData;
+    }
+    
     try {
-        // Try to fetch from the server first
+        // Try to fetch from the server
         const response = await fetch('/table_data/vehicle_logging.json');
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const vehicleData = await response.json();
+        globalVehicleData = siteData; // Store data globally
         return vehicleData;
-
     } catch (error) {
-        console.error('Error fetching Vehicle Data:', error);
+        console.error('Error fetching vehicleData data:', error);
         
-        // Fallback: Try to load the file using XMLHttpRequest for local file access
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', 'table_data/vehicle_logging.json', true);
-        xhr.onload = function() {
-            if (xhr.status === 200) {
-                try {
-                    const vehicleData = JSON.parse(xhr.responseText);
-                    resolveConfig(vehicleData)
-                } catch (e) {
-                    console.error('Error parsing JSON:', e);
-                    showErrorMessage();
+        // Return a promise that resolves with data from XMLHttpRequest
+        return new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'table_data/vehicle_logging.json', true);
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    try {   
+                        const vehicleData = JSON.parse(xhr.responseText);
+                        globalVehicleData = vehicleData;
+                        resolve(vehicleData);
+                    } catch (e) {
+                        console.error('Error parsing JSON:', e);
+                        reject(e);
+                    }
+                } else {
+                    console.error('XHR error:', xhr.status);
+                    reject(new Error(`XHR error: ${xhr.status}`));
                 }
-            } else {
-                console.error('XHR error:', xhr.status);
-                showErrorMessage();
-            }
-        };
-        xhr.onerror = function() {
-            console.error('XHR error occurred');
-            showErrorMessage();
-        };
-        xhr.send();
+            };
+            xhr.onerror = function() {
+                console.error('XHR error occurred');
+                reject(new Error('XHR error occurred'));
+            };
+            xhr.send();
+        });
     }
 }
+
 export function formatDate(dateString) {
     if (!dateString) return '';
     
