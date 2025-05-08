@@ -1,11 +1,35 @@
 <script>
 import { onMount } from 'svelte';
 import { base } from '$app/paths';
-
+function setupMobileMenu() {
+    const hamburger = document.getElementById('hamburger-menu');
+    const sidebar = document.getElementById('mobile-sidebar');
+    const overlay = document.getElementById('overlay');
+    
+    hamburger.addEventListener('click', function() {
+      sidebar.classList.toggle('active');
+      overlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
+    });
+    
+    overlay.addEventListener('click', function() {
+      sidebar.classList.remove('active');
+      overlay.style.display = 'none';
+    });
+    
+    // Close the sidebar when clicking on a link
+    const sidebarLinks = sidebar.querySelectorAll('a');
+    sidebarLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        sidebar.classList.remove('active');
+        overlay.style.display = 'none';
+      });
+    });
+  }
 let rows = [];
 onMount(async () => {
-  const res = await fetch('/table_data/inventory_data.json');
+  const res = await fetch(`${base}/table_data/inventory_data.json`);
   rows = await res.json();
+  setupMobileMenu();
 });
 </script>
 
@@ -28,8 +52,13 @@ onMount(async () => {
             </div>
             <div class="header">
                 <div class="header-background" style="      background: url({base}/svg/Vector_1.svg) no-repeat left center; mask-image: url({base}/svg/Vector_1.svg'); -webkit-mask-image: url({base}/svg/Vector_1.svg);"></div>
+                <div class="hamburger-menu" id="hamburger-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
                 <a href="{base}/home">Home</a>
-                <a href="{base}/cross-drops">Cross-drop</a>
+                <a href="{base}/cross-drops">Cross-Drop Prevention</a>
                 <a href="{base}/vehicle-logging">Vehicle Logging</a>
                 <a href="{base}/site-data"> Site Data</a>
                 <a href="{base}/analytics">Analytics</a>
@@ -38,6 +67,17 @@ onMount(async () => {
             </div>
         </div>
     </header>
+      <!-- Mobile sidebar navigation -->
+  <div class="mobile-sidebar" id="mobile-sidebar">
+    <a href="{base}/home">Home</a>
+    <a href="{base}/vehicle-logging">Vehicle Logging</a>
+    <a href="{base}/cross-drops">Cross-Drop Prevention</a>
+    <a href="{base}/site-data">Site Data</a>
+    <a href="{base}/inventory">Inventory</a>
+    <a href="{base}/analytics">Analytics</a>
+  </div>
+  
+  <div class="overlay" id="overlay"></div>
     <div class="sub-header-container">
         <div class="sub-header">
                 <h1> Inventory </h1>
@@ -110,7 +150,7 @@ onMount(async () => {
             box-sizing: border-box;
         }
         main {
-            flex: 1; /* Allow main to grow and fill the space */
+            flex: 1; 
             background-color: #F9BC39;
         }
         ::placeholder {
@@ -163,7 +203,7 @@ onMount(async () => {
             padding-right:0.5vw;
         }
         .header a, .header input, .header img {
-            position: relative; /* Ensure these elements are above the background */
+            position: relative; 
             z-index: 1;
         }
         .header a {
@@ -173,23 +213,36 @@ onMount(async () => {
             font-weight: 700;
             transition: all 0.3s ease;
         }
-        .header a:nth-child(2) {
-            margin-left: 30%;
+        .header a:nth-child(3) {
+            margin-left: 10%;
         }
-        @media (max-width: 1000px) and (max-height: 900px) {    
+        @media (max-width: 1000px)  {    
             .header a:nth-child(2) {
                 margin-left: 5%;
             }
             .header img {
-                height: 3vh;
-            }
-            .header-background {
-                top: 25%;
-                height: 90%;
-            }
+      max-height: 8vh; 
+      max-width: 100%; 
+      height: auto; 
+      width: auto;
+      scale:1.2;
+      margin-left:auto;
+    }
             .sub-header {
                 padding-left: 1vh;
             }
+            .header a {
+        display:none;
+      }
+      .header input {
+        display:none;
+      }
+      .hamburger-menu {
+        display: block !important;
+        position: absolute;
+        left: 30px;
+        transform: translateY(-50%);
+    }
 
             * {
                 font-size: 0.75rem !important;
@@ -197,21 +250,19 @@ onMount(async () => {
 
            
         }
-        @media (max-width: 1000px) and (max-height: 1000px) {
+        @media (max-width: 1000px) {
             .header a:nth-child(2) {
                 margin-left: 5%;
             }
             .header img {
-                max-height: 6vh; /* Maintain height relative to viewport */
-                max-width: 100%; /* Ensure it doesn't exceed the width of its container */
-                height: auto; /* Maintain aspect ratio */
-                width: auto ;
-                scale:1.2;
-            }
-            .header-background {
-                top: 45%;
-                height: 90%;
-            }
+      max-height: 8vh; 
+      max-width: 100%; 
+      height: auto; 
+      width: auto;
+      scale:1.1;
+      margin-left:auto;
+    }
+
             .header a {
                 white-space: nowrap;
                 padding-left: 1.5vw;
@@ -220,16 +271,37 @@ onMount(async () => {
                 display:none;
             }
             .sub-header {
-                padding-left: 1vh;
+                padding-left: 2vw !important;
+            }
+            .sub-header span {
+                padding-left: 1.5vw !important;
+                font-size:0.7rem !important;
+                overflow-wrap: break-word;
+                white-space: normal;
             }
             * {
                 font-size: 0.75rem !important;
             }
-
+            .midas-container-content
+            {
+                width:100vw !important
+            }
+            .trailer-container img{
+                margin-left: -35vw !important;
+                width:90% !important;
+            }
+            
+            .midas-container-content img{
+                margin-left: 0 !important;
+                width:90% !important;
+            }
+            .trailers-count-number{
+                margin-right: 4vw;
+            }
             footer img { 
-                max-height: 6vh; /* Maintain height relative to viewport */
-                max-width: 20%; /* Ensure it doesn't exceed the width of its container */
-                height: auto; /* Maintain aspect ratio */
+                max-height: 6vh; 
+                max-width: 20%; 
+                height: auto; 
                 width: auto !important;
             }
         }
@@ -349,9 +421,9 @@ onMount(async () => {
         }
         .profile-details {
             display: flex;
-            flex-direction: row; /* Align children in a row */
-            justify-content: space-between; /* Optional: space them out evenly */
-            align-items: center; /* Optional: center them vertically */
+            flex-direction: row; 
+            justify-content: space-between; 
+            align-items: center; 
         }
         .trailer-container {
             border-radius: 10px;
@@ -423,7 +495,6 @@ onMount(async () => {
             font-weight: 700;
             align-self: center;
         }
-        /* Table Styles */
         .inventory-table-container {
             width: 80%;
             margin: 2vh auto;
@@ -431,7 +502,7 @@ onMount(async () => {
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            max-height: 500px; /* Increased from 500px to 700px */
+            max-height: 500px; 
             display: flex;
             flex-direction: column;
         }
@@ -456,12 +527,11 @@ onMount(async () => {
         .inventory-table tbody {
             display: block;
             overflow-y: auto;
-            max-height: 350px; /* Slightly less than container to account for header */
+            max-height: 350px; 
         }
         .inventory-table thead, 
         .inventory-table tbody tr {
             display: table;
-            width: 100%;
             table-layout: fixed;
         }
         .inventory-table td {
@@ -471,7 +541,6 @@ onMount(async () => {
         .inventory-table tr:hover {
             background-color: #EAF3FC;
         }
-        /* Set column widths */
         .inventory-table th:nth-child(1),
         .inventory-table td:nth-child(1) {
             width: 30%;
@@ -488,4 +557,61 @@ onMount(async () => {
         .inventory-table td:nth-child(4) {
             width: 10%;
         }
+        .mobile-sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100vh;
+      background: linear-gradient(to bottom, #001338 0%, #014B96 100%);
+      z-index: 999;
+      transition: left 0.3s ease;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+      padding-top: 60px;
+      overflow-y: auto;
+    }
+    :global(.mobile-sidebar.active) {
+      left: 0;
+    }
+    
+    .mobile-sidebar a {
+      display: block;
+      padding: 15px 20px;
+      font-family: 'Mulish', sans-serif;
+      font-weight: 600;
+      color: white;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .mobile-sidebar a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 998;
+      display: none;
+    }
+    /* Mobile menu styles */
+    .hamburger-menu {
+      display: none;
+      cursor: pointer;
+      z-index: 1000;
+    }
+    
+    .hamburger-menu span {
+      display: block;
+      width: 25px;
+      height: 3px;
+      margin: 5px 0;
+      background-color: white;
+      border-radius: 3px;
+      transition: 0.3s;
+    }
     </style>

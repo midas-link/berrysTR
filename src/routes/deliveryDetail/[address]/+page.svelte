@@ -6,6 +6,25 @@
     $: address = $page.state?.address;
     $: city = $page.state?.city;
     $: State = $page.state?.state;
+    $: date = $page.state?.date;
+    $: siteCode = $page.state?.siteCode;
+    $: previousURL = $page.state?.from;
+   
+    function formatDate(dateString) {
+    if (!dateString) return '';
+    
+    // Split the date string into day, month, year
+    const [day, month, year] = dateString.split('/');
+    
+    // Create a new date object (month is 0-based in JavaScript)
+    const date = new Date(year, month - 1, day);
+    
+    if (isNaN(date.getTime())) return dateString; // Return original if invalid date
+    
+    // Use original formatting for older dates
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+}
        function setupMobileMenu() {
       const hamburger = document.getElementById('hamburger-menu');
       const sidebar = document.getElementById('mobile-sidebar');
@@ -30,6 +49,205 @@
         });
       });
     }
+    function toggleDropdown() {
+    document.getElementById("exportDropdown").classList.toggle("show");
+}
+function exportTableToCSV() {
+  // Clone the table to avoid modifying the original
+  const originalTable = document.querySelector("table");
+  const tableClone = originalTable.cloneNode(true);
+  
+  // Remove all "View Vehicle Timeline" buttons from the clone
+  const buttons = tableClone.querySelectorAll(".more-details");
+  buttons.forEach(button => {
+    button.parentNode.textContent = ""; // Replace button cell content with empty string
+  });
+  
+  const rows = tableClone.querySelectorAll("tr");
+  let csv = [];
+
+  // Get headers
+  const headers = [];
+  const headerCells = rows[0].querySelectorAll("th");
+  headerCells.forEach((cell) => {
+    headers.push(cell.textContent.trim());
+  });
+  const fullAddress = `Delivery to:${address} ${city} ${State}`
+  headers.push(fullAddress);
+  csv.push(headers.join(","));
+
+  // Get data rows - include details rows but without the button
+  for (let i = 1; i < rows.length; i++) {
+    const row = [];
+    const cells = rows[i].querySelectorAll("td");
+    cells.forEach((cell) => {
+      let content = cell.textContent.trim().replace(/"/g, '""');
+      row.push(`"${content}"`);
+    });
+    if (row.length > 0) {
+      csv.push(row.join(","));
+    }
+  }
+
+  // Create blob
+  const csvContent = csv.join("\n");
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+
+  const date = new Date();
+  const formattedDate = date.toISOString().split("T")[0]; // YYYY-MM-DD
+  const formattedTime = date.toTimeString().split(" ")[0].replace(/:/g, "-"); // HH-MM-SS
+  const pageType = document.location.pathname.includes("vehicle-logging")
+    ? "vehicle_logging"
+    : "delivery-details";
+  const fileName = `${pageType}_${formattedDate}_${formattedTime}.csv`;
+
+  if ("showSaveFilePicker" in window) {
+    async function saveToDisk() {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: fileName,
+          types: [
+            {
+              description: "CSV File",
+              accept: {
+                "text/csv": [".csv"],
+              },
+            },
+          ],
+        });
+
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          fallbackSave();
+        }
+      }
+    }
+    saveToDisk();
+  } else {
+    fallbackSave();
+  }
+
+  function fallbackSave() {
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+}
+
+async function exportTableToPDF() {
+  try {
+    const { jsPDF } = window.jspdf;
+    if (!jsPDF) throw new Error("jsPDF library not found");
+    
+    const doc = new jsPDF();
+
+    // Add title and timestamp
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.text("Delivery Details Data for:", 14, 15);
+
+    const fullAddress = `${address}, ${city} ${State}`
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.text(`\n${fullAddress}\n`, 14, 15);
+
+    const timestamp = new Date().toLocaleString();
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Generated: ${timestamp}`, 14, 25);
+
+
+    // Get the specific table you want to export
+    const originalTable = document.querySelector("table"); // Use a more specific selector
+    if (!originalTable) throw new Error("Table not found");
+    
+    const exportTable = originalTable.cloneNode(true);
+    
+    // Remove action buttons more reliably
+    const buttons = exportTable.querySelectorAll(".more-details");
+    buttons.forEach(button => {
+      const cell = button.closest("td, th");
+      if (cell) cell.textContent = "";
+    });
+
+    // Generate the table in PDF
+    doc.autoTable({
+      html: exportTable,
+      startY: 30,
+      styles: {
+        fontSize: 8,
+        cellPadding: 2,
+        overflow: "linebreak",
+        halign: "center",
+      },
+      headStyles: {
+        fillColor: [1, 75, 150],
+        textColor: 255,
+        fontSize: 8,
+        fontStyle: "bold",
+        halign: "center",
+      },
+      alternateRowStyles: {
+        fillColor: [234, 243, 252],
+      },
+      margin: { top: 30 },
+    });
+
+    // Generate filename
+    const date = new Date();
+    const formattedDate = date.toISOString().split("T")[0];
+    const formattedTime = date.toTimeString().split(" ")[0].replace(/:/g, "-");
+    const fileName = `delivery_details_${formattedDate}_${formattedTime}.pdf`;
+
+    // Save the file
+    if ("showSaveFilePicker" in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: fileName,
+          types: [{
+            description: "PDF File",
+            accept: { "application/pdf": [".pdf"] },
+          }],
+        });
+        const writable = await handle.createWritable();
+        await writable.write(doc.output("blob")); // No need for new Blob()
+        await writable.close();
+      } catch (err) {
+        console.error("File save error:", err);
+        fallbackSavePDF(doc, fileName);
+      }
+    } else {
+      fallbackSavePDF(doc, fileName);
+    }
+
+    return true; // Indicate success
+  } catch (error) {
+    console.error("PDF generation failed:", error);
+    // You might want to show a user-friendly error message here
+    return false; // Indicate failure
+  }
+}
+// Fallback save method for PDF
+function fallbackSavePDF(doc, fileName) {
+    doc.save(fileName);
+}
+function closeDropdown(event) {
+        if (!event.target.matches('.export-button')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            for (var i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+}
     onMount(() =>{
   setupMobileMenu();
     });
@@ -37,9 +255,16 @@
   <svelte:head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+    <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+  ></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"
+  ></script>
       <link href='https://fonts.googleapis.com/css?family=Mulish' rel='stylesheet'>
       <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
-      <title>Manage Account</title>
+      <title>Delivery Detail</title>
   </svelte:head>
   
       <header>
@@ -56,7 +281,7 @@
                       <span></span>
                     </div>
                   <a href="{base}/home">Home</a>
-                  <a href="{base}/cross-drops">Cross-drop</a>
+                  <a href="{base}/cross-drops">Cross-Drop Prevention</a>
                   <a href="{base}/vehicle-logging">Vehicle Logging</a>
                   <a href="{base}/site-data">Site Data</a>
                   <a href="{base}/inventory">Inventory</a>
@@ -79,17 +304,17 @@
           <div class="sub-header">
                   <h1> Delivery Detail </h1>
                   <img src="{base}/images/Gas_station_graphic.png" alt="gas_station">
-                  <span> View below delivery details from the 16th February </span>
+                  <span> View below delivery details from {formatDate(date)} </span>
                 
           </div>
           <div class="breadcrumb">
-              <a href="{base}/home">Home</a> / <span> Delivery Detail</span>
+              <a href="{base}/home">Home</a><a href="{base}{previousURL}">{previousURL}</a>/<span> Delivery Detail</span>
           </div> 
       </div>
       <main>
          <div class="main-container">
             <span class="address-details"> 
-                {address}, {city} {State}
+                {address}, {city} {State} <span style="margin-left: 30vw" >Site Code:{siteCode} </span>
             </span>
             <div class="delivery-details">
             <span class="delivery-time">
@@ -101,7 +326,13 @@
              </div>
              <div class="trailer-report">
              <span class="trailer-id">Trailer: HDY674</span>
-             <button class="report-button">report</button>
+             <div class="export-dropdown">
+                   <button class="export-button" on:click={toggleDropdown}>Export As ▼</button>
+                   <div class="dropdown-content" id="exportDropdown">
+                       <button href=" " on:click|preventDefault={exportTableToCSV}>CSV</button>
+                       <button href=" " on:click|preventDefault={exportTableToPDF}>PDF</button>
+                   </div>
+               </div>
              </div>
              <table>
                 <thead>
@@ -232,34 +463,37 @@
               position: relative; 
               z-index: 1;
           }
-  
+          
           .header a {
-              color: #FFFFFF;
-              text-decoration: none;
-              font-family: 'Mulish', sans-serif;
-              font-weight: 700;
-              transition: all 0.3s ease;
-          }
-          .header a:nth-child(3) {
-              margin-left: 30%;
-          }
+      color: #FFFFFF;
+      text-decoration: none;
+      font-family: 'Mulish', sans-serif;
+      font-weight: 700;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+    .header a:nth-child(3) {
+      margin-left: 10%;
+    }
           
           @media (max-width: 1000px) {    
               .header a:nth-child(2) {
           margin-left: 5%;
         }
         .header img {
-          max-height: 6vh; /* Maintain height relative to viewport */
-          max-width: 100%; /* Ensure it doesn't exceed the width of its container */
-          height: auto; /* Maintain aspect ratio */
-          width: auto;
-          scale:1.1;
-          margin-left:auto;
+      max-height: 8vh; 
+      max-width: 100%; 
+      height: auto; 
+      width: auto;
+      scale:1.1;
+      margin-left:auto;
+    }
+        .address-details span{
+          margin-left:15vw !important;
         }
-        
-        .header-background {
-          top: 50%;
-          height: 90%;
+        .trailer-id
+        {
+          margin-right:2vw;
         }
         .header a {
           display:none;
@@ -268,12 +502,11 @@
           display:none;
         }
         .hamburger-menu {
-          display: block !important;
-          position: absolute;
-          left: 15px;
-          top: 50%;
-          transform: translateY(-50%);
-        }
+        display: block !important;
+        position: absolute;
+        left: 30px;
+        transform: translateY(-50%);
+    }
     
         .sub-header {
           padding-left: 1vh;
@@ -281,6 +514,9 @@
         * {
           font-size: 0.75rem !important;
         }
+        th{
+          overflow-wrap: break-word;
+        }  
      
         footer img { 
           max-height: 6vh; /* Maintain height relative to viewport */
@@ -363,20 +599,6 @@
           border-bottom-left-radius: 0px;
           border-top-left-radius: 0px;
           }
-          .report-button {
-          background-color: #014B96;
-        color: white;
-        padding: 0.5vh 2vh;
-        border-radius: 4px;
-        font-family: 'Mulish', sans-serif;
-        font-weight: 400;
-        font-size: 1rem;
-        text-transform: uppercase;
-        border: none;
-        cursor: pointer;
-        margin-left: auto;
-        transition: background-color 0.3s ease;
-        }
         .trailer-id{
           margin-left:45%;
           font-size:1.25rem;
@@ -389,6 +611,7 @@
           font-size: 0.875rem;
           font-weight: 700;
           font-style: bold;
+          text-transform: capitalize;
           }
           .breadcrumb a:hover {
           text-decoration: underline;
@@ -476,7 +699,7 @@
         display: flex;
     align-items: center;
     width: 90%;
-    margin: 0 auto; 
+    margin: 2vh auto 0 auto; 
       }
       table{
         height:fit-content;
@@ -530,4 +753,51 @@
         top: 0;
         z-index: 1;
     }
+    .export-button {
+        background-color: #014B96;
+        color: white;
+        padding: 0.5vh 2vh;
+        border-radius: 4px;
+        font-family: 'Mulish', sans-serif;
+        font-weight: 400;
+        font-size: 1rem;
+        border: none;
+        cursor: pointer;
+        margin-left: auto;
+        transition: background-color 0.3s ease;
+    }
+    .export-button:hover {
+        background-color: #013b77;
+    }
+    .export-dropdown {
+        position: relative;
+        display: inline-block;
+        margin-left: auto;
+        z-index: 2;
+    }
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: #f9f9f9;
+        min-width: 120px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 2000;
+        border-radius: 4px;
+    }
+    .dropdown-content button {
+        color: #014B96;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+        font-family: 'Mulish', sans-serif;
+        width:100%;
+        border:0;
+    }
+    .dropdown-content button:hover {
+        background-color: #EAF3FC;
+    }
+    :global(.show) {
+    display: block !important;
+}
       </style>

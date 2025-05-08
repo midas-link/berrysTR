@@ -2,6 +2,47 @@
     import { onMount } from 'svelte';
     import * as crossdrop from '$lib/scripts/cross-drop.js'
     import { base } from '$app/paths';
+    import { goto } from '$app/navigation';
+    import { page } from '$app/stores';
+    import { get } from 'svelte/store';
+    const currentPath = get(page).url.pathname;
+    function openDetails(row) {
+    goto(`${base}/deliveryDetail/${row.zip}`, {
+      state: {
+        from: currentPath,
+        address: row.address,
+        city: row.city,
+        state: row.state,
+        date: row.date,
+        time: row.time,
+        siteCode : row.zip
+      }
+    });
+  }
+  function setupMobileMenu() {
+    const hamburger = document.getElementById('hamburger-menu');
+    const sidebar = document.getElementById('mobile-sidebar');
+    const overlay = document.getElementById('overlay');
+    
+    hamburger.addEventListener('click', function() {
+      sidebar.classList.toggle('active');
+      overlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
+    });
+    
+    overlay.addEventListener('click', function() {
+      sidebar.classList.remove('active');
+      overlay.style.display = 'none';
+    });
+    
+    // Close the sidebar when clicking on a link
+    const sidebarLinks = sidebar.querySelectorAll('a');
+    sidebarLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        sidebar.classList.remove('active');
+        overlay.style.display = 'none';
+      });
+    });
+  }
     let rows =  [];  
     let filteredRows = [];
     let detailsVisible = [];
@@ -122,9 +163,13 @@ function toggleDetails(index) {
         detailsVisible = newDetailsVisible;
 }
 
-function updateDateTime() {
-    const now = new Date();
-    const options = { 
+export function updateDateTime() {
+    const datetimeElement = document.getElementById('current-datetime');
+    
+    // Only update if the element exists
+    if (datetimeElement) {
+      const now = new Date();
+      const options = { 
         weekday: 'long', 
         year: 'numeric', 
         month: 'long', 
@@ -133,93 +178,13 @@ function updateDateTime() {
         minute: '2-digit',
         second: '2-digit',
         hour12: true
-    };
-    document.getElementById('current-datetime').textContent = now.toLocaleDateString('en-US', options);
-}
-
-
-function exportTableToCSV() {
-    // Get the table
-    const table = document.querySelector('table');
-    const rows = table.querySelectorAll('tr');
-    
-    // Create CSV content
-    let csv = [];
-    
-    // Get headers
-    const headers = [];
-    const headerCells = rows[0].querySelectorAll('th');
-    headerCells.forEach(cell => {
-        headers.push(cell.textContent.trim());
-    });
-    csv.push(headers.join(','));
-    
-    // Get data rows
-    for (let i = 1; i < rows.length; i++) {
-        const row = [];
-        const cells = rows[i].querySelectorAll('td');
-        cells.forEach(cell => {
-            // Escape quotes and wrap content in quotes to handle commas in content
-            let content = cell.textContent.trim().replace(/"/g, '""');
-            row.push(`"${content}"`);
-        });
-        if (row.length > 0) {  // Only add non-empty rows
-            csv.push(row.join(','));
-        }
+      };
+      datetimeElement.textContent = now.toLocaleDateString('en-US', options);
     }
-    
-    // Create blob
-    const csvContent = csv.join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    
-    // Generate filename with current date and time
-    const date = new Date();
-    const formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD
-    const formattedTime = date.toTimeString().split(' ')[0].replace(/:/g, '-'); // HH-MM-SS
-    const fileName = `cross_drop_data_${formattedDate}_${formattedTime}.csv`;
+  }
 
-    // Try to use the modern File System Access API if available
-    if ('showSaveFilePicker' in window) {
-        async function saveToDisk() {
-            try {
-                const handle = await window.showSaveFilePicker({
-                    suggestedName: fileName,
-                    types: [{
-                        description: 'CSV File',
-                        accept: {
-                            'text/csv': ['.csv'],
-                        },
-                    }],
-                });
-                
-                const writable = await handle.createWritable();
-                await writable.write(blob);
-                await writable.close();
-            } catch (err) {
-                if (err.name !== 'AbortError') {
-                    // Fall back to traditional method if there's an error
-                    // (other than user cancelling)
-                    fallbackSave();
-                }
-            }
-        }
-        saveToDisk();
-    } else {
-        // Fall back to traditional method for browsers that don't support File System Access API
-        fallbackSave();
-    }
 
-    function fallbackSave() {
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.setAttribute('download', fileName);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-}
 
-// Function to check if any search field has input
 
 // Function to toggle live indicator visibility
 function toggleLiveStatus(forceShow = false) {
@@ -233,93 +198,195 @@ function toggleLiveStatus(forceShow = false) {
 
 
 // Toggle dropdown menu
-function toggleDropdown() {
-    document.getElementById("exportDropdown").classList.toggle("show");
-}
+
 
 function hasSearchInput() {
         return Object.values(searchParams).some(value => value.trim() !== '');
     }
-// Function to export table to PDF
+
+function onKeyDown(e){
+    console.log(e.keyCode);
+    if(e.keyCode == 13)
+     filterRows;
+    else
+     return ' ';
+}
+function toggleDropdown() {
+    document.getElementById("exportDropdown").classList.toggle("show");
+}
+function exportTableToCSV() {
+  // Clone the table to avoid modifying the original
+  const originalTable = document.querySelector("table");
+  const tableClone = originalTable.cloneNode(true);
+  
+  // Remove all "View Vehicle Timeline" buttons from the clone
+  const buttons = tableClone.querySelectorAll(".more-details");
+  buttons.forEach(button => {
+    button.parentNode.textContent = ""; // Replace button cell content with empty string
+  });
+  
+  const rows = tableClone.querySelectorAll("tr");
+  let csv = [];
+
+  // Get headers
+  const headers = [];
+  const headerCells = rows[0].querySelectorAll("th");
+  headerCells.forEach((cell) => {
+    headers.push(cell.textContent.trim());
+  });
+  csv.push(headers.join(","));
+
+  // Get data rows - include details rows but without the button
+  for (let i = 1; i < rows.length; i++) {
+    const row = [];
+    const cells = rows[i].querySelectorAll("td");
+    cells.forEach((cell) => {
+      let content = cell.textContent.trim().replace(/"/g, '""');
+      row.push(`"${content}"`);
+    });
+    if (row.length > 0) {
+      csv.push(row.join(","));
+    }
+  }
+
+  // Create blob
+  const csvContent = csv.join("\n");
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+
+  const date = new Date();
+  const formattedDate = date.toISOString().split("T")[0]; // YYYY-MM-DD
+  const formattedTime = date.toTimeString().split(" ")[0].replace(/:/g, "-"); // HH-MM-SS
+  const pageType = document.location.pathname.includes("vehicle-logging")
+    ? "vehicle_logging"
+    : "cross-drops";
+  const fileName = `${pageType}_${formattedDate}_${formattedTime}.csv`;
+
+  if ("showSaveFilePicker" in window) {
+    async function saveToDisk() {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: fileName,
+          types: [
+            {
+              description: "CSV File",
+              accept: {
+                "text/csv": [".csv"],
+              },
+            },
+          ],
+        });
+
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          fallbackSave();
+        }
+      }
+    }
+    saveToDisk();
+  } else {
+    fallbackSave();
+  }
+
+  function fallbackSave() {
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+}
+
 async function exportTableToPDF() {
+  try {
     const { jsPDF } = window.jspdf;
+    if (!jsPDF) throw new Error("jsPDF library not found");
+    
     const doc = new jsPDF();
-    
-    // Get table data
-    const table = document.querySelector('table');
-    
-    // Add title
-    doc.setFont('helvetica', 'bold');
+
+    // Add title and timestamp
+    doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
-    doc.text('Cross Drop Prevention Data', 14, 15);
-    
-    // Add timestamp
+    doc.text("Cross Drops Prevention Data", 14, 15);
+
     const timestamp = new Date().toLocaleString();
     doc.setFontSize(10);
-    doc.setFont('helvetica', 'normal');
+    doc.setFont("helvetica", "normal");
     doc.text(`Generated: ${timestamp}`, 14, 25);
+
+    // Get the specific table you want to export
+    const originalTable = document.querySelector("table"); // Use a more specific selector
+    if (!originalTable) throw new Error("Table not found");
     
-    // Create the PDF table
+    const exportTable = originalTable.cloneNode(true);
+    
+    // Remove action buttons more reliably
+    const buttons = exportTable.querySelectorAll(".more-details");
+    buttons.forEach(button => {
+      const cell = button.closest("td, th");
+      if (cell) cell.textContent = "";
+    });
+
+    // Generate the table in PDF
     doc.autoTable({
-        html: table,
-        startY: 30,
-        styles: {
-            fontSize: 8,
-            cellPadding: 2,
-            overflow: 'linebreak',
-            halign: 'center'
-        },
-        headStyles: {
-            fillColor: [1, 75, 150],
-            textColor: 255,
-            fontSize: 8,
-            fontStyle: 'bold',
-            halign: 'center'
-        },
-        alternateRowStyles: {
-            fillColor: [234, 243, 252]
-        },
-        margin: { top: 30 }
+      html: exportTable,
+      startY: 30,
+      styles: {
+        fontSize: 8,
+        cellPadding: 2,
+        overflow: "linebreak",
+        halign: "center",
+      },
+      headStyles: {
+        fillColor: [1, 75, 150],
+        textColor: 255,
+        fontSize: 8,
+        fontStyle: "bold",
+        halign: "center",
+      },
+      alternateRowStyles: {
+        fillColor: [234, 243, 252],
+      },
+      margin: { top: 30 },
     });
 
     // Generate filename
     const date = new Date();
-    const formattedDate = date.toISOString().split('T')[0];
-    const formattedTime = date.toTimeString().split(' ')[0].replace(/:/g, '-');
-    const fileName = `cross_drop_data_${formattedDate}_${formattedTime}.pdf`;
+    const formattedDate = date.toISOString().split("T")[0];
+    const formattedTime = date.toTimeString().split(" ")[0].replace(/:/g, "-");
+    const fileName = `cross_drops_${formattedDate}_${formattedTime}.pdf`;
 
-    // Get the PDF as blob
-    const pdfBlob = new Blob([doc.output('blob')], { type: 'application/pdf' });
-
-    // Try to use the modern File System Access API if available
-    if ('showSaveFilePicker' in window) {
-        try {
-            const handle = await window.showSaveFilePicker({
-                suggestedName: fileName,
-                types: [{
-                    description: 'PDF File',
-                    accept: {
-                        'application/pdf': ['.pdf'],
-                    },
-                }],
-            });
-            
-            const writable = await handle.createWritable();
-            await writable.write(pdfBlob);
-            await writable.close();
-        } catch (err) {
-            if (err.name !== 'AbortError') {
-                // Fall back to traditional method if there's an error
-                // (other than user cancelling)
-                fallbackSavePDF(doc, fileName);
-            }
-        }
-    } else {
-        // Fall back to traditional method for browsers that don't support File System Access API
+    // Save the file
+    if ("showSaveFilePicker" in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: fileName,
+          types: [{
+            description: "PDF File",
+            accept: { "application/pdf": [".pdf"] },
+          }],
+        });
+        const writable = await handle.createWritable();
+        await writable.write(doc.output("blob")); // No need for new Blob()
+        await writable.close();
+      } catch (err) {
+        console.error("File save error:", err);
         fallbackSavePDF(doc, fileName);
+      }
+    } else {
+      fallbackSavePDF(doc, fileName);
     }
-}
 
+    return true; // Indicate success
+  } catch (error) {
+    console.error("PDF generation failed:", error);
+    // You might want to show a user-friendly error message here
+    return false; // Indicate failure
+  }
+}
 // Fallback save method for PDF
 function fallbackSavePDF(doc, fileName) {
     doc.save(fileName);
@@ -336,12 +403,12 @@ function closeDropdown(event) {
         }
 }
  onMount(async() => {
+    setupMobileMenu();
     updateDateTime();
     crossdrop.disableBrowserAutocomplete();
     rows = await crossdrop.fetchPreventions()
     filteredRows = [...rows];
     detailsVisible = Array(rows.length).fill(false);
-    crossdrop.addFilterFunctionality();
     crossdrop.disableBrowserAutocomplete();
     const interval =  setInterval(updateDateTime,1000);
     window.addEventListener('click',closeDropdown);
@@ -353,8 +420,12 @@ function closeDropdown(event) {
 </script>
     <svelte:head>
     <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+  ></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"
+  ></script>
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -370,6 +441,11 @@ function closeDropdown(event) {
             </div>
             <div class="header">
                 <div class="header-background" style="      background: url({base}/svg/Vector_1.svg) no-repeat left center; mask-image: url({base}/svg/Vector_1.svg'); -webkit-mask-image: url({base}/svg/Vector_1.svg);"></div>
+                <div class="hamburger-menu" id="hamburger-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
                 <a href="{base}/home">Home</a>
                 <a href="{base}/inventory">Inventory</a>
                 <a href="{base}/vehicle-logging">Vehicle Logging</a>
@@ -380,14 +456,25 @@ function closeDropdown(event) {
             </div>
         </div>
     </header>
+    <!-- Mobile sidebar navigation -->
+<div class="mobile-sidebar" id="mobile-sidebar">
+    <a href="{base}/home">Home</a>
+    <a href="{base}/vehicle-logging">Vehicle Logging</a>
+    <a href="{base}/cross-drops">Cross-Drop Prevention</a>
+    <a href="{base}/site-data">Site Data</a>
+    <a href="{base}/inventory">Inventory</a>
+    <a href="{base}/analytics">Analytics</a>
+  </div>
+  <div class="overlay" id="overlay"></div>
+
     <div class="sub-header-container">
         <div class="sub-header">
                 <h1> Cross-drop prevention </h1>
-                <span> Midas Elbow prevents unloading errors by detecting the product before its dropped into the underground storage tank. <br> View prevented contamination instances below, either live or by custom search fields. </span>
+                <span> Midas Elbow prevents unloading errors by detecting the product before its dropped into the underground storage tank. View prevented contamination instances below, either live or by custom search fields. </span>
               
         </div>
         <div class="breadcrumb">
-            <a href="{base}/home">Home</a> / <span>cross-drop prevention</span>
+            <a href="{base}/home">Home</a> / <span>Cross-drop prevention</span>
         </div> 
     </div>
     <main>
@@ -395,17 +482,17 @@ function closeDropdown(event) {
            <label class="search-label" for="search-fields"> Search</label>
            <div class="search-fields">
              <label for="ST-address"> Address</label>
-             <input type="text" id="ST-address"  bind:value={searchParams.address}  name="ST-address" autocomplete="off">
+             <input type="text" id="ST-address"  bind:value={searchParams.address}  name="ST-address" autocomplete="off"   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}>
              <label for="State"> State</label>
-             <input type="text" id="State"  bind:value={searchParams.state} name="State" autocomplete="off">
+             <input type="text" id="State"  bind:value={searchParams.state} name="State" autocomplete="off"   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}>
              <label for="City"> City</label>
-             <input type="text" id="City" bind:value={searchParams.city} name="City" autocomplete="off">
+             <input type="text" id="City" bind:value={searchParams.city} name="City" autocomplete="off"  on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}>
              <label for="Zip">Zip</label>
-             <input type="text" id="Zip"  bind:value={searchParams.zip} name="Zip" autocomplete="off">
+             <input type="text" id="Zip"  bind:value={searchParams.zip} name="Zip" autocomplete="off"  on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}>
              <label for="Date">Date</label>
-             <input type="text" id="Date" bind:value={searchParams.date} name="Date" autocomplete="off" placeholder="DD.MM.YYYY">
+             <input type="text" id="Date" bind:value={searchParams.date} name="Date" autocomplete="off" placeholder="DD.MM.YYYY"   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}>
              <label for="Fuel">Fuel</label>
-             <input type="text" id="Fuel"     bind:value={searchParams.fuel}  name="Fuel" autocomplete="off">
+             <input type="text" id="Fuel"     bind:value={searchParams.fuel}  name="Fuel" autocomplete="off"  on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}>
            </div> 
            <div class="button-container">
             <button class="search-button" on:click={filterRows}>Search</button>      
@@ -466,6 +553,10 @@ function closeDropdown(event) {
                         <span class="label">Fuel Prevented:</span> {row.preventedDelivery || ''}
                     </div>
                 </td>
+                <td>
+                    <button on:click={() => openDetails(row)} class="more-details">
+                        See Delivery Details
+                      </button>                </td>
             </tr>
         {/if}
                 {/each}
@@ -557,27 +648,23 @@ function closeDropdown(event) {
         font-weight: 700;
         transition: all 0.3s ease;
     }
-    .header a:nth-child(2) {
-        margin-left: 30%;
+    .header a:nth-child(3) {
+        margin-left: 10%;
     }
-    @media (max-width: 1000px) and (max-height: 1000px) {
+    @media (max-width: 1000px){
         .header a:nth-child(2) {
             margin-left: 5%;
         }
         .header img {
-            max-height: 6vh; /* Maintain height relative to viewport */
-            max-width: 100%; /* Ensure it doesn't exceed the width of its container */
-            height: auto; /* Maintain aspect ratio */
-            width: auto ;
-            scale:1.1;
-        }
+      max-height: 8vh; 
+      max-width: 100%; 
+      height: auto; 
+      width: auto;
+      scale: 1.1;
+      margin-left:auto;
+    }
         main {
             flex: 1;
-            min-height: 40vh;
-        }
-        .header-background {
-            top: 50%;
-            height: 90%;
         }
         .header a {
             white-space: nowrap;
@@ -592,7 +679,12 @@ function closeDropdown(event) {
         * {
             font-size: 0.75rem !important;
         }
-
+        .hamburger-menu {
+        display: block !important;
+        position: absolute;
+        left: 30px;
+        transform: translateY(-50%);
+    }
         .search-button{
         padding : 0.5vh 0.5vw !important;
         margin-top: 0  !important;
@@ -636,6 +728,12 @@ function closeDropdown(event) {
             height: auto; /* Maintain aspect ratio */
             width: auto !important;
         }
+        .header a {
+        display:none;
+      }
+      .header input {
+        display:none;
+      }
 
     }
     .header a:hover {
@@ -942,7 +1040,7 @@ function closeDropdown(event) {
         background-color: #f9f9f9;
         min-width: 120px;
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-        z-index: 1;
+        z-index: 2000;
         border-radius: 4px;
     }
     .dropdown-content a {
@@ -955,6 +1053,9 @@ function closeDropdown(event) {
     .dropdown-content a:hover {
         background-color: #EAF3FC;
     }
+    .dropdown-content.show {
+    display: block !important;
+}
     td {
         text-align: center;
         vertical-align: middle;
@@ -972,5 +1073,79 @@ function closeDropdown(event) {
     }
     .toggle-live {
         margin-right: 15px;
+    }
+     .more-details{
+        background-color: #014B96;
+        color: white;
+        padding: 0.5vh 2vh;
+        border-radius: 4px;
+        font-family: 'Mulish', sans-serif;
+        font-weight: 400;
+        font-size: 1rem;
+        border: none;
+        cursor: pointer;
+        margin-left: auto;
+        transition: background-color 0.3s ease;
+    }
+
+    .more-details:hover{
+        background-color: #013b77;
+    }
+    .mobile-sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100vh;
+      background: linear-gradient(to bottom, #001338 0%, #014B96 100%);
+      z-index: 999;
+      transition: left 0.3s ease;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+      padding-top: 60px;
+      overflow-y: auto;
+    }
+    :global(.mobile-sidebar.active) {
+      left: 0;
+    }
+    
+    .mobile-sidebar a {
+      display: block;
+      padding: 15px 20px;
+      font-family: 'Mulish', sans-serif;
+      font-weight: 600;
+      color: white;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .mobile-sidebar a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 998;
+      display: none;
+    }
+    /* Mobile menu styles */
+    .hamburger-menu {
+      display: none;
+      cursor: pointer;
+      z-index: 1000;
+    }
+    
+    .hamburger-menu span {
+      display: block;
+      width: 25px;
+      height: 3px;
+      margin: 5px 0;
+      background-color: white;
+      border-radius: 3px;
+      transition: 0.3s;
     }
 </style>

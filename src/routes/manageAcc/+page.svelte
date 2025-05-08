@@ -52,7 +52,7 @@ setupMobileMenu();
                     <span></span>
                   </div>
                 <a href="{base}/home">Home</a>
-                <a href="{base}/cross-drops">Cross-drop</a>
+                <a href="{base}/cross-drops">Cross-Drop Prevention</a>
                 <a href="{base}/vehicle-logging">Vehicle Logging</a>
                 <a href="{base}/site-data">Site Data</a>
                 <a href="{base}/inventory">Inventory</a>
@@ -204,10 +204,6 @@ setupMobileMenu();
         scale:1.1;
         margin-left:auto;
       }
-      .header-background {
-        top: 50%;
-        height: 90%;
-      }
       .header a {
         display:none;
       }
@@ -217,10 +213,9 @@ setupMobileMenu();
       .hamburger-menu {
         display: block !important;
         position: absolute;
-        left: 15px;
-        top: 50%;
+        left: 30px;
         transform: translateY(-50%);
-      }
+    }
   
       .sub-header {
         padding-left: 1vh;

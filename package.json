@@ -2,7 +2,7 @@
 	"name": "berrys",
 	"private": true,
 	"version": "0.0.1",
-	"homepage": "https://alirezamodiriyan.github.io/berrys/",
+	"homepage": "https://midas-link.github.io/berrys/",
 	"type": "module",
 	"scripts": {
   "dev": "vite dev",

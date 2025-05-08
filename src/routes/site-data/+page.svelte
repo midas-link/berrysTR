@@ -3,13 +3,18 @@
   import DropdownField from "./DropdownField.svelte";
   import { base } from '$app/paths';
   import { goto } from '$app/navigation';
-
+  import { page } from '$app/stores';
+  import { get } from 'svelte/store';
+  const currentPath = get(page).url.pathname;
   function openDetails(row) {
-    goto(`/deliveryDetail/${row.SiteCode}`, {
+    goto(`${base}/deliveryDetail/${row.SiteCode}`, {
       state: {
+        from:  currentPath,
         address: row.Address,
         city: row.City,
-        state: row.State
+        state: row.State,
+        date: row.Date,
+        siteCode: row.SiteCode
       }
     });
   }
@@ -154,105 +159,27 @@ function toggleDetails(index) {
         newDetailsVisible[index] = !newDetailsVisible[index];
         detailsVisible = newDetailsVisible;
 }
-    function updateDateTime() {
-        const now = new Date();
-        const options = { 
-            weekday: 'long', 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true
-        };
-        document.getElementById('current-datetime').textContent = now.toLocaleDateString('en-US', options);
+  export function updateDateTime() {
+    const datetimeElement = document.getElementById('current-datetime');
+    
+    // Only update if the element exists
+    if (datetimeElement) {
+      const now = new Date();
+      const options = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      };
+      datetimeElement.textContent = now.toLocaleDateString('en-US', options);
     }
+  }
     
 
-    
-    function exportTableToCSV() {
-        // Get the table
-        const table = document.querySelector('table');
-        const rows = table.querySelectorAll('tr');
-        
-        // Create CSV content
-        let csv = [];
-        
-        // Get headers
-        const headers = [];
-        const headerCells = rows[0].querySelectorAll('th');
-        headerCells.forEach(cell => {
-            headers.push(cell.textContent.trim());
-        });
-        csv.push(headers.join(','));
-        
-        // Get data rows
-        for (let i = 1; i < rows.length; i++) {
-            const row = [];
-            const cells = rows[i].querySelectorAll('td');
-            cells.forEach(cell => {
-                // Escape quotes and wrap content in quotes to handle commas in content
-                let content = cell.textContent.trim().replace(/"/g, '""');
-                row.push(`"${content}"`);
-            });
-            if (row.length > 0) {  // Only add non-empty rows
-                csv.push(row.join(','));
-            }
-        }
-        
-        // Create blob
-        const csvContent = csv.join('\n');
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        
-        // Generate filename with current date and time
-        const date = new Date();
-        const formattedDate = date.toISOString().split('T')[0]; // YYYY-MM-DD
-        const formattedTime = date.toTimeString().split(' ')[0].replace(/:/g, '-'); // HH-MM-SS
-        // Customize filename based on the current page
-        const pageType = document.location.pathname.includes('vehicle-logging') ? 'vehicle_logging' : 'site_data';
-        const fileName = `${pageType}_${formattedDate}_${formattedTime}.csv`;
-    
-        // Try to use the modern File System Access API if available
-        if ('showSaveFilePicker' in window) {
-            async function saveToDisk() {
-                try {
-                    const handle = await window.showSaveFilePicker({
-                        suggestedName: fileName,
-                        types: [{
-                            description: 'CSV File',
-                            accept: {
-                                'text/csv': ['.csv'],
-                            },
-                        }],
-                    });
-                    
-                    const writable = await handle.createWritable();
-                    await writable.write(blob);
-                    await writable.close();
-                } catch (err) {
-                    if (err.name !== 'AbortError') {
-                        // Fall back to traditional method if there's an error
-                        // (other than user cancelling)
-                        fallbackSave();
-                    }
-                }
-            }
-            saveToDisk();
-        } else {
-            // Fall back to traditional method for browsers that don't support File System Access API
-            fallbackSave();
-        }
-    
-        function fallbackSave() {
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.setAttribute('download', fileName);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-    }
     
     // Function to check if any search field has input
     function hasSearchInput() {
@@ -277,8 +204,32 @@ function toggleDetails(index) {
         liveStatus.style.display = 'block';
     }
   }
-
+  function setupMobileMenu() {
+    const hamburger = document.getElementById('hamburger-menu');
+    const sidebar = document.getElementById('mobile-sidebar');
+    const overlay = document.getElementById('overlay');
+    
+    hamburger.addEventListener('click', function() {
+      sidebar.classList.toggle('active');
+      overlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
+    });
+    
+    overlay.addEventListener('click', function() {
+      sidebar.classList.remove('active');
+      overlay.style.display = 'none';
+    });
+    
+    // Close the sidebar when clicking on a link
+    const sidebarLinks = sidebar.querySelectorAll('a');
+    sidebarLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        sidebar.classList.remove('active');
+        overlay.style.display = 'none';
+      });
+    });
+  }
   onMount(async () => {
+    setupMobileMenu();
     updateDateTime();
     siteDataFuncs.disableBrowserAutocomplete();
     console.log("Starting data fetch");
@@ -312,86 +263,180 @@ function toggleDetails(index) {
     }
     
 
-    
-    // Function to export table to PDF
-    async function exportTableToPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        
-        // Get table data
-        const table = document.querySelector('table');
-        
-        // Add title
-        doc.setFont('helvetica', 'bold');
-        doc.setFontSize(16);
-        doc.text('Cross Drop Prevention Data', 14, 15);
-        
-        // Add timestamp
-        const timestamp = new Date().toLocaleString();
-        doc.setFontSize(10);
-        doc.setFont('helvetica', 'normal');
-        doc.text(`Generated: ${timestamp}`, 14, 25);
-        
-        // Create the PDF table
-        doc.autoTable({
-            html: table,
-            startY: 30,
-            styles: {
-                fontSize: 8,
-                cellPadding: 2,
-                overflow: 'linebreak',
-                halign: 'center'
-            },
-            headStyles: {
-                fillColor: [1, 75, 150],
-                textColor: 255,
-                fontSize: 8,
-                fontStyle: 'bold',
-                halign: 'center'
-            },
-            alternateRowStyles: {
-                fillColor: [234, 243, 252]
-            },
-            margin: { top: 30 }
-        });
-    
-        // Generate filename
-        const date = new Date();
-        const formattedDate = date.toISOString().split('T')[0];
-        const formattedTime = date.toTimeString().split(' ')[0].replace(/:/g, '-');
-        const fileName = `cross_drop_data_${formattedDate}_${formattedTime}.pdf`;
-    
-        // Get the PDF as blob
-        const pdfBlob = new Blob([doc.output('blob')], { type: 'application/pdf' });
-    
-        // Try to use the modern File System Access API if available
-        if ('showSaveFilePicker' in window) {
-            try {
-                const handle = await window.showSaveFilePicker({
-                    suggestedName: fileName,
-                    types: [{
-                        description: 'PDF File',
-                        accept: {
-                            'application/pdf': ['.pdf'],
-                        },
-                    }],
-                });
-                
-                const writable = await handle.createWritable();
-                await writable.write(pdfBlob);
-                await writable.close();
-            } catch (err) {
-                if (err.name !== 'AbortError') {
-                    // Fall back to traditional method if there's an error
-                    // (other than user cancelling)
-                    fallbackSavePDF(doc, fileName);
-                }
-            }
-        } else {
-            // Fall back to traditional method for browsers that don't support File System Access API
-            fallbackSavePDF(doc, fileName);
-        }
+    function exportTableToCSV() {
+  // Clone the table to avoid modifying the original
+  const originalTable = document.querySelector("table");
+  const tableClone = originalTable.cloneNode(true);
+  
+  // Remove all "View Vehicle Timeline" buttons from the clone
+  const buttons = tableClone.querySelectorAll(".more-details");
+  buttons.forEach(button => {
+    button.parentNode.textContent = ""; // Replace button cell content with empty string
+  });
+  
+  const rows = tableClone.querySelectorAll("tr");
+  let csv = [];
+
+  // Get headers
+  const headers = [];
+  const headerCells = rows[0].querySelectorAll("th");
+  headerCells.forEach((cell) => {
+    headers.push(cell.textContent.trim());
+  });
+  csv.push(headers.join(","));
+
+  // Get data rows - include details rows but without the button
+  for (let i = 1; i < rows.length; i++) {
+    const row = [];
+    const cells = rows[i].querySelectorAll("td");
+    cells.forEach((cell) => {
+      let content = cell.textContent.trim().replace(/"/g, '""');
+      row.push(`"${content}"`);
+    });
+    if (row.length > 0) {
+      csv.push(row.join(","));
     }
+  }
+
+  // Create blob
+  const csvContent = csv.join("\n");
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+
+  const date = new Date();
+  const formattedDate = date.toISOString().split("T")[0]; // YYYY-MM-DD
+  const formattedTime = date.toTimeString().split(" ")[0].replace(/:/g, "-"); // HH-MM-SS
+  const pageType = document.location.pathname.includes("vehicle-logging")
+    ? "vehicle_logging"
+    : "site_data";
+  const fileName = `${pageType}_${formattedDate}_${formattedTime}.csv`;
+
+  if ("showSaveFilePicker" in window) {
+    async function saveToDisk() {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: fileName,
+          types: [
+            {
+              description: "CSV File",
+              accept: {
+                "text/csv": [".csv"],
+              },
+            },
+          ],
+        });
+
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          fallbackSave();
+        }
+      }
+    }
+    saveToDisk();
+  } else {
+    fallbackSave();
+  }
+
+  function fallbackSave() {
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", fileName);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+}
+
+async function exportTableToPDF() {
+  try {
+    const { jsPDF } = window.jspdf;
+    if (!jsPDF) throw new Error("jsPDF library not found");
+    
+    const doc = new jsPDF();
+
+    // Add title and timestamp
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.text("Site Data", 14, 15);
+
+    const timestamp = new Date().toLocaleString();
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "normal");
+    doc.text(`Generated: ${timestamp}`, 14, 25);
+
+    // Get the specific table you want to export
+    const originalTable = document.querySelector("table"); // Use a more specific selector
+    if (!originalTable) throw new Error("Table not found");
+    
+    const exportTable = originalTable.cloneNode(true);
+    
+    // Remove action buttons more reliably
+    const buttons = exportTable.querySelectorAll(".more-details");
+    buttons.forEach(button => {
+      const cell = button.closest("td, th");
+      if (cell) cell.textContent = "";
+    });
+
+    // Generate the table in PDF
+    doc.autoTable({
+      html: exportTable,
+      startY: 30,
+      styles: {
+        fontSize: 8,
+        cellPadding: 2,
+        overflow: "linebreak",
+        halign: "center",
+      },
+      headStyles: {
+        fillColor: [1, 75, 150],
+        textColor: 255,
+        fontSize: 8,
+        fontStyle: "bold",
+        halign: "center",
+      },
+      alternateRowStyles: {
+        fillColor: [234, 243, 252],
+      },
+      margin: { top: 30 },
+    });
+
+    // Generate filename
+    const date = new Date();
+    const formattedDate = date.toISOString().split("T")[0];
+    const formattedTime = date.toTimeString().split(" ")[0].replace(/:/g, "-");
+    const fileName = `site_data_${formattedDate}_${formattedTime}.pdf`;
+
+    // Save the file
+    if ("showSaveFilePicker" in window) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: fileName,
+          types: [{
+            description: "PDF File",
+            accept: { "application/pdf": [".pdf"] },
+          }],
+        });
+        const writable = await handle.createWritable();
+        await writable.write(doc.output("blob")); // No need for new Blob()
+        await writable.close();
+      } catch (err) {
+        console.error("File save error:", err);
+        fallbackSavePDF(doc, fileName);
+      }
+    } else {
+      fallbackSavePDF(doc, fileName);
+    }
+
+    return true; // Indicate success
+  } catch (error) {
+    console.error("PDF generation failed:", error);
+    // You might want to show a user-friendly error message here
+    return false; // Indicate failure
+  }
+}
+ 
     
     // Fallback save method for PDF
     function fallbackSavePDF(doc, fileName) {
@@ -417,9 +462,14 @@ function toggleDetails(index) {
             </div>
             <div class="header">
                 <div class="header-background" style="      background: url({base}/svg/Vector_1.svg) no-repeat left center; mask-image: url({base}/svg/Vector_1.svg'); -webkit-mask-image: url({base}/svg/Vector_1.svg);"></div>
+                <div class="hamburger-menu" id="hamburger-menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                  </div>
                 <a href="{base}/home">Home</a>
                 <a href="{base}/inventory">Inventory</a>
-                <a href="{base}/cross-drops">Cross-drop</a>
+                <a href="{base}/cross-drops">Cross-Drop Prevention</a>
                 <a href="{base}/vehicle-logging">Vehicle Logging</a>
                 <a href="{base}/analytics">Analytics</a>
                 <input type="text" placeholder="Search...">
@@ -427,10 +477,19 @@ function toggleDetails(index) {
             </div>
         </div>
     </header>
+    <div class="mobile-sidebar" id="mobile-sidebar">
+        <a href="{base}/home">Home</a>
+        <a href="{base}/vehicle-logging">Vehicle Logging</a>
+        <a href="{base}/cross-drops">Cross-Drop Prevention</a>
+        <a href="{base}/site-data">Site Data</a>
+        <a href="{base}/inventory">Inventory</a>
+        <a href="{base}/analytics">Analytics</a>
+      </div>
+      <div class="overlay" id="overlay"></div>
     <div class="sub-header-container">
         <div class="sub-header">
                 <h1>Site Data</h1>
-                <span> Gather insight into your deliveries by site location. You can dive into delivery information by State, Zip code, Street Address and City. This <br>will offer you vital information on drop frequency, scheduling and billing reports.  </span>
+                <span> Gather insight into your deliveries by site location. You can dive into delivery information by State, Zip code, Street Address and City. This will offer you vital information on drop frequency, scheduling and billing reports.  </span>
               
         </div>
         <div class="breadcrumb">
@@ -445,7 +504,7 @@ function toggleDetails(index) {
                     id="Business-unit" 
                     label="Business Unit" 
                     options={uniqueBusinessUnits} 
-                    bind:value={searchParams.businessUnit}
+                    bind:value={searchParams.businessUnit}   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}
                 />
                 
                 <label for="ST-address">Address</label>
@@ -458,28 +517,28 @@ function toggleDetails(index) {
                     autocomplete="off" 
                     autocorrect="off" 
                     autocapitalize="off" 
-                    spellcheck="false"
+                    spellcheck="false"   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}
                 />
                 
                 <DropdownField 
                     id="State" 
                     label="State" 
                     options={uniqueStates} 
-                    bind:value={searchParams.state}
+                    bind:value={searchParams.state}   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}
                 />
                 
                 <DropdownField 
                     id="City" 
                     label="City" 
                     options={uniqueCities} 
-                    bind:value={searchParams.city}
+                    bind:value={searchParams.city}   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}
                 />
                 
                 <DropdownField 
                     id="Site" 
                     label="Site" 
                     options={uniqueSites} 
-                    bind:value={searchParams.site}
+                    bind:value={searchParams.site}   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}
                 />
                 
                 <label for="Zip">Zip</label>
@@ -492,7 +551,7 @@ function toggleDetails(index) {
                     autocomplete="off" 
                     autocorrect="off" 
                     autocapitalize="off" 
-                    spellcheck="false"
+                    spellcheck="false"   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}
                 />
                 
                 <label for="Date">Date</label>
@@ -506,7 +565,7 @@ function toggleDetails(index) {
                     autocorrect="off" 
                     autocapitalize="off" 
                     spellcheck="false" 
-                    placeholder="DD/MM/YYYY"
+                    placeholder="DD/MM/YYYY"   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}
                 />
                 
                 <label for="Fuel">Fuel</label>
@@ -519,7 +578,7 @@ function toggleDetails(index) {
                     autocomplete="off" 
                     autocorrect="off" 
                     autocapitalize="off" 
-                    spellcheck="false"
+                    spellcheck="false"   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}
                 />
             </div>
            <div class="button-container">
@@ -585,7 +644,7 @@ function toggleDetails(index) {
                 </td>
                 <td>
                     <button on:click={() => openDetails(row)} class="more-details">
-                        Expand details
+                        See Delivery Details
                       </button>                </td>
             </tr>
         {/if}
@@ -676,100 +735,10 @@ function toggleDetails(index) {
         font-weight: 700;
         transition: all 0.3s ease;
     }
-    .header a:nth-child(2) {
-        margin-left: 30%;
+    .header a:nth-child(3) {
+        margin-left: 10%;
     }
-    @media (max-width: 1000px) and (max-height: 1000px) {
-        .header a:nth-child(2) {
-            margin-left: 5%;
-        }
-        .header img {
-            max-height: 6vh; /* Maintain height relative to viewport */
-            max-width: 100%; /* Ensure it doesn't exceed the width of its container */
-            height: auto; /* Maintain aspect ratio */
-            width: auto ;
-            scale:1.1;
-        }
-        main {
-            flex: 1;
-            min-height: 40vh;
-        }
-        .header-background {
-            top: 50%;
-            height: 90%;
-        }
-        .header a {
-            white-space: nowrap;
-            padding-left: 1.5vw;
-        }
-        .header input[type="text"] {
-            display:none;
-        }
-        .sub-header {
-            padding-left: 1vh;
-        }
-        .custom-dropdown{
-            display:flex !important;
-            flex: 1 1 20%;
-        }
-        .search-button{
-        padding : 0.5vh 0.5vw !important;
-        margin-top: 0  !important;
-        }
-        .clear-button{
-            padding : 0.5vh 0.5vw !important;    
-            margin-top: 0  !important;
-        }
-        .search-fields {
-            display: flex; 
-            flex-wrap: wrap; 
-            justify-content: space-between; 
-            padding-left: 0 !important; 
-        }
-        :global(.search-fields label) {
-            flex: 1 1 10%;
-            width:fit-content;
-            margin-bottom: 0;
-            margin-top: 1vh;
-            margin-left: 1.25%;
-            margin-right: 1.25%;
-        }
-        .search-fields label:nth-last-of-type(1),
-        .search-fields label:nth-last-of-type(2) {
-        flex: 1 1 10% !important;
-        }
-        .search-fields input:nth-last-of-type(1),
-        .search-fields input:nth-last-of-type(2){
-            flex: 1 1 35% !important;
-        }
-
-        .search-fields input {
-            width:10vw !important;
-            flex: 1 1 20%; 
-            margin-left: 0 !important;
-            margin-right: 0 !important; 
-            margin-bottom: 1vh;
-            padding-left: 0.5vw !important; 
-        }
-        .search-fields input::placeholder{
-            font-size:0.6rem !important;
-        }
-        .button-container{
-            margin-top: 1vh !important;
-        }
-        * {
-            font-size: 0.75rem !important;
-        }
-        footer img { 
-            max-height: 6vh; /* Maintain height relative to viewport */
-            max-width: 20%; /* Ensure it doesn't exceed the width of its container */
-            height: auto; /* Maintain aspect ratio */
-            width: auto !important;
-        }
-        .custom-dropdown{
-            display:none;
-        }
-    }
+   
     .header a:hover {
         background-color: rgba(255, 255, 255, 0.1);
         border-radius: 4px;
@@ -889,6 +858,7 @@ function toggleDetails(index) {
         padding-bottom: 1vh;
         padding-left: 1vh;
         width: 7vw;
+        border-radius: 10px;
     }
     :global(.search-fields input::placeholder){
         color: #5e5e5e;
@@ -1198,4 +1168,203 @@ function toggleDetails(index) {
     .more-details:hover{
         background-color: #013b77;
     }
+    .mobile-sidebar {
+      position: fixed;
+      top: 0;
+      left: -250px;
+      width: 250px;
+      height: 100vh;
+      background: linear-gradient(to bottom, #001338 0%, #014B96 100%);
+      z-index: 999;
+      transition: left 0.3s ease;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+      padding-top: 60px;
+      overflow-y: auto;
+    }
+    :global(.mobile-sidebar.active) {
+      left: 0;
+    }
+    
+    .mobile-sidebar a {
+      display: block;
+      padding: 15px 20px;
+      font-family: 'Mulish', sans-serif;
+      font-weight: 600;
+      color: white;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .mobile-sidebar a:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 998;
+      display: none;
+    }
+    /* Mobile menu styles */
+    .hamburger-menu {
+      display: none;
+      cursor: pointer;
+      z-index: 1000;
+    }
+    
+    .hamburger-menu span {
+      display: block;
+      width: 25px;
+      height: 3px;
+      margin: 5px 0;
+      background-color: white;
+      border-radius: 3px;
+      transition: 0.3s;
+    }
+    @media (max-width: 1000px) {
+    /* Keep existing styles */
+    .header a:nth-child(2) {
+        margin-left: 5%;
+    }
+    .header img {
+        max-height: 8vh; 
+        max-width: 100%; 
+        height: auto; 
+        width: auto;
+        scale: 1.1;
+        margin-left: auto;
+    }
+    main {
+        flex: 1;
+    }
+    .header a {
+        white-space: nowrap;
+        padding-left: 1.5vw;
+        display: none; /* Keep this */
+    }
+    .header input[type="text"] {
+        display: none;
+    }
+    .sub-header {
+        padding-left: 1vh;
+    }
+    .main-container {
+        padding-right: 3vw;
+    }
+    /* Fixed styles for search fields in mobile view */
+    :global(.search-fields) {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 0 10px;
+
+    }
+    
+    /* Create rows for label + input pairs */
+    :global(.search-fields > div), 
+    :global(.search-fields > label) + input {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        margin-bottom: 10px;
+        align-items: center;
+    }
+    
+    /* Style labels */
+    :global(.search-fields label) {
+        min-width: 90px;
+        margin: 0;
+        padding: 8px 0;
+        font-size: 14px !important;
+        white-space: nowrap;
+    }
+    
+    /* Style inputs */
+    :global(.search-fields input) {
+        flex: 1;
+        width: 100% !important;
+        margin: 0 0 0 10px !important;
+        padding: 8px !important;
+        font-size: 14px !important;
+    }
+    
+    /* Fix dropdown components */
+    :global(.custom-dropdown) {
+        display: flex !important;
+        width: 100% !important;
+        margin-bottom: 10px;
+    }
+    
+    :global(.custom-dropdown input) {
+        flex: 1;
+        width: 100% !important;
+        padding: 8px !important;
+        margin: 0 0 0 10px !important;
+    }
+    
+    /* Make buttons more accessible on mobile */
+    .button-container {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin: 15px 0;
+        width: 100%;
+    }
+    
+    .search-button, .clear-button {
+        min-width: 100px;
+        padding: 10px 15px !important;
+        font-size: 0.75rem !important;
+        margin: 0 !important;
+    }
+    
+    .live-status {
+        margin-bottom: 10px;
+        width: 100%;
+    }
+    
+    .export-dropdown {
+        align-self: flex-end;
+    }
+    
+    /* Keep existing mobile nav styles */
+    .hamburger-menu {
+        display: block !important;
+        position: absolute;
+        left: 30px;
+        transform: translateY(-50%);
+    }
+    .sub-header{
+        font-size: 0.875rem !important;
+    }
+    footer img { 
+        max-height: 6vh;
+        max-width: 20%; 
+        height: auto; 
+        width: auto !important;
+    }
+    .custom-dropdown {
+        display:none;
+    }
+   
+    .table-type,
+    .current-time,
+    .export-button,
+    .more-details{
+        font-size: 0.75rem !important;
+    }
+    table th{
+        font-size: 0.60rem !important;
+    }
+    table tr{
+        font-size: 0.75rem !important;
+    }
+    *{
+        font-size:0.875rem;
+    }
+}
 </style>

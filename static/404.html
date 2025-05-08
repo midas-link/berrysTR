@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Redirecting...</title>
+  <script>
+    // Get the current path and redirect to the main app
+    const path = window.location.pathname;
+    const repoName = '/berrys'; // Your GitHub repo name
+    
+    // Handle paths that already include the repo name
+    const cleanPath = path.startsWith(repoName) ? path : repoName + path;
+    
+    // Store the path in sessionStorage
+    sessionStorage.setItem('spaPath', cleanPath);
+    
+    // Redirect to the main app
+    window.location.replace(repoName + '/');
+  </script>
+</head>
+<body>
+  <p>Redirecting...</p>
+</body>
+</html>

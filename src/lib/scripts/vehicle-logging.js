@@ -12,7 +12,7 @@ export async function fetchVehicleData() {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const vehicleData = await response.json();
-        globalVehicleData = siteData; // Store data globally
+        globalVehicleData = vehicleData; // Store data globally
         return vehicleData;
     } catch (error) {
         console.error('Error fetching vehicleData data:', error);
@@ -98,8 +98,12 @@ export function formatDate(dateString) {
 
 // Function to update date and time
 export function updateDateTime() {
-    const now = new Date();
-    const options = { 
+    const datetimeElement = document.getElementById('current-datetime');
+    
+    // Only update if the element exists
+    if (datetimeElement) {
+      const now = new Date();
+      const options = { 
         weekday: 'long', 
         year: 'numeric', 
         month: 'long', 
@@ -108,9 +112,10 @@ export function updateDateTime() {
         minute: '2-digit',
         second: '2-digit',
         hour12: true
-    };
-    document.getElementById('current-datetime').textContent = now.toLocaleDateString('en-US', options);
-}
+      };
+      datetimeElement.textContent = now.toLocaleDateString('en-US', options);
+    }
+  }
 
 
 // Function to export table to CSV
