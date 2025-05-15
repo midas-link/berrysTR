@@ -41,9 +41,13 @@
   let zipInput;
   let dateInput;
   let fuelInput;
+  let mobileSearchVisible = false;
   function getRowClass(index) {
     return index % 2 === 0 ? 'row-even' : 'row-odd';
 }
+function toggleMobileSearch() {
+    mobileSearchVisible = !mobileSearchVisible;
+  }
 function filterRows() {
     // Get values directly from searchParams which are bound to the inputs
     
@@ -488,9 +492,9 @@ async function exportTableToPDF() {
       <div class="overlay" id="overlay"></div>
     <div class="sub-header-container">
         <div class="sub-header">
-                <h1>Site Data</h1>
+          <img src="{base}/images/Gas_station_graphic.png"   alt="Gas_station Graphic" class="subheader-image"/>  <h1>Site Data</h1>
                 <span> Gather insight into your deliveries by site location. You can dive into delivery information by State, Zip code, Street Address and City. This will offer you vital information on drop frequency, scheduling and billing reports.  </span>
-              
+                
         </div>
         <div class="breadcrumb">
             <a href="{base}/home">Home</a> / <span>Site Data</span>
@@ -498,8 +502,8 @@ async function exportTableToPDF() {
     </div>
     <main>
         <div class="main-container">
-            <label class="search-label" for="search-fields">Search</label>
-            <div class="search-fields">
+          <button on:click={toggleMobileSearch} class="toggle-search-btn"><label for="search-fields" class="search-label"> Search <span style="font-size:1rem">{mobileSearchVisible ?  '▲' : '▼'} </span> </label>   </button>
+            <div class="search-fields" class:visible={mobileSearchVisible}>
                 <DropdownField 
                     id="Business-unit" 
                     label="Business Unit" 
@@ -581,7 +585,7 @@ async function exportTableToPDF() {
                     spellcheck="false"   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}
                 />
             </div>
-           <div class="button-container">
+           <div class="button-container" class:visible={mobileSearchVisible}>
             <button class="search-button" on:click={filterRows}>Search</button>       
             <button class="clear-button" on:click={clearSearch}>Clear</button>
            </div>
@@ -605,57 +609,103 @@ async function exportTableToPDF() {
                 </div>
             </div>
            </div>
-          <table>
-            <thead>
+           <div class="data-container">
+            <table class="desktop-view">
+              <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Delivered at</th>
-                    <th>Site Code</th>
-                    <th>Fuel dropped</th>
+                  <th>Date</th>
+                  <th>Delivered at</th>
+                  <th>Site Code</th>
+                  <th>Fuel Dropped</th>
                 </tr>
-            </thead>
-            <tbody>
+              </thead>
+              <tbody>
                 {#if filteredRows.length > 0}
-                {#each filteredRows as row, index}              
-                <tr 
-                class="main-row {getRowClass(index)} {detailsVisible[index] ? 'hover-row' : ''}" 
-                on:click={() => toggleDetails(index)}
-            >
-                <td>{formatDate(row.Date)}</td>
-                <td>{row['Delivery End']}</td>
-                <td>{row.SiteCode}</td>
-                <td>{row.Delivered}</td>
-            </tr>
-            {#if detailsVisible[index]}
-            <tr class="details-row {getRowClass(index)}" on:click={() => toggleDetails(index)}>    
-                    <td colspan="4" class="details-cell">
-                    <div class="details-header">Details:</div>
-                    <div class="details-content">
-                        {row.Date} | {row['Delivery Start '] || ''}  to {row['Delivery End'] || ''}
-                        <br>
-                        <span class="label">Site code:</span> {row.SiteCode || ''} | <span class="label">Business Unit:</span> {row.BusinessUnitName || ''}
-                        <br>
-                        <span class="label">Full Address:</span> {row.Address || ''} , {row.City} {row.State} | {row.Zip}
-                        <br>
-                        <span class="label">Fuel dropped:</span> {row.Delivered || ''} | <span class="label">Tank:</span> T{row.TankNumber || ''}
-                        
-                    </div>
-                   
-                </td>
-                <td>
-                    <button on:click={() => openDetails(row)} class="more-details">
-                        See Delivery Details
-                      </button>                </td>
-            </tr>
-        {/if}
-                {/each}
+                  {#each filteredRows as row, index}              
+                    <tr 
+                      class="main-row {getRowClass(index)} {detailsVisible[index] ? 'hover-row' : ''}" 
+                      on:click={() => toggleDetails(index)}
+                    >
+                    <td>{formatDate(row.Date)}</td>
+                    <td>{row['Delivery End']}</td>
+                    <td>{row.SiteCode}</td>
+                    <td>{row.Delivered}</td>
+                    </tr>
+                    {#if detailsVisible[index]}
+                      <tr class="details-row {getRowClass(index)}" on:click={() => toggleDetails(index)}>    
+                        <td colspan="4" class="details-cell">
+                          <div class="details-header">Details:</div>
+                          <div class="details-content">
+                            {row.Date} | {row['Delivery Start '] || ''}  to {row['Delivery End'] || ''}
+                            <br>
+                            <span class="label">Site code:</span> {row.SiteCode || ''} | <span class="label">Business Unit:</span> {row.BusinessUnitName || ''}
+                            <br>
+                            <span class="label">Full Address:</span> {row.Address || ''} , {row.City} {row.State} | {row.Zip}
+                            <br>
+                            <span class="label">Fuel dropped:</span> {row.Delivered || ''} | <span class="label">Tank:</span> T{row.TankNumber || ''}
+                        </div>
+                        </td>
+                        <td>
+                          <button on:click={() => openDetails(row)} class="more-details">
+                            See Delivery Details
+                          </button>
+                        </td>
+                      </tr>
+                    {/if}
+                  {/each}
                 {:else}
-                <tr>
+                  <tr>
                     <td colspan="4" style="text-align: center; padding: 20px;">No results found</td>
-                </tr>
-            {/if}
-            </tbody>
-           </table>
+                  </tr>
+                {/if}
+              </tbody>
+            </table>
+          
+            <div class="mobile-card-view">
+              {#if filteredRows.length > 0}
+                {#each filteredRows as row, index}
+                  <div class="card {getRowClass(index)}" on:click={() => toggleDetails(index)}>
+                    <div class="card-header">
+                      <div class="card-item">
+                        <span class="card-label"> {formatDate(row.Date) === 'Just now' ? 'Just now' : `${formatDate(row.Date)} `}</span>
+                    </div>
+                      <div class="card-item">
+                        <span class="card-value" style="margin-left: 2vw;">Fuel: {row.Delivered}</span> 
+                        <span class="card-value" style="margin-left: 2vw;">Site: {row.SiteCode}</span>
+                        <span class="card-value" style="position: relative;margin-left:auto"> {detailsVisible[index] ? '▲' : '▼'}</span>
+                    </div>
+                    </div>
+                    
+                    {#if detailsVisible[index]}
+                      <div class="card-details">
+                        <hr>
+                        <div class="details-header">Details:</div>
+                        <div class="details-content">
+                          <div class="detail-row">
+                            {row.Date} | {row['Delivery Start '] || ''}  to {row['Delivery End'] || ''}
+                          </div>
+                          <div class="detail-row">
+                            <span class="label">Site Code:</span> {row.SiteCode} |  <span class="label">Business Unit:</span> {row.BusinessUnitName || ''}
+                          </div>
+                          <div class="detail-row">
+                            <span class="label">Full Address:</span> {row.Address || ''}, {row.City || ''} {row.State || ''} | {row.Zip || ''}
+                          </div>
+                          <div class="detail-row">
+                            <span class="label">Fuel Dropped:</span> {row.Delivered} | <span class="label">Tank:</span> T{row.TankNumber}
+                          </div>
+                          <button on:click={() => openDetails(row)} class="more-details mobile-details-btn">
+                            See Delivery Details
+                          </button>
+                        </div>
+                      </div>
+                    {/if}
+                  </div>
+                {/each}
+              {:else}
+                <div class="no-results">No results found</div>
+              {/if}
+            </div>
+          </div>
         </div>
     </main>
     
@@ -678,6 +728,86 @@ async function exportTableToPDF() {
     ::placeholder {
         color: #FFFFFF;
     }
+    .data-container {
+    width: 100%;
+    margin-top: 2vh;
+  }
+  .subheader-image{
+    display:none;
+  }
+  .mobile-card-view {
+    display: none;
+    width: 95%;
+    margin: 0 auto;
+  }
+  
+  .card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+    padding: 15px;
+    transition: all 0.3s ease;
+  }
+  
+  .card.row-even {
+    background-color: #f8f9fa;
+  }
+  
+  .card.row-odd {
+    background-color: #EAF3FC;
+  }
+  
+  .card-header {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .card-item {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 5px;
+  }
+  
+  .card-label {
+    font-weight: bold;
+    color: #014B96;
+    font-size: 0.8rem;
+    font-family: 'Mulish', sans-serif;
+  }
+  
+  
+  .card-details {
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+  
+  .card-details hr {
+    border: 0;
+    height: 1px;
+    background-color: #ddd;
+    margin: 5px 0 10px 0;
+  }
+  
+  .detail-row {
+    margin-bottom: 8px;
+    font-family: 'Mulish', sans-serif;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  
+  .mobile-details-btn {
+    margin-top: 10px;
+    width: 100%;
+  }
+  
+  .no-results {
+    text-align: center;
+    padding: 20px;
+    font-family: 'Mulish', sans-serif;
+  }
     .header-container {
         width: 100%;
         background: linear-gradient(to bottom, #001338 0%, #014B96 44%);
@@ -747,7 +877,7 @@ async function exportTableToPDF() {
         width: 8vw;
     }
     .header input[type="text"] {
-        padding: 1vh 3vh 1vh 3vh;
+        padding: 1vh 3vw;
         border-radius: 4px;
         border: 1px solid rgba(255, 255, 255, 0.2);
         background-color: rgba(255, 255, 255, 0.1);
@@ -757,11 +887,6 @@ async function exportTableToPDF() {
         background-repeat: no-repeat;
         background-size: 16px;
         background-position: 0.5vh center;
-    }
-    @media (max-width: 900px) {
-        .header input[type="text"] {
-            width: 40%;
-        }
     }
     .header input[type="text"]::placeholder {
         color: rgba(255, 255, 255, 0.7);
@@ -785,7 +910,7 @@ async function exportTableToPDF() {
     .sub-header {
         display: flex;
         align-items: center;
-        padding-left: 5vh;
+        padding-left: 3vw;
         padding-top: 2vh;
     }
     .sub-header span {
@@ -802,7 +927,7 @@ async function exportTableToPDF() {
     }
     .breadcrumb {
     margin-top:2vh;
-    padding: 0.5vh 2vh 0.5vh 3vh;
+    padding: 0.5vh 1vw;
     color: #014B96;
     background-color: #F9BC39;
     width: fit-content;
@@ -827,21 +952,24 @@ async function exportTableToPDF() {
         flex-direction: column;
         align-items: flex-start;
         padding-top: 4vh;
-        padding-left: 4vh;
+        padding-left: 1vw;
         border-top-left-radius: 20px;
         background-color: white;
         height: 100%;
     }
     .search-label {
-        font-family: 'Mulish', sans-serif;
-        font-size: 2rem;
-        font-weight: 400;
-        color:#014B96;
-        margin-bottom: 2vh;
-    }
+    font-family: "Mulish", sans-serif;
+    font-size: 2rem;
+    font-weight: 400;
+    color: #014b96;
+    margin-bottom: 2vh;
+    align-self: center;
+  }
+ 
     :global(.search-fields) {
-        padding-left: 0.5%;
+        margin:auto;
         display:flex;
+        justify-content: center;
     }
     :global(.search-fields label) {
         font-family: 'Mulish', sans-serif;
@@ -856,7 +984,7 @@ async function exportTableToPDF() {
         margin-left:1vw;
         padding-top: 1vh;
         padding-bottom: 1vh;
-        padding-left: 1vh;
+        padding-left: 1vw;
         width: 7vw;
         border-radius: 10px;
     }
@@ -873,17 +1001,20 @@ async function exportTableToPDF() {
     :global(.custom-dropdown input) {
         background-color: #EAF3FC;
         border: none;
-        margin-left: 1vh;
-        margin-right: 1vh;
+        margin-left: 2vw;
+        margin-right: 2vw;
         padding-top: 1vh;
         padding-bottom: 1vh;
-        padding-left: 1vh;
+        padding-left: 1vw;
         width: 100%;
         color: #014B96;
         font-family: 'Mulish', sans-serif;
         cursor: pointer;
         box-sizing: border-box;
     }
+    .toggle-search-btn{
+    display:none;
+  }
     .dropdown-content {
         display: none;
         position: absolute;
@@ -895,8 +1026,8 @@ async function exportTableToPDF() {
         z-index: 2000;
         border-radius: 4px;
         margin-top: 2px;
-        left: 1vh;
-        right: 1vh;
+        left: 1vw;
+        right: 1vw;
     }
     .dropdown-content.show {
         display: block;
@@ -920,7 +1051,7 @@ async function exportTableToPDF() {
         margin-top: 2vh;
         text-transform: uppercase;
         display: inline-block;
-        margin-right: 2vh;
+        margin-right: 2vw;
         max-height: fit-content;
         padding: 0.25vh 1vw;
     }
@@ -1025,7 +1156,7 @@ async function exportTableToPDF() {
     .export-button {
         background-color: #014B96;
         color: white;
-        padding: 0.5vh 2vh;
+        padding: 0.5vh 2vw;
         border-radius: 4px;
         font-family: 'Mulish', sans-serif;
         font-weight: 400;
@@ -1155,7 +1286,7 @@ async function exportTableToPDF() {
     .more-details{
         background-color: #014B96;
         color: white;
-        padding: 0.5vh 2vh;
+        padding: 0.5vh 2vw;
         border-radius: 4px;
         font-family: 'Mulish', sans-serif;
         font-weight: 400;
@@ -1226,7 +1357,15 @@ async function exportTableToPDF() {
       transition: 0.3s;
     }
     @media (max-width: 1000px) {
-    /* Keep existing styles */
+        .desktop-view {
+      display: none;
+    }
+    .toggle-search-btn{
+      display:contents;
+    }
+    .mobile-card-view {
+      display: block;
+    }
     .header a:nth-child(2) {
         margin-left: 5%;
     }
@@ -1238,8 +1377,32 @@ async function exportTableToPDF() {
         scale: 1.1;
         margin-left: auto;
     }
+    .sub-header {
+      padding-left: 5vw;
+      font-size:0.75rem !important;
+    }
+    .sub-header h1 {
+      justify-self: center;
+      font-size: 1rem !important;
+    }
+    .sub-header span {
+      display:none;
+    }
+    .subheader-image{
+      display:unset;
+      width:40%;
+      height:100%;
+      justify-self: center;
+      align-items: center;
+    }
+    .breadcrumb {
+      display:none;
+    }
     main {
-        flex: 1;
+      background-color : white;
+    }
+    .export-button{
+      display:none;
     }
     .header a {
         white-space: nowrap;
@@ -1249,12 +1412,7 @@ async function exportTableToPDF() {
     .header input[type="text"] {
         display: none;
     }
-    .sub-header {
-        padding-left: 1vh;
-    }
-    .main-container {
-        padding-right: 3vw;
-    }
+
     /* Fixed styles for search fields in mobile view */
     :global(.search-fields) {
         display: flex;
@@ -1306,14 +1464,7 @@ async function exportTableToPDF() {
         margin: 0 0 0 10px !important;
     }
     
-    /* Make buttons more accessible on mobile */
-    .button-container {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin: 15px 0;
-        width: 100%;
-    }
+
     
     .search-button, .clear-button {
         min-width: 100px;
@@ -1342,20 +1493,35 @@ async function exportTableToPDF() {
         font-size: 0.875rem !important;
     }
     footer img { 
-        max-height: 6vh;
-        max-width: 20%; 
+      max-height: 10vh; 
+      max-width: 30%; 
         height: auto; 
         width: auto !important;
     }
     .custom-dropdown {
         display:none;
     }
-   
+    .search-fields {
+      display: none; /* Hide by default on mobile */
+      flex-wrap: wrap;
+      transition: all 0.3s ease;
+    }
+ 
+    .search-fields.visible {
+      display: flex;
+    }
+    .button-container{
+      display:none; 
+      margin-top: 2vh;
+    }
+    .button-container.visible{
+      display:flex;
+    }
     .table-type,
     .current-time,
     .export-button,
     .more-details{
-        font-size: 0.75rem !important;
+        font-size: 1rem !important;
     }
     table th{
         font-size: 0.60rem !important;

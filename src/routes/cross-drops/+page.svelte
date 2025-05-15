@@ -6,6 +6,7 @@
     import { page } from '$app/stores';
     import { get } from 'svelte/store';
     const currentPath = get(page).url.pathname;
+    let mobileSearchVisible = false;
     function openDetails(row) {
     goto(`${base}/deliveryDetail/${row.zip}`, {
       state: {
@@ -18,6 +19,9 @@
         siteCode : row.zip
       }
     });
+  }
+  function toggleMobileSearch() {
+    mobileSearchVisible = !mobileSearchVisible;
   }
   function setupMobileMenu() {
     const hamburger = document.getElementById('hamburger-menu');
@@ -34,7 +38,6 @@
       overlay.style.display = 'none';
     });
     
-    // Close the sidebar when clicking on a link
     const sidebarLinks = sidebar.querySelectorAll('a');
     sidebarLinks.forEach(link => {
       link.addEventListener('click', function() {
@@ -81,10 +84,8 @@
             return addressMatch && stateMatch && cityMatch && zipMatch && dateMatch && fuelMatch;
         });
         
-        // Reset details visibility array
         detailsVisible = Array(filteredRows.length).fill(false);
         
-        // Update live status display
         toggleLiveStatus();
     }
     function clearSearch() {
@@ -110,13 +111,11 @@
     function formatDate(dateString) {
     if (!dateString) return '';
     
-    // Split the date string into day, month, year
     const [month, day, year] = dateString.split('.');
     
-    // Create a new date object (month is 0-based in JavaScript)
     const date = new Date(year, month - 1, day);
     
-    if (isNaN(date.getTime())) return dateString; // Return original if invalid date
+    if (isNaN(date.getTime())) return dateString; 
     
     const now = new Date();
     const timeDiff = now - date;
@@ -157,7 +156,6 @@
     return date.toLocaleDateString('en-US', options);
 }
 function toggleDetails(index) {
-        // Create a new array to trigger reactivity
         let newDetailsVisible = [...detailsVisible];
         newDetailsVisible[index] = !newDetailsVisible[index];
         detailsVisible = newDetailsVisible;
@@ -166,7 +164,6 @@ function toggleDetails(index) {
 export function updateDateTime() {
     const datetimeElement = document.getElementById('current-datetime');
     
-    // Only update if the element exists
     if (datetimeElement) {
       const now = new Date();
       const options = { 
@@ -186,7 +183,6 @@ export function updateDateTime() {
 
 
 
-// Function to toggle live indicator visibility
 function toggleLiveStatus(forceShow = false) {
     const liveStatus = document.querySelector('.toggle-live');
     if (!forceShow && hasSearchInput()) {
@@ -197,7 +193,6 @@ function toggleLiveStatus(forceShow = false) {
 }
 
 
-// Toggle dropdown menu
 
 
 function hasSearchInput() {
@@ -215,20 +210,17 @@ function toggleDropdown() {
     document.getElementById("exportDropdown").classList.toggle("show");
 }
 function exportTableToCSV() {
-  // Clone the table to avoid modifying the original
   const originalTable = document.querySelector("table");
   const tableClone = originalTable.cloneNode(true);
   
-  // Remove all "View Vehicle Timeline" buttons from the clone
   const buttons = tableClone.querySelectorAll(".more-details");
   buttons.forEach(button => {
-    button.parentNode.textContent = ""; // Replace button cell content with empty string
+    button.parentNode.textContent = ""; 
   });
   
   const rows = tableClone.querySelectorAll("tr");
   let csv = [];
 
-  // Get headers
   const headers = [];
   const headerCells = rows[0].querySelectorAll("th");
   headerCells.forEach((cell) => {
@@ -236,7 +228,6 @@ function exportTableToCSV() {
   });
   csv.push(headers.join(","));
 
-  // Get data rows - include details rows but without the button
   for (let i = 1; i < rows.length; i++) {
     const row = [];
     const cells = rows[i].querySelectorAll("td");
@@ -249,7 +240,6 @@ function exportTableToCSV() {
     }
   }
 
-  // Create blob
   const csvContent = csv.join("\n");
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
 
@@ -307,7 +297,6 @@ async function exportTableToPDF() {
     
     const doc = new jsPDF();
 
-    // Add title and timestamp
     doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
     doc.text("Cross Drops Prevention Data", 14, 15);
@@ -317,20 +306,17 @@ async function exportTableToPDF() {
     doc.setFont("helvetica", "normal");
     doc.text(`Generated: ${timestamp}`, 14, 25);
 
-    // Get the specific table you want to export
-    const originalTable = document.querySelector("table"); // Use a more specific selector
+    const originalTable = document.querySelector("table"); 
     if (!originalTable) throw new Error("Table not found");
     
     const exportTable = originalTable.cloneNode(true);
     
-    // Remove action buttons more reliably
     const buttons = exportTable.querySelectorAll(".more-details");
     buttons.forEach(button => {
       const cell = button.closest("td, th");
       if (cell) cell.textContent = "";
     });
 
-    // Generate the table in PDF
     doc.autoTable({
       html: exportTable,
       startY: 30,
@@ -353,13 +339,11 @@ async function exportTableToPDF() {
       margin: { top: 30 },
     });
 
-    // Generate filename
     const date = new Date();
     const formattedDate = date.toISOString().split("T")[0];
     const formattedTime = date.toTimeString().split(" ")[0].replace(/:/g, "-");
     const fileName = `cross_drops_${formattedDate}_${formattedTime}.pdf`;
 
-    // Save the file
     if ("showSaveFilePicker" in window) {
       try {
         const handle = await window.showSaveFilePicker({
@@ -370,7 +354,7 @@ async function exportTableToPDF() {
           }],
         });
         const writable = await handle.createWritable();
-        await writable.write(doc.output("blob")); // No need for new Blob()
+        await writable.write(doc.output("blob")); 
         await writable.close();
       } catch (err) {
         console.error("File save error:", err);
@@ -380,14 +364,12 @@ async function exportTableToPDF() {
       fallbackSavePDF(doc, fileName);
     }
 
-    return true; // Indicate success
+    return true; 
   } catch (error) {
     console.error("PDF generation failed:", error);
-    // You might want to show a user-friendly error message here
-    return false; // Indicate failure
+    return false; 
   }
 }
-// Fallback save method for PDF
 function fallbackSavePDF(doc, fileName) {
     doc.save(fileName);
 }
@@ -456,7 +438,6 @@ function closeDropdown(event) {
             </div>
         </div>
     </header>
-    <!-- Mobile sidebar navigation -->
 <div class="mobile-sidebar" id="mobile-sidebar">
     <a href="{base}/home">Home</a>
     <a href="{base}/vehicle-logging">Vehicle Logging</a>
@@ -469,9 +450,10 @@ function closeDropdown(event) {
 
     <div class="sub-header-container">
         <div class="sub-header">
-                <h1> Cross-drop prevention </h1>
+          <img src="{base}/images/Cross-drop graphic.png"   alt="Cross-drop graphic" class="subheader-image"/> 
+          <h1> Cross-drop prevention </h1>
                 <span> Midas Elbow prevents unloading errors by detecting the product before its dropped into the underground storage tank. View prevented contamination instances below, either live or by custom search fields. </span>
-              
+
         </div>
         <div class="breadcrumb">
             <a href="{base}/home">Home</a> / <span>Cross-drop prevention</span>
@@ -479,8 +461,8 @@ function closeDropdown(event) {
     </div>
     <main>
         <div class="main-container">
-           <label class="search-label" for="search-fields"> Search</label>
-           <div class="search-fields">
+          <button on:click={toggleMobileSearch} class="toggle-search-btn"><label for="search-fields" class="search-label"> Search <span style="font-size:1rem">{mobileSearchVisible ?  '▲' : '▼'} </span> </label>   </button>
+          <div class="search-fields" class:visible={mobileSearchVisible}>
              <label for="ST-address"> Address</label>
              <input type="text" id="ST-address"  bind:value={searchParams.address}  name="ST-address" autocomplete="off"   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}>
              <label for="State"> State</label>
@@ -493,11 +475,12 @@ function closeDropdown(event) {
              <input type="text" id="Date" bind:value={searchParams.date} name="Date" autocomplete="off" placeholder="DD.MM.YYYY"   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}>
              <label for="Fuel">Fuel</label>
              <input type="text" id="Fuel"     bind:value={searchParams.fuel}  name="Fuel" autocomplete="off"  on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}>
+             <div class="button-container">
+              <button class="search-button" on:click={filterRows}>Search</button>      
+              <button class="clear-button" on:click={clearSearch}>Clear</button>
+             </div>
            </div> 
-           <div class="button-container">
-            <button class="search-button" on:click={filterRows}>Search</button>      
-            <button class="clear-button" on:click={clearSearch}>Clear</button>
-           </div>
+       
            <div class="table-header">
             <div class="live-status">
                <div class="toggle-live">
@@ -518,55 +501,104 @@ function closeDropdown(event) {
                    </div>
                </div>
            </div>
-          <table>
-            <thead>
+           <div class="data-container">
+            <table class="desktop-view">
+              <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Zip</th>
-                    <th>Prevented Delivery</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Zip</th>
+                  <th>Prevented Delivery</th>
                 </tr>
-            </thead>
-            <tbody>
+              </thead>
+              <tbody>
                 {#if filteredRows.length > 0}
-                {#each filteredRows as row, index}              
-                <tr 
-                class="main-row {getRowClass(index)} {detailsVisible[index] ? 'hover-row' : ''}" 
-                on:click={() => toggleDetails(index)}
-            >
-                <td>{formatDate(row.date)}</td>
-                <td>{row.time}</td>
-                <td>{row.zip}</td>
-                <td>{row.preventedDelivery}</td>
-            </tr>
-            {#if detailsVisible[index]}
-            <tr class="details-row {getRowClass(index)}" on:click={() => toggleDetails(index)}>    
-                    <td colspan="4" class="details-cell">
-                    <div class="details-header">Details:</div>
-                    <div class="details-content">
-                        {row.date} | {row.time || ''} 
-                        <br>
-                        <span class="label">Full Address:</span> {row.address || ''}, {row.city || ''} {row.state || ''} | {row.zip || ''}
-                        <br>
-                        <span class="label">Tank Grade:</span> {row.tankGrade || ''} | <span class="label">Tank No.:</span> {row.tankNo || ''}
-                        <br>
-                        <span class="label">Fuel Prevented:</span> {row.preventedDelivery || ''}
-                    </div>
-                </td>
-                <td>
-                    <button on:click={() => openDetails(row)} class="more-details">
-                        See Delivery Details
-                      </button>                </td>
-            </tr>
-        {/if}
-                {/each}
+                  {#each filteredRows as row, index}              
+                    <tr 
+                      class="main-row {getRowClass(index)} {detailsVisible[index] ? 'hover-row' : ''}" 
+                      on:click={() => toggleDetails(index)}
+                    >
+                      <td>{formatDate(row.date)}</td>
+                      <td>{row.time}</td>
+                      <td>{row.zip}</td>
+                      <td>{row.preventedDelivery}</td>
+                    </tr>
+                    {#if detailsVisible[index]}
+                      <tr class="details-row {getRowClass(index)}" on:click={() => toggleDetails(index)}>    
+                        <td colspan="4" class="details-cell">
+                          <div class="details-header">Details:</div>
+                          <div class="details-content">
+                            {row.date} | {row.time || ''} 
+                            <br>
+                            <span class="label">Full Address:</span> {row.address || ''}, {row.city || ''} {row.state || ''} | {row.zip || ''}
+                            <br>
+                            <span class="label">Tank Grade:</span> {row.tankGrade || ''} | <span class="label">Tank No.:</span> {row.tankNo || ''}
+                            <br>
+                            <span class="label">Fuel Prevented:</span> {row.preventedDelivery || ''}
+                          </div>
+                        </td>
+                        <td>
+                          <button on:click={() => openDetails(row)} class="more-details">
+                            See Delivery Details
+                          </button>
+                        </td>
+                      </tr>
+                    {/if}
+                  {/each}
                 {:else}
-                <tr>
+                  <tr>
                     <td colspan="4" style="text-align: center; padding: 20px;">No results found</td>
-                </tr>
-            {/if}
-            </tbody>
-           </table>
+                  </tr>
+                {/if}
+              </tbody>
+            </table>
+          
+            <div class="mobile-card-view">
+              {#if filteredRows.length > 0}
+                {#each filteredRows as row, index}
+                  <div class="card {getRowClass(index)}" on:click={() => toggleDetails(index)}>
+                    <div class="card-header">
+                      <div class="card-item">
+                        <span class="card-label"> {formatDate(row.date) === 'Just now' ? 'Just now' : `${formatDate(row.date)} ${row.time}`}</span>
+                    </div>
+                      <div class="card-item">
+                        <span class="card-value">Tank: T{row.tankNo }</span> 
+                        <span class="card-value" style="margin-left: 2vw;">Fuel: {row.preventedDelivery}</span> 
+                        <span class="card-value" style="margin-left: 2vw;">Zip: {row.zip}</span>
+                        <span class="card-value" style="position: relative;margin-left:auto"> {detailsVisible[index] ? '▲' : '▼'}</span>
+                    </div>
+                    </div>
+                    
+                    {#if detailsVisible[index]}
+                      <div class="card-details">
+                        <hr>
+                        <div class="details-header">Details:</div>
+                        <div class="details-content">
+                          <div class="detail-row">
+                            {row.date} | {row.time || ''} 
+                          </div>
+                          <div class="detail-row">
+                            <span class="label">Full Address:</span> {row.address || ''}, {row.city || ''} {row.state || ''} | {row.zip || ''}
+                          </div>
+                          <div class="detail-row">
+                            <span class="label">Tank Grade:</span> {row.tankGrade || ''} |  <span class="label">Tank No:</span> {row.tankNo || ''}  
+                          </div>
+                          <div class="detail-row">
+                            <span class="label"> Fuel Prevented:</span>  {row.preventedDelivery}
+                          </div>
+                          <button on:click={() => openDetails(row)} class="more-details mobile-details-btn">
+                            See Delivery Details
+                          </button>
+                        </div>
+                      </div>
+                    {/if}
+                  </div>
+                {/each}
+              {:else}
+                <div class="no-results">No results found</div>
+              {/if}
+            </div>
+          </div>
         </div>
     </main>
     
@@ -584,8 +616,11 @@ function closeDropdown(event) {
         box-sizing: border-box;
     }
     main {
-        flex: 1; /* Allow main to grow and fill the space */
+        flex: 1; 
         background-color: #F9BC39;
+    }
+    .subheader-image{
+      display:none;
     }
     ::placeholder {
         color: #5e5e5e;
@@ -651,7 +686,106 @@ function closeDropdown(event) {
     .header a:nth-child(3) {
         margin-left: 10%;
     }
+    .data-container {
+    width: 100%;
+    margin-top: 2vh;
+  }
+  
+  .mobile-card-view {
+    display: none;
+    width: 95%;
+    margin: 0 auto;
+  }
+  
+  .card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+    padding: 15px;
+    transition: all 0.3s ease;
+  }
+  
+  .card.row-even {
+    background-color: #f8f9fa;
+  }
+  
+  .card.row-odd {
+    background-color: #EAF3FC;
+  }
+  
+  .card-header {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .card-item {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 5px;
+  }
+  
+  .card-label {
+    font-weight: bold;
+    color: #014B96;
+    font-size: 0.8rem;
+    font-family: 'Mulish', sans-serif;
+  }
+  .header input {
+        width: 8vw;
+    }
+    .header input[type="text"] {
+        padding: 1vh 1.5vw;
+        border-radius: 4px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        outline: none;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%23FFFFFF" viewBox="0 0 24 24"><path d="M10 2a8 8 0 105.293 14.293l4.707 4.707 1.414-1.414-4.707-4.707A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z"/></svg>');
+        background-repeat: no-repeat;
+        background-size: 16px;
+        background-position: 0.5vh center;
+    }
+  
+  .card-details {
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+  
+  .card-details hr {
+    border: 0;
+    height: 1px;
+    background-color: #ddd;
+    margin: 5px 0 10px 0;
+  }
+  
+  .detail-row {
+    margin-bottom: 8px;
+    font-family: 'Mulish', sans-serif;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  
+  .mobile-details-btn {
+    margin-top: 10px;
+    width: 100%;
+  }
+  
+  .no-results {
+    text-align: center;
+    padding: 20px;
+    font-family: 'Mulish', sans-serif;
+  }
     @media (max-width: 1000px){
+        .desktop-view {
+      display: none;
+    }
+    
+    .mobile-card-view {
+      display: block;
+    }
         .header a:nth-child(2) {
             margin-left: 5%;
         }
@@ -663,9 +797,38 @@ function closeDropdown(event) {
       scale: 1.1;
       margin-left:auto;
     }
-        main {
-            flex: 1;
-        }
+    .sub-header {
+      font-size:0.75rem !important;
+    }
+    .subheader-image{
+      display:unset;
+      width:40%;
+      height:100%;
+      justify-self: center;
+      align-items: center;
+    }
+    .sub-header h1 {
+      justify-self: center;
+      font-size: 1rem !important;
+    }
+    .table-type,
+    .current-time,
+    .export-button,
+    .more-details{
+        font-size: 1rem !important;
+    }
+    .sub-header span {
+      display:none;
+    }
+    .breadcrumb {
+      display:none;
+    }
+    .export-button{
+      display:none;
+    }
+    main {
+      background-color : white;
+    }
         .header a {
             white-space: nowrap;
             padding-left: 1.5vw;
@@ -673,11 +836,8 @@ function closeDropdown(event) {
         .header input[type="text"] {
             display:none;
         }
-        .sub-header {
-            padding-left: 1vh;
-        }
         * {
-            font-size: 0.75rem !important;
+            font-size: 0.75rem ;
         }
         .hamburger-menu {
         display: block !important;
@@ -696,36 +856,21 @@ function closeDropdown(event) {
         .search-fields {
             display: flex;
             flex-wrap: wrap;
-            padding-left: 10% !important;
         }
         .search-fields label {
-            width: 25%;
-            margin: 2vh 0 1vh;
-        }
-        .search-fields input {
-            width: 60% !important;
-            margin: 1vh 5% 1vh 0 !important;
-            padding-left: 0.25vw !important;
-        }
-        .search-fields label,
-        .search-fields input {
-            flex: 0 0 auto;
-        }
-        .search-fields label:nth-child(4n+1),
-        .search-fields label:nth-child(4n+3) {
-            flex-basis: 15%;
-        }
-        .search-fields input:nth-child(4n+2),
-        .search-fields input:nth-child(4n+4) {
-            flex-basis: 25%;
+          min-width: 90px;
+        margin: 0;
+        padding: 8px 0;
+        font-size: 14px !important;
+        white-space: nowrap;
         }
         .button-container{
             margin-top: 1vh !important;
         }
         footer img { 
-            max-height: 6vh; /* Maintain height relative to viewport */
-            max-width: 20%; /* Ensure it doesn't exceed the width of its container */
-            height: auto; /* Maintain aspect ratio */
+          max-height: 10vh; 
+          max-width: 30%; 
+            height: auto; 
             width: auto !important;
         }
         .header a {
@@ -740,26 +885,10 @@ function closeDropdown(event) {
         background-color: rgba(255, 255, 255, 0.1);
         border-radius: 4px;
     }
-    .header input {
-        width: 8vw;
-    }
-    .header input[type="text"] {
-        padding: 1vh 3vh 1vh 3vh;
-        border-radius: 4px;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        background-color: rgba(255, 255, 255, 0.1);
-        color: white;
-        outline: none;
-        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="%23FFFFFF" viewBox="0 0 24 24"><path d="M10 2a8 8 0 105.293 14.293l4.707 4.707 1.414-1.414-4.707-4.707A8 8 0 0010 2zm0 2a6 6 0 110 12 6 6 0 010-12z"/></svg>');
-        background-repeat: no-repeat;
-        background-size: 16px;
-        background-position: 0.5vh center;
-    }
-    @media (max-width: 900px) {
-        .header input[type="text"] {
-            width: 40%;
-        }
-    }
+   
+    .toggle-search-btn{
+    display:none;
+  }
     .header input[type="text"]::placeholder {
         color: rgba(255, 255, 255, 0.7);
     }
@@ -782,7 +911,7 @@ function closeDropdown(event) {
     .sub-header {
         display: flex;
         align-items: center;
-        padding-left: 5vh;
+        padding-left: 5vw;
         padding-top: 2vh;
     }
     .sub-header span {
@@ -798,7 +927,7 @@ function closeDropdown(event) {
     }
     .breadcrumb {
     margin-top:2vh;
-    padding: 0.5vh 2vh 0.5vh 3vh;
+    padding: 0.5vh 1vw;
     color: #014B96;
     background-color: #F9BC39;
     width: fit-content;
@@ -823,22 +952,25 @@ function closeDropdown(event) {
         flex-direction: column;
         align-items: flex-start;
         padding-top: 4vh;
-        padding-left: 4vh;
+        padding-left: 1vw;
         border-top-left-radius: 20px;
         background-color: white;
         height: 100%;
     }
     .search-label {
-        font-family: 'Mulish', sans-serif;
-        font-size: 2rem;
-        font-weight: 400;
-        color:#014B96;
-        margin-bottom: 2vh;
-    }
-    .search-fields {
-        padding-left:10%;
-        padding-right:10%;
-    }
+    font-family: "Mulish", sans-serif;
+    font-size: 2rem;
+    font-weight: 400;
+    color: #014b96;
+    margin-bottom: 2vh;
+    align-self: center;
+  }
+  .search-fields {
+    margin:auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
     .search-fields label {
         font-family: 'Mulish', sans-serif;
         font-weight: 400;
@@ -852,7 +984,7 @@ function closeDropdown(event) {
         margin-right:1vw;
         padding-top: 1vh;
         padding-bottom: 1vh;
-        padding-left: 1vw;
+        padding-left: 0.5vw;
         width: 7vw;
         border-radius: 10px;
     }
@@ -866,7 +998,7 @@ function closeDropdown(event) {
         margin-top: 2vh;
         text-transform: uppercase;
         display: inline-block;
-        margin-right: 2vh;
+        margin-right: 2vw;
         max-height: fit-content;
         padding: 0.25vh 1vw;
     }
@@ -968,7 +1100,7 @@ function closeDropdown(event) {
     .export-button {
         background-color: #014B96;
         color: white;
-        padding: 0.5vh 2vh;
+        padding: 0.5vh 2vw;
         border-radius: 4px;
         font-family: 'Mulish', sans-serif;
         font-weight: 400;
@@ -1077,7 +1209,7 @@ function closeDropdown(event) {
      .more-details{
         background-color: #014B96;
         color: white;
-        padding: 0.5vh 2vh;
+        padding: 0.5vh 2vw;
         border-radius: 4px;
         font-family: 'Mulish', sans-serif;
         font-weight: 400;
@@ -1132,13 +1264,15 @@ function closeDropdown(event) {
       z-index: 998;
       display: none;
     }
-    /* Mobile menu styles */
     .hamburger-menu {
       display: none;
       cursor: pointer;
       z-index: 1000;
     }
-    
+    .search-fields input::placeholder {
+    font-size: 0.75rem;
+    text-align: center;
+  }
     .hamburger-menu span {
       display: block;
       width: 25px;
@@ -1148,4 +1282,28 @@ function closeDropdown(event) {
       border-radius: 3px;
       transition: 0.3s;
     }
+    @media (max-width: 1000px) {
+      .toggle-search-btn{
+      display:contents;
+    }
+    .search-fields {
+      display: none; 
+      flex-wrap: wrap;
+      transition: all 0.3s ease;
+      flex-direction: column;
+      width: 100%;
+      padding: 0 10px;
+    }
+
+    .search-fields.visible {
+      display: flex;
+    }
+    .search-fields input {
+        flex: 1;
+        width: 100% !important;
+        margin: 0 0 0 10px !important;
+        padding: 8px !important;
+        font-size: 14px !important;
+    }
+  }
 </style>

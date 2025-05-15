@@ -548,11 +548,19 @@ function goToSelectedDate() {
     });
   
     // Watch for change in displayed events for debugging
-    $: {
-      if (displayedTimelineEvents.length > 0) {
-        console.log(`Showing ${displayedTimelineEvents.length} events for ${formatDisplayDate(currentDisplayDate)} in ${activeView} view`);
-      }
+
+    // Add this function to handle breadcrumb navigation
+    function handleBreadcrumbNavigation() {
+        const savedState = localStorage.getItem('deliveryDetailState');
+        if (savedState) {
+            goto(`${base}${previousURL}`, {
+                state: JSON.parse(savedState)
+            });
+        } else {
+            goto(`${base}${previousURL}`);
+        }
     }
+
   </script>
   
   <svelte:head>
@@ -601,12 +609,12 @@ function goToSelectedDate() {
   
   <div class="sub-header-container">
     <div class="sub-header">
-      <h1> Vehicle {trailer} </h1>
       <img src="{base}/images/Truck_graphic.png" alt="truck_graphic">
+      <h1> Vehicle {trailer} </h1>
       <span> Using the time line, hover your mouse above each event to find the delivery detail. You can set the timeline to show delivery daily, weekly or monthly. </span>
     </div>
     <div class="breadcrumb">
-      <a href="{base}/home">Home</a><a href="{base}{previousURL}">{previousURL}</a>/<span> Vehicle Details</span>
+      <a href="{base}/home">Home</a><a href="javascript:void(0)" on:click={handleBreadcrumbNavigation}>{previousURL}</a>/<span> Vehicle Details</span>
     </div> 
   </div>
   
@@ -661,7 +669,7 @@ function goToSelectedDate() {
   </div>
 </div>
       
-      <div class="timeline-navigation">
+      <div class="timeline-navigation desktop-timeline">
         <img 
           src="{base}/svg/left-arrow.svg" 
           alt="left-arrow" 
@@ -686,10 +694,11 @@ function goToSelectedDate() {
                 <div class="timeline-date">{formatEventDate(event.Date)}</div>
                 <div class="timeline-popup">
                   <h3>{event.Address}, {event.City}, {event.State}</h3>
-                  <p><strong>Time:</strong> {event.Time}</p>
-                  <p><strong>Tank #:</strong> {event["Tank No. "]}</p>
-                  <p><strong>Trailer #:</strong> {event["Trailer No."]}</p>
-                  <p><strong>Prevented Delivery:</strong> {event["Prevented Delivery"]}</p>
+                <p><strong>Date:</strong> {formatEventDate(event.Date)}</p>
+                <p><strong>Time:</strong> {event.Time}</p>
+                <p><strong>Tank #:</strong> {event["Tank No. "]}</p>
+                <p><strong>Trailer #:</strong> {event["Trailer No."]}</p>
+                <p><strong>Prevented Delivery:</strong> {event["Prevented Delivery "]}</p>
                 </div>
               </div>
             {/each}
@@ -729,10 +738,84 @@ function goToSelectedDate() {
         >
       </div>
       
+      <div class="mobile-timeline">
+        <div class="current-period">
+          {formatDisplayDate(currentDisplayDate)}
+        </div>
+        
+        <div class="vertical-timeline">
+          {#if displayedTimelineEvents.length > 0}
+            <div class="timeline-line"></div>
+          {/if}
+          
+          {#each displayedTimelineEvents as event, i}
+            <div class="vertical-timeline-event {i % 2 === 0 ? 'left' : 'right'}">
+              <div class="timeline-dot"></div>
+              <div class="timeline-date">{formatEventDate(event.Date)}</div>
+              <div class="timeline-popup">
+                <h3>{event.Address}, {event.City}, {event.State}</h3>
+                <p><strong>Date:</strong> {formatEventDate(event.Date)}</p>
+                <p><strong>Time:</strong> {event.Time}</p>
+                <p><strong>Tank #:</strong> {event["Tank No. "]}</p>
+                <p><strong>Trailer #:</strong> {event["Trailer No."]}</p>
+                <p><strong>Prevented Delivery:</strong> {event["Prevented Delivery "]}</p>
+              </div>
+            </div>
+          {/each}
+          
+          {#if displayedTimelineEvents.length === 0}
+            <div class="no-events">No events to display for this period</div>
+          {/if}
+        </div>
+        
+        <div class="timeline-controls">
+          <img 
+          src="{base}/svg/left-arrow.svg" 
+          alt="left-arrow" 
+          class="left-arrow" 
+          on:click={() => navigateTimeline('left')}
+        >
+          <button 
+            class="timeline-view-btn {activeView === 'daily' ? 'active' : ''}" 
+            on:click={() => changeView('daily')}
+          >
+            Daily
+          </button>
+          <button 
+            class="timeline-view-btn {activeView === 'weekly' ? 'active' : ''}" 
+            on:click={() => changeView('weekly')}
+          >
+            Weekly
+          </button>
+          <button 
+            class="timeline-view-btn {activeView === 'monthly' ? 'active' : ''}" 
+            on:click={() => changeView('monthly')}
+          >
+            Monthly
+          </button>
+          <img 
+          src="{base}/svg/right-arrow.svg" 
+          alt="right-arrow" 
+          class="right-arrow" 
+          on:click={() => navigateTimeline('right')}
+        >
+        </div>
+      </div>
+      
       <div class="other-vehicle">
         <label for="another-vehicle"> Looking for another vehicle? Search: </label>
-        <input id="another-vehicle" class="another-vehicle" on:keydown={(e) => { if (e.key === 'Enter') gotoVehicle(e.target.value); e.target.value = '';}}>
-      </div>
+        <input id="another-vehicle" class="another-vehicle" on:keydown={(e) => {  if (e.key === 'Enter') {gotoVehicle(e.target.value);e.target.value = '';        }}}>
+        <button class="another-vehicle" 
+        style="color:white;background-color:#014B96" 
+        on:click={() => {
+          const input = document.getElementById('another-vehicle');
+          if (input) {
+            gotoVehicle(input.value);
+            input.value = '';
+          }
+        }}>
+        Go to Vehicle
+      </button>      </div>
     </div>
   </main>
     
@@ -773,7 +856,9 @@ function goToSelectedDate() {
       justify-content: flex-end;
       padding: 1vh 2vw;
     }
-    
+    .no-events{
+      justify-self:center;
+    }
     .top-header-link {
       font-size: 0.875rem;
       font-family: 'Mulish', sans-serif;
@@ -836,7 +921,12 @@ function goToSelectedDate() {
       .header a:nth-child(2) {
         margin-left: 5%;
       }
-      
+      .main-container{
+        padding-left: 0 !important;
+      }
+      .main-container-header{
+        font-size: 2rem !important;
+      }
       .header img {
       max-height: 8vh; 
       max-width: 100%; 
@@ -845,36 +935,51 @@ function goToSelectedDate() {
       scale:1.1;
       margin-left:auto;
     }
-      
-      
+      .breadcrumb{
+        display:none;
+      }
+      main {
+        background-color: white;
+      }
       .header a {
         display:none;
       }
-      
+      .sub-header span{
+      display:none;
+    }
       .header input {
         display:none;
       }
-      
+      .sub-header h1 {
+      font-size: 1rem !important;
+    }
       .hamburger-menu {
         display: block !important;
         position: absolute;
         left: 30px;
         transform: translateY(-50%);
     }
-  
-      .sub-header {
-        padding-left: 1vh;
-      }
+    
+    .sub-header {
+          margin:auto;
+        }
+        .sub-header img{
+          width: 30% !important;
+          height: 30% !important;
+        }
       
       * {
         font-size: 0.75rem !important;
       }
       img.left-arrow{
+        height:30px !important;
         margin-right: 7vw;
+        margin-left:4vw !important;
       }
       img.right-arrow{
+        height:30px !important;
         margin-left: 3vw;
-        margin-right: 2vw !important;
+        margin-right: 4vw !important;
       }
       .another-vehicle{
         max-width: 20vw !important;
@@ -886,16 +991,19 @@ function goToSelectedDate() {
       }
       .field-pair select{
         margin-left: 0 !important;
-        max-width: 20vw !important;
+        max-width: 25vw !important;
       }
       .field-pair button{
         margin : auto;
       }
       footer img { 
-        max-height: 6vh; 
-        max-width: 20%;
+        max-height: 10vh; 
+        max-width: 30%; 
         height: auto;
         width: auto !important;
+      }
+      .main-container{
+        overflow-x: hidden;
       }
     }
   
@@ -971,7 +1079,7 @@ function goToSelectedDate() {
     
     .breadcrumb {
       margin-top:2vh;
-      padding: 0.5vh 2vh 0.5vh 3vh;
+      padding: 0.5vh 1vw;
       color: #014B96;
       background-color: #F9BC39;
       width: fit-content;
@@ -1070,6 +1178,8 @@ function goToSelectedDate() {
       font-weight: 400;
       color:#014B96;
       margin-bottom: 2vh;
+      justify-self: center;
+      align-self: center;
     }
     
     .search-fields {
@@ -1107,14 +1217,13 @@ function goToSelectedDate() {
     img.left-arrow {
       width:10%;
       height:10%;
-      margin-left: 2vh;
       cursor: pointer;
     }
     
     img.right-arrow {
       width:10%;
       height:10%;
-      margin-right: 2vh;
+      margin-right: 2vw;
       cursor: pointer;
     }
     
@@ -1219,7 +1328,7 @@ function goToSelectedDate() {
       margin-bottom: 5px;
     }
     .timeline-event:hover .timeline-dot {
-        transform: scale(1.3);
+        transform: scale(1.2);
     }
     
     .timeline-event:hover .timeline-popup {
@@ -1231,7 +1340,8 @@ function goToSelectedDate() {
         display: flex;
         justify-content: center;
         gap: 15px;
-        margin-top: 20px;
+        margin-top: 1.5vh ;
+        margin-bottom : 2vh;
     }
     
     .timeline-view-btn {
@@ -1255,7 +1365,7 @@ function goToSelectedDate() {
         background-color: #d5e7f7;
     }
     .another-vehicle{
-  padding: 1vh 0.5vw;
+  padding: 0.5vh 0.5vw;
   border: 1px solid #ccc;
   border-radius: 4px;
   max-width:10vw;
@@ -1281,6 +1391,7 @@ function goToSelectedDate() {
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
+
 }
 
 .go-to-btn:hover {
@@ -1302,15 +1413,145 @@ function goToSelectedDate() {
   margin-top: 15px;
   flex-wrap: wrap;
 }
-
+.other-vehicle{
+  margin:auto;
+  justify-self: center;
+}
 .field-pair {
   display: flex;
   align-items: center;
   min-width: 200px;
+  justify-content:center;
 }
 .main-container {
   width: 100%;
   max-width: 100%;
-  overflow-x: hidden;
 }
-      </style>
+
+/* Mobile Timeline Styles */
+.mobile-timeline {
+  display: none;
+}
+
+.vertical-timeline {
+  position: relative;
+  min-height: 400px;
+  margin: 20px auto;
+  padding: 20px 0;
+  max-width: 600px;
+}
+
+.vertical-timeline .timeline-line {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 4px;
+  height: 100%;
+  background-color: #014B96;
+  border-radius: 2px;
+  transform: translateX(-50%);
+}
+
+.vertical-timeline-event {
+  position: relative;
+  margin: 40px 0;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.vertical-timeline-event.left {
+  margin-right: auto;
+  padding-right: 20px;
+}
+
+.vertical-timeline-event.right {
+  margin-left: auto;
+  padding-left: 20px;
+}
+.vertical-timeline-event.left .timeline-dot {
+  left:100%;
+}
+.vertical-timeline-event.right .timeline-dot {
+  left:0%;
+}
+
+.vertical-timeline-event .timeline-dot {
+  position: absolute;
+  transform: translateX(-50%);
+  width: 20px;
+  height: 20px;
+  background-color: #F9BC39;
+  border: 3px solid #014B96;
+  border-radius: 50%;
+  z-index: 1;
+  transition: transform 0.2s ease;
+}
+
+.vertical-timeline-event .timeline-date {
+  font-family: 'Mulish', sans-serif;
+  font-size: 0.875rem;
+  color: #014B96;
+  font-weight: 600;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.vertical-timeline-event .timeline-popup {
+  position: absolute;
+  top: 0;
+  width: 200px;
+  background-color: white;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  padding: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s, visibility 0.3s;
+  z-index: 10;
+}
+
+.vertical-timeline-event:nth-child(odd) .timeline-popup {
+  left: 25vw;
+}
+
+.vertical-timeline-event:nth-child(even) .timeline-popup {
+  left: 20vw;
+}
+
+.vertical-timeline-event:hover .timeline-dot {
+  transform: translateX(-50%) scale(1.2);
+}
+
+.vertical-timeline-event:hover .timeline-popup {
+  opacity: 1;
+  visibility: visible;
+}
+
+@media (max-width: 1000px) {
+  .desktop-timeline {
+    display: none;
+  }
+  
+  .mobile-timeline {
+    display: block;
+  }
+  
+  .vertical-timeline {
+    padding: 20px;
+  }
+  .current-period
+  {
+    margin-top:2vh;
+  }
+  .vertical-timeline-event {
+    margin: 30px 0;
+  }
+  
+  .vertical-timeline-event .timeline-popup {
+    width: 180px;
+  }
+}
+  </style>

@@ -10,21 +10,23 @@
   let dropdownMenu;
   let subHeaderProfile;
   let subHeaderCompany;
-  let mainSwipeContainer; // For touch events
+  let mainSwipeContainer;
 
-  // Variables for touch swipe detection
   let touchStartX = 0;
   let touchEndX = 0;
-  const swipeThreshold = 50; // Minimum distance (in pixels) to be considered a swipe
+  const swipeThreshold = 50; 
 
-  // Function to swap content between containers
   function swapContent(container1, container2) {
     if (!container1 || !container2) return; 
+    container1.classList.add('transitioning');
+    container2.classList.add('transitioning');
+
     const img1 = container1.querySelector('img');
     const span1 = container1.querySelector('span');
     const img2 = container2.querySelector('img');
     const span2 = container2.querySelector('span');
 
+    setTimeout(() => {
     if (img1 && img2) {
       const tempImgSrc = img1.src;
       img1.src = img2.src;
@@ -36,28 +38,30 @@
       span1.textContent = span2.textContent;
       span2.textContent = tempText;
     }
+    setTimeout(() => {
+      container1.classList.remove('transitioning')
+      container2.classList.remove('transitioning')
+    }, 100);
+  },100);
   }
 
-  // Function to move containers
   function moveContainers(direction) {
-    // This function swaps content to create a carousel effect.
-    // On mobile, leftContainer and rightContainer are hidden by CSS,
-    // but their content is still swapped with middleContainer,
-    // effectively changing what's visible in middleContainer.
+    if (leftArrow) leftArrow.style.pointerEvents = 'none';
+    if (rightArrow) rightArrow.style.pointerEvents = 'none';
     if (direction === 'left') {
-      // Moves content as if shifting items to the right (e.g. L,M,R -> M,R,L if all visible)
-      // When only M is visible: M shows L's old content.
+
       swapContent(leftContainer, middleContainer);
       swapContent(leftContainer, rightContainer);
     } else if (direction === 'right') {
-      // Moves content as if shifting items to the left (e.g. L,M,R -> R,L,M if all visible)
-      // When only M is visible: M shows R's old content.
       swapContent(rightContainer, middleContainer);
       swapContent(rightContainer, leftContainer);
     }
+    setTimeout(() => {
+    if (leftArrow) leftArrow.style.pointerEvents = 'auto';
+    if (rightArrow) rightArrow.style.pointerEvents = 'auto';
+  }, 200); 
   }
 
-  // Function to toggle dropdown
   function toggleDropdown(event) {
     event.stopPropagation(); 
     if (dropdownMenu) {
@@ -65,7 +69,6 @@
     }
   }
 
-  // Page navigation functions
   function navigateBasedOnImage(imageSrc) {
     if (!imageSrc) return;
     if (imageSrc.includes('Truck_graphic')) {
@@ -85,8 +88,6 @@
   }
 
   function handleLeftClick() {
-    // This is for the left container's button. On mobile, leftContainer is hidden.
-    // This will primarily be effective on desktop.
     if (leftContainer) {
       const leftImage = leftContainer.querySelector('img');
       if (leftImage) navigateBasedOnImage(leftImage.getAttribute('src'));
@@ -94,15 +95,12 @@
   }
 
   function handleRightClick() {
-    // This is for the right container's button. On mobile, rightContainer is hidden.
-    // This will primarily be effective on desktop.
     if (rightContainer) {
       const rightImage = rightContainer.querySelector('img');
       if (rightImage) navigateBasedOnImage(rightImage.getAttribute('src'));
     }
   }
 
-  // Handle click outside dropdown
   function handleClickOutside(event) {
     if (dropdownMenu && !dropdownMenu.contains(event.target) && 
         subHeaderProfile && !subHeaderProfile.contains(event.target) &&
@@ -137,11 +135,11 @@
     }
   }
 
-  // Touch event handlers for swipe
   function handleTouchStart(event) {
-    // Check if it's a mobile view based on your CSS breakpoint
     if (window.innerWidth > 1000) return; 
     touchStartX = event.touches[0].clientX;
+    if (mainSwipeContainer) mainSwipeContainer.classList.add('touching');
+
   }
 
   function handleTouchMove(event) {
@@ -151,16 +149,15 @@
 
   function handleTouchEnd() {
     if (window.innerWidth > 1000) return; 
+    if (mainSwipeContainer) mainSwipeContainer.classList.remove('touching');
     if (touchStartX === 0 || touchEndX === 0) return; // No significant move
 
     const swipeDistance = touchStartX - touchEndX;
 
     if (Math.abs(swipeDistance) > swipeThreshold) {
       if (swipeDistance > 0) {
-        // Swiped left (user wants to see next item, so effectively move content "right" in the sequence)
         moveContainers('right'); 
       } else {
-        // Swiped right (user wants to see previous item, effectively move content "left" in sequence)
         moveContainers('left');
       }
     }
@@ -177,7 +174,6 @@
     rightArrow = document.querySelector('.right-arrow');
     dropdownMenu = document.getElementById('dropdownMenu');
     subHeaderProfile = document.querySelector('.sub-header-profile');
-    subHeaderCompany = document.querySelector('.sub-header-company');
     mainSwipeContainer = document.querySelector('.main-container'); 
 
     const clickMoveLeft = () => moveContainers('left');
@@ -189,7 +185,6 @@
     if (subHeaderCompany) subHeaderCompany.addEventListener('click', toggleDropdown);
     document.addEventListener('click', handleClickOutside);
 
-    // Add touch event listeners for swiping on the main container for mobile
     if (mainSwipeContainer) {
       mainSwipeContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
       mainSwipeContainer.addEventListener('touchmove', handleTouchMove, { passive: true });
@@ -261,12 +256,14 @@
 <div class="sub-header-container">
   <div class="sub-header">
     <div class="sub-header-profile">
-      <img class="profile-pic" src="{base}/images/NicePng_gray.png" alt="profile-logo">
-      <div class="sub-header-profile-name">Darren Keane</div>
-    </div>
-    <div class="sub-header-company">
-      <img class="company-logo" src="{base}/images/circle-k-logo.png" alt="company-logo">
-      <div class="sub-header-role">( Area Manager )</div>
+      <div class="profile-column">
+        <img class="profile-pic" src="{base}/images/NicePng_gray.png" alt="profile-logo">
+        <div class="sub-header-profile-name">Darren Keane</div>
+      </div>
+      <div class="company-column">
+        <img class="company-logo" src="{base}/images/circle-k-logo.png" alt="company-logo">
+        <div class="sub-header-role">( Area Manager )</div>
+      </div>
     </div>
   </div>
   <div class="dropdown-menu" id="dropdownMenu">
@@ -319,9 +316,6 @@
     display: flex;
     flex-direction: column;
     margin-bottom: 5vh;
-    /* It's generally good to have touch-action: pan-y for swipeable areas 
-       to allow vertical scrolling if content overflows, while capturing horizontal swipes.
-       If you absolutely want no CSS changes, you can remove this. */
     touch-action: pan-y; 
   }
   ::placeholder {
@@ -448,7 +442,7 @@
   }
   
   @media (max-width: 1000px) {
-    .header a:nth-child(2) { /* This was in your original, refers to the "Home" link in sequence */
+    .header a:nth-child(2) { 
       margin-left: 5%;
     }
     .header img {
@@ -465,7 +459,6 @@
     .header input {
       display:none;
     }
-    /* Ensure the logo in .header (Midas_Link_logo.png) remains visible if it was hidden by ".header a" */
     .header img[alt="Berrys Logo"] {
         display: block !important; 
     }
@@ -481,25 +474,19 @@
     .dropdown-menu{
       left:30vw !important;
     }
-    .sub-header img {
-      width: 3vh !important;
-      height: 3vh !important;
-    }
-    .sub-header .company-logo{
-      width: 3vh !important;
-      height: 4vh !important;
-    }
+  
     .sub-header-profile-name {
       font-size: 0.8rem;
     }
     .sub-header-role {
       font-size: 0.8rem;
     }
-    * { /* This was in your original CSS */
+    * { 
       font-size: 0.75rem !important;
     }
     .main-container {
-      margin-top: 20vh !important; /* Your original value */
+      padding: 0 !important;
+      margin-top: 20vh !important; 
     }
     .main-container-middle{
       scale:1.3;
@@ -509,7 +496,9 @@
     }
     .main-container-right {
       margin-left: 10vw;
-
+    }
+    .main-container span{
+      font-size:0.5rem !important;
     }
     img.left-arrow { 
       display:none;
@@ -518,11 +507,17 @@
       display:none;
     }
     footer img { 
-      max-height: 6vh; 
-      max-width: 20%; 
+      max-height: 10vh; 
+      max-width: 30%; 
       height: auto; 
       width: auto !important;
     }
+    .main-container img { 
+    width: 22.5vw !important; 
+    }
+   .main-container-middle img {
+  width: 30vw !important;
+ }
   }
   .header a:hover {
     background-color: rgba(255, 255, 255, 0.1);
@@ -586,22 +581,52 @@
     display: flex;   
     justify-content: space-between;
     align-items: flex-start;
-    padding: 0 2vh;
-    margin-top: 9vh; /* Your original desktop value */
+    padding: 0 2vw;
+    margin-top: 9vh; 
   }
-  .main-container div { /* Refers to .main-container-left, .main-container-middle, .main-container-right */
+  .main-container div { 
     display: flex;
     flex-direction: column;
     align-items: center;
   }
-
+  .main-container-left,
+.main-container-middle,
+.main-container-right {
+  transition: opacity 0.1s ease, transform 0.1s ease;
+}
+.main-container-middle {
+  position: relative;
+  z-index: 2;
+  transform: scale(1.05);
+  transition: all 0.1s ease;
+}
+:global(.main-container-middle.transitioning) {
+  transform: scale(1);
+}
+.main-container button {
+  transition: all 0.1s ease;
+}
+.main-container span {
+  transition: opacity 0.1s ease ;
+}
+:global(.transitioning span) {
+  opacity: 0;
+}
+:global(.transitioning) {
+  opacity: 0.9;
+  transform: scale(0.95);
+}
+:global(.transitioning.visible) {
+  opacity: 1;
+  transform: scale(1);
+}
   .main-container-left {
-    margin-left : 2.5vh;
+    margin-left : 2.5vw;
   }
   .main-container-right {
-    margin-right: 2.5vh;
+    margin-right: 2.5vw;
   }
-  .main-container img { /* General rule for images inside .main-container (like arrows) */
+  .main-container img { 
     width: 50%; 
     cursor: pointer;
     transition: transform 0.2s ease;
@@ -615,30 +640,27 @@
   .main-container img:hover {
     transform: scale(1.05);
   }
-  .main-container-middle img { /* Specifically the image in the middle content block's button */
-    width: 75%; /* Your original rule */
-  }
   .main-container span {
     font-family: 'Mulish', sans-serif;
     font-weight: 400;
-    font-size: 1rem; /* Your original desktop font size for these */
+    font-size: 1rem; 
     color: #747474;
     text-decoration: underline;
     text-transform: uppercase;
     text-align: center;
   }
-  img.left-arrow { /* These are the main navigation arrows, direct children of .main-container */
+  img.left-arrow { 
     width:10%;
     height:10%;
     align-self: center;
-    margin-left: 2vh;
+    margin-left: 2vw;
     cursor: pointer;
   }
-  img.right-arrow { /* These are the main navigation arrows */
+  img.right-arrow { 
     width:10%;
     height:10%;
     align-self: center;
-    margin-right: 2vh;
+    margin-right: 2vw;
     cursor: pointer;
   }
   .sub-header-container {
@@ -665,7 +687,28 @@
   .dropdown-menu a:hover{
     background-color: #0961b9;
   }
-  .sub-header-profile, .sub-header-company {
+  .sub-header-profile {
     cursor: pointer;
+    display: flex;
+    gap: 1vw;
+  }
+  .profile-column, .company-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .profile-pic {
+    width: 5vh;
+    height: 5vh;
+    margin-bottom: 0.5vh;
+  }
+  .company-logo {
+    width: 5vh;
+    height: 6vh;
+    margin-bottom: 0.5vh;
+  }
+  .sub-header-profile-name, .sub-header-role {
+    font-size: 0.9rem;
+    text-align: center;
   }
 </style>

@@ -225,9 +225,9 @@ setupMobileMenu();
       }
 
       footer img { 
-        max-height: 6vh; /* Maintain height relative to viewport */
-        max-width: 20%; /* Ensure it doesn't exceed the width of its container */
-        height: auto; /* Maintain aspect ratio */
+        max-height: 10vh; 
+        max-width: 30%; 
+        height: auto; 
         width: auto !important;
       }
         }
@@ -293,7 +293,7 @@ setupMobileMenu();
             }
         .breadcrumb {
         margin-top:2vh;
-        padding: 0.5vh 2vh 0.5vh 3vh;
+        padding: 0.5vh 1vw;
         color: #014B96;
         background-color: #F9BC39;
         width: fit-content;

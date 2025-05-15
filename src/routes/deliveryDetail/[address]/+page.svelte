@@ -2,6 +2,45 @@
     import { onMount } from "svelte";
     import { base } from '$app/paths';
     import { page } from '$app/stores';
+    import { goto } from "$app/navigation";
+    import { get } from 'svelte/store';
+    const currentPath = get(page).url.pathname;
+
+    // Function to save state to localStorage
+    function saveStateToSession() {
+        const state = {
+            address: $page.state?.address,
+            city: $page.state?.city,
+            state: $page.state?.state,
+            date: $page.state?.date,
+            siteCode: $page.state?.siteCode,
+            from: $page.state?.from
+        };
+        localStorage.setItem('deliveryDetailState', JSON.stringify(state));
+    }
+
+    // Function to load state from localStorage
+    function loadStateFromSession() {
+        const savedState = localStorage.getItem('deliveryDetailState');
+        if (savedState) {
+            const state = JSON.parse(savedState);
+            $page.state = {
+                ...$page.state,
+                ...state
+            };
+        }
+    }
+
+    // Modified gotoVehicle function to save state before navigation
+    function gotoVehicle() {
+        saveStateToSession();
+        goto(`${base}/vehicle/HDY674`, {
+            state: {
+                from: currentPath,
+                trailer: "HDY674",
+            },
+        });
+    }
 
     $: address = $page.state?.address;
     $: city = $page.state?.city;
@@ -14,7 +53,7 @@
     if (!dateString) return '';
     
     // Split the date string into day, month, year
-    const [day, month, year] = dateString.split('/');
+    const [day, month, year] = dateString.split('.');
     
     // Create a new date object (month is 0-based in JavaScript)
     const date = new Date(year, month - 1, day);
@@ -25,7 +64,7 @@
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return date.toLocaleDateString('en-US', options);
 }
-       function setupMobileMenu() {
+    function setupMobileMenu() {
       const hamburger = document.getElementById('hamburger-menu');
       const sidebar = document.getElementById('mobile-sidebar');
       const overlay = document.getElementById('overlay');
@@ -249,7 +288,9 @@ function closeDropdown(event) {
         }
 }
     onMount(() =>{
+ 
   setupMobileMenu();
+  loadStateFromSession();
     });
   </script>
   <svelte:head>
@@ -302,8 +343,8 @@ function closeDropdown(event) {
         <div class="overlay" id="overlay"></div>
       <div class="sub-header-container">
           <div class="sub-header">
-                  <h1> Delivery Detail </h1>
                   <img src="{base}/images/Gas_station_graphic.png" alt="gas_station">
+                  <h1> Delivery Detail <span class="mobile-delivery-date">-{formatDate(date)} </span></h1>
                   <span> View below delivery details from {formatDate(date)} </span>
                 
           </div>
@@ -314,7 +355,7 @@ function closeDropdown(event) {
       <main>
          <div class="main-container">
             <span class="address-details"> 
-                {address}, {city} {State} <span style="margin-left: 30vw" >Site Code:{siteCode} </span>
+                <span class="delivery-address"> {address}, {city} {State} </span> <span class="address-siteCode">Site Code:{siteCode} </span>
             </span>
             <div class="delivery-details">
             <span class="delivery-time">
@@ -325,7 +366,7 @@ function closeDropdown(event) {
             </span>
              </div>
              <div class="trailer-report">
-             <span class="trailer-id">Trailer: HDY674</span>
+             <a class="trailer-id" on:click={()=>gotoVehicle()}>Trailer: HDY674</a>
              <div class="export-dropdown">
                    <button class="export-button" on:click={toggleDropdown}>Export As ▼</button>
                    <div class="dropdown-content" id="exportDropdown">
@@ -334,7 +375,8 @@ function closeDropdown(event) {
                    </div>
                </div>
              </div>
-             <table>
+             <div class="data-container">
+              <table class="desktop-view">
                 <thead>
                 <tr>
                     <th></th>
@@ -389,6 +431,57 @@ function closeDropdown(event) {
           </tr>
             </tbody>
              </table>
+             <div class="mobile-view">
+              <div class="trailer-id-container">
+              <a class="mob-trailer-id"  on:click={()=>gotoVehicle()}>Trailer: HDY674</a>
+              </div>
+              <table>
+                <tbody>
+                  <tr>
+                      <td>1</td>
+                      <td>13:03-13:12</td>
+                      <td>Tank #2</td>
+                      <td>Diesel 2#</td>
+                      <td>Good Fuel</td>
+                  </tr>
+                  <tr>
+                      <td>2</td>
+                      <td>13:03-13:12</td>
+                      <td>Tank #2</td>
+                      <td>Diesel 2#</td>
+                      <td>Good Fuel</td>
+                  </tr>
+                  <tr>
+                      <td>3</td>
+                      <td>13:03-13:12</td>
+                      <td>Tank #2</td>
+                      <td>GAS 87 OCTANE 10.0%</td>
+                      <td>Good Fuel</td>
+                  </tr>
+                  <tr style="color:red">
+                    <td>4</td>
+                    <td >13:36 No Drop</td>
+                    <td>Tank #1</td>
+                    <td>GAS 87 OCTANE 10.0%</td>
+                    <td>Cross-drop</td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td>13:39-13:44</td>
+                  <td>Tank #1</td>
+                  <td>GAS 87 OCTANE 10.0%</td>
+                  <td>Good Fuel</td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td>13:48-13:54</td>
+                <td>Tank #3</td>
+                <td>GAS 87 OCTANE 10.0%</td>
+                <td>Good Fuel</td>
+            </tr>
+              </tbody>
+              </table>
+            </div>
          </div>
       </main>
       
@@ -423,6 +516,9 @@ function closeDropdown(event) {
               display: flex;
               justify-content: flex-end;
               padding: 1vh 2vw;
+          }
+          .mobile-delivery-date{
+            display:none;
           }
           .top-header-link {
               font-size: 0.875rem;
@@ -472,13 +568,25 @@ function closeDropdown(event) {
       transition: all 0.3s ease;
       white-space: nowrap;
     }
+    .mobile-view {
+    display: none;
+    width: 95%;
+    margin: 0 auto;
+  }
     .header a:nth-child(3) {
       margin-left: 10%;
     }
           
-          @media (max-width: 1000px) {    
-              .header a:nth-child(2) {
-          margin-left: 5%;
+    @media (max-width: 1000px) {    
+      .desktop-view {
+      display: none;
+    }
+    .mobile-view {
+      display: grid;
+      width:100vw;
+    }
+    .header a:nth-child(2) {
+        margin-left: 5%;
         }
         .header img {
       max-height: 8vh; 
@@ -488,13 +596,50 @@ function closeDropdown(event) {
       scale:1.1;
       margin-left:auto;
     }
-        .address-details span{
-          margin-left:15vw !important;
-        }
-        .trailer-id
-        {
-          margin-right:2vw;
-        }
+    .export-button{
+      display:none;
+    }
+    .breadcrumb{
+      display: none;
+    }
+    .trailer-report{
+      display:none !important;
+    }
+    main{
+      background-color: white ;
+    }
+    .address-siteCode,
+    .delivery-address {
+      font-weight: 500 !important;
+      font-size: 1rem !important;
+      align-self: center;
+      margin:auto;
+    }
+    .address-details{
+      display:grid;
+    }
+    .sub-header span{
+      display:none;
+    }
+    .sub-header h1 {
+      font-size: 1rem !important;
+    }
+    .mobile-delivery-date{
+      display: contents !important;
+      font-size: 1rem !important;
+    }
+    .trailer-id-container{
+      width: 100%;
+      background-color: #004B96;
+      height: 4vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .mob-trailer-id {
+      color:white;
+      text-decoration: underline;
+    }
         .header a {
           display:none;
         }
@@ -507,21 +652,37 @@ function closeDropdown(event) {
         left: 30px;
         transform: translateY(-50%);
     }
-    
+      .delivery-details{
+        background-color: #EAF3FC !important;
+        color:#014B96;
+        width: 100% !important;
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 500 !important;
+        font-size: 1rem !important;
+        height:3vh;
+      }
         .sub-header {
-          padding-left: 1vh;
+          margin:auto;
+        }
+        .sub-header img{
+          width: 30% !important;
+          height: 30% !important;
         }
         * {
           font-size: 0.75rem !important;
         }
-        th{
-          overflow-wrap: break-word;
-        }  
-     
+        table{
+          width:100% !important;
+        } 
+        table tr{
+          max-height: 2vh !important;
+        }
         footer img { 
-          max-height: 6vh; /* Maintain height relative to viewport */
-          max-width: 20%; /* Ensure it doesn't exceed the width of its container */
-          height: auto; /* Maintain aspect ratio */
+          max-height: 10vh; 
+          max-width: 30%; 
+          height: auto; 
           width: auto !important;
         }
           }
@@ -534,8 +695,7 @@ function closeDropdown(event) {
               width: 8vw;
           }
           .header input[type="text"] {
-              padding: 1vh 3vh 1vh 3vh;
-              border-radius: 4px;
+            padding: 1vh 1.5vw;              border-radius: 4px;
               border: 1px solid rgba(255, 255, 255, 0.2);
               background-color: rgba(255, 255, 255, 0.1);
               color: white;
@@ -544,11 +704,6 @@ function closeDropdown(event) {
               background-repeat: no-repeat;
               background-size: 16px;
               background-position: 0.5vh center;
-          }
-          @media (max-width: 900px) {
-              .header input[type="text"] {
-                  width: 40%;
-              }
           }
           .header input[type="text"]::placeholder {
               color: rgba(255, 255, 255, 0.7);
@@ -572,7 +727,7 @@ function closeDropdown(event) {
           .sub-header {
               display: flex;
               align-items: center;
-              padding-left: 5vh;
+              padding-left: 5vw;
               padding-top: 2vh;
           }
           .sub-header img {
@@ -580,7 +735,8 @@ function closeDropdown(event) {
             height:10%;
           }
           .sub-header span {
-              padding-left: 10%;
+              align-self: center;
+              margin:auto;
               font-family: 'Mulish', sans-serif;
           }
           .sub-header h1 {
@@ -591,7 +747,7 @@ function closeDropdown(event) {
               }
           .breadcrumb {
           margin-top:2vh;
-          padding: 0.5vh 2vh 0.5vh 3vh;
+          padding: 0.5vh 1vw;
           color: #014B96;
           background-color: #F9BC39;
           width: fit-content;
@@ -600,8 +756,14 @@ function closeDropdown(event) {
           border-top-left-radius: 0px;
           }
         .trailer-id{
-          margin-left:45%;
+          align-self: center;
+          margin:auto;
           font-size:1.25rem;
+          text-decoration: underline;
+        }
+        .trailer-id:hover {
+          color:#004B96;
+          cursor: pointer;
         }
           .breadcrumb span,
           .breadcrumb a {
@@ -622,6 +784,7 @@ function closeDropdown(event) {
         font-weight: 400;
         color:#014B96;
         margin-bottom: 2vh;
+        align-self: center;
           }
           .hamburger-menu {
           display: none;
@@ -643,7 +806,6 @@ function closeDropdown(event) {
         flex-direction: column;
         align-items: flex-start;
         padding-top: 4vh;
-        padding-left: 4vh;
         border-top-left-radius: 20px;
         background-color: white;
         height: 100%;
@@ -696,7 +858,7 @@ function closeDropdown(event) {
         font-size:1.25rem;
       }
       .trailer-report{
-        display: flex;
+        display: grid;
     align-items: center;
     width: 90%;
     margin: 2vh auto 0 auto; 
@@ -756,7 +918,7 @@ function closeDropdown(event) {
     .export-button {
         background-color: #014B96;
         color: white;
-        padding: 0.5vh 2vh;
+        padding: 0.5vh 2vw;
         border-radius: 4px;
         font-family: 'Mulish', sans-serif;
         font-weight: 400;

@@ -32,8 +32,12 @@
   let trailerInput;
   let dateInput;
   let fuelInput;
+  let mobileSearchVisible = false;
   function getRowClass(index) {
     return index % 2 === 0 ? "row-even" : "row-odd";
+  }
+  function toggleMobileSearch() {
+    mobileSearchVisible = !mobileSearchVisible;
   }
   function filterRows() {
     filteredRows = rows.filter((row) => {
@@ -115,22 +119,19 @@
     newDetailsVisible[index] = !newDetailsVisible[index];
     detailsVisible = newDetailsVisible;
   }
- // Modified exportTableToCSV function to exclude only the "View Vehicle Timeline" button
  function exportTableToCSV() {
-  // Clone the table to avoid modifying the original
   const originalTable = document.querySelector("table");
   const tableClone = originalTable.cloneNode(true);
   
-  // Remove all "View Vehicle Timeline" buttons from the clone
   const buttons = tableClone.querySelectorAll(".more-details");
   buttons.forEach(button => {
-    button.parentNode.textContent = ""; // Replace button cell content with empty string
+    button.parentNode.textContent = ""; 
   });
   
   const rows = tableClone.querySelectorAll("tr");
   let csv = [];
 
-  // Get headers
+
   const headers = [];
   const headerCells = rows[0].querySelectorAll("th");
   headerCells.forEach((cell) => {
@@ -138,7 +139,6 @@
   });
   csv.push(headers.join(","));
 
-  // Get data rows - include details rows but without the button
   for (let i = 1; i < rows.length; i++) {
     const row = [];
     const cells = rows[i].querySelectorAll("td");
@@ -151,7 +151,6 @@
     }
   }
 
-  // Create blob
   const csvContent = csv.join("\n");
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
 
@@ -216,7 +215,6 @@ function setupMobileMenu() {
       overlay.style.display = 'none';
     });
     
-    // Close the sidebar when clicking on a link
     const sidebarLinks = sidebar.querySelectorAll('a');
     sidebarLinks.forEach(link => {
       link.addEventListener('click', function() {
@@ -232,7 +230,6 @@ async function exportTableToPDF() {
     
     const doc = new jsPDF();
 
-    // Add title and timestamp
     doc.setFont("helvetica", "bold");
     doc.setFontSize(16);
     doc.text("Vehicle Logging Data", 14, 15);
@@ -242,20 +239,17 @@ async function exportTableToPDF() {
     doc.setFont("helvetica", "normal");
     doc.text(`Generated: ${timestamp}`, 14, 25);
 
-    // Get the specific table you want to export
-    const originalTable = document.querySelector("table"); // Use a more specific selector
+    const originalTable = document.querySelector("table");
     if (!originalTable) throw new Error("Table not found");
     
     const exportTable = originalTable.cloneNode(true);
     
-    // Remove action buttons more reliably
     const buttons = exportTable.querySelectorAll(".more-details");
     buttons.forEach(button => {
       const cell = button.closest("td, th");
       if (cell) cell.textContent = "";
     });
 
-    // Generate the table in PDF
     doc.autoTable({
       html: exportTable,
       startY: 30,
@@ -278,13 +272,11 @@ async function exportTableToPDF() {
       margin: { top: 30 },
     });
 
-    // Generate filename
     const date = new Date();
     const formattedDate = date.toISOString().split("T")[0];
     const formattedTime = date.toTimeString().split(" ")[0].replace(/:/g, "-");
     const fileName = `vehicle_logging_${formattedDate}_${formattedTime}.pdf`;
 
-    // Save the file
     if ("showSaveFilePicker" in window) {
       try {
         const handle = await window.showSaveFilePicker({
@@ -295,7 +287,7 @@ async function exportTableToPDF() {
           }],
         });
         const writable = await handle.createWritable();
-        await writable.write(doc.output("blob")); // No need for new Blob()
+        await writable.write(doc.output("blob"));
         await writable.close();
       } catch (err) {
         console.error("File save error:", err);
@@ -305,15 +297,13 @@ async function exportTableToPDF() {
       fallbackSavePDF(doc, fileName);
     }
 
-    return true; // Indicate success
+    return true; 
   } catch (error) {
     console.error("PDF generation failed:", error);
-    // You might want to show a user-friendly error message here
-    return false; // Indicate failure
+    return false; 
   }
 }
 
-// Fallback function should be defined somewhere
 function fallbackSavePDF(doc, fileName) {
   doc.save(fileName);
 }
@@ -395,7 +385,6 @@ function fallbackSavePDF(doc, fileName) {
     </div>
   </div>
 </header>
-<!-- Mobile sidebar navigation -->
 <div class="mobile-sidebar" id="mobile-sidebar">
   <a href="{base}/home">Home</a>
   <a href="{base}/vehicle-logging">Vehicle Logging</a>
@@ -408,7 +397,7 @@ function fallbackSavePDF(doc, fileName) {
 <div class="overlay" id="overlay"></div>
 <div class="sub-header-container">
   <div class="sub-header">
-    <h1>Vehicle Logging</h1>
+    <img src="{base}/images/Truck_graphic.png"   alt="Truck Graphic" class="subheader-image"/> <h1>Vehicle Logging</h1>     
     <span>
       Access key information on each trailer, with real-time access to
       deliveries, focusing on trailer ID. See where trailers are located, what
@@ -421,8 +410,8 @@ function fallbackSavePDF(doc, fileName) {
 </div>
 <main>
   <div class="main-container">
-    <label for="search-fields" class="search-label"> Search</label>
-    <div class="search-fields">
+    <button on:click={toggleMobileSearch} class="toggle-search-btn"><label for="search-fields" class="search-label"> Search <span style="font-size:1rem">{mobileSearchVisible ?  '▲' : '▼'} </span> </label>   </button>
+    <div class="search-fields" class:visible={mobileSearchVisible}>
       <label for="ST-address"> Address</label>
       <input
         type="text"
@@ -456,11 +445,12 @@ function fallbackSavePDF(doc, fileName) {
       />
       <label for="Fuel">Fuel</label>
       <input type="text" bind:value={searchParams.fuel} id="Fuel" name="Fuel" />
+      <div class="button-container">
+        <button class="search-button" on:click={filterRows}>Search</button>
+        <button class="clear-button" on:click={clearSearch}>Clear</button>
+      </div>
     </div>
-    <div class="button-container">
-      <button class="search-button" on:click={filterRows}>Search</button>
-      <button class="clear-button" on:click={clearSearch}>Clear</button>
-    </div>
+   
     <div class="table-header">
       <div class="live-status">
         <div class="toggle-live">
@@ -483,75 +473,114 @@ function fallbackSavePDF(doc, fileName) {
         </div>
       </div>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Time</th>
-          <th>City</th>
-          <th>Vehicle ID</th>
-          <th>Prevented Delivery</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#if filteredRows.length > 0}
-          {#each filteredRows as row, index}
-            <tr
-              class="main-row {getRowClass(index)} {detailsVisible[index]
-                ? 'hover-row'
-                : ''}"
-              on:click={() => toggleDetails(index)}
-            >
+    <div class="data-container">
+      <table class="desktop-view">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Time</th>
+            <th>City</th>
+            <th>Vehicle ID</th>
+            <th>Prevented Delivery</th>
+          </tr>
+        </thead>
+        <tbody>
+          {#if filteredRows.length > 0}
+            {#each filteredRows as row, index}              
+              <tr 
+                class="main-row {getRowClass(index)} {detailsVisible[index] ? 'hover-row' : ''}" 
+                on:click={() => toggleDetails(index)}
+              >
               <td>{vehicleFuncs.formatDate(row.Date)}</td>
               <td>{row.Time}</td>
               <td>{row.City}</td>
               <td>{row["Trailer No."]}</td>
               <td>{row["Prevented Delivery "]}</td>
+              </tr>
+              {#if detailsVisible[index]}
+                <tr class="details-row {getRowClass(index)}" on:click={() => toggleDetails(index)}>    
+                  <td colspan="4" class="details-cell">
+                    <div class="details-header">Details:</div>
+                    <div class="details-content">
+                      {row.Date} | {row.Time || ""}
+                      <br />
+                      <span class="label">Trailer No.:</span>
+                      {row["Trailer No."] || ""}
+                      <br />
+                      <span class="label">Full Address:</span>
+                      {row.Address || ""} , {row.City} {row.State}
+                      
+                      <br />
+                      <span class="label">Delivered:</span>
+                      {row["Prevented Delivery "] || ""} |
+                      <span class="label">Tank:</span>
+                      T{row["Tank No. "] || ""}
+                    </div>
+                  </td>
+                  <td>
+                    <button on:click={() => openDetails(row)} class="more-details">
+                      View Vehicle Timeline
+                    </button>
+                  </td>
+                </tr>
+              {/if}
+            {/each}
+          {:else}
+            <tr>
+              <td colspan="4" style="text-align: center; padding: 20px;">No results found</td>
             </tr>
-            {#if detailsVisible[index]}
-              <tr
-                class="details-row {getRowClass(index)}"
-                on:click={() => toggleDetails(index)}
-              >
-                <td colspan="4" class="details-cell">
+          {/if}
+        </tbody>
+      </table>
+    
+      <div class="mobile-card-view">
+        {#if filteredRows.length > 0}
+          {#each filteredRows as row, index}
+            <div class="card {getRowClass(index)}" on:click={() => toggleDetails(index)}>
+              <div class="card-header">
+                <div class="card-item">
+                  <span class="card-label"> {vehicleFuncs.formatDate(row.Date) === 'Just now' ? 'Just now' : `${vehicleFuncs.formatDate(row.Date)} `}</span>
+              </div>
+                <div class="card-item">
+                  <span class="card-value" style="margin-left: 2vw;">Fuel: {row["Prevented Delivery "]}</span> 
+                  <span class="card-value" style="margin-left: 2vw;">Vehicle: {row["Trailer No."]}</span>
+                  <span class="card-value" style="position: relative;margin-left:auto"> {detailsVisible[index] ? '▲' : '▼'}</span>
+              </div>
+              </div>
+              
+              {#if detailsVisible[index]}
+                <div class="card-details">
+                  <hr>
                   <div class="details-header">Details:</div>
                   <div class="details-content">
-                    {row.Date} | {row.Time || ""}
-                    <br />
-                    <span class="label">Trailer No.:</span>
-                    {row["Trailer No."] || ""}
-                    <br />
-                    <span class="label">Full Address:</span>
-                    {row.Address || ""} , {row.City} {row.State}
-                    
-                    <br />
-                    <span class="label">Delivered:</span>
-                    {row["Prevented Delivery "] || ""} |
-                    <span class="label">Tank:</span>
-                    T{row["Tank No. "] || ""}
+                    <div class="detail-row">
+                      {row.Date} | {row.Time}
+                    </div>
+                    <div class="detail-row">
+                      <span class="label">Trailer No:</span> {row["Trailer No."]}
+                    </div>
+                    <div class="detail-row">
+                      <span class="label">Full Address:</span> {row.Address || ''}, {row.City || ''} {row.State || ''}
+                    </div>
+                    <div class="detail-row">
+                      <span class="label">Delivered:</span> {row["Prevented Delivery "]} <span class="label">Tank:</span>
+                      T{row["Tank No. "] || ""}
+                    </div>
+                    <button on:click={() => openDetails(row)} class="more-details mobile-details-btn">
+                      View Vehicle Timeline
+                    </button>
                   </div>
-                </td>
-                <td>
-                  <button
-                    on:click={() => openDetails(row)}
-                    class="more-details"
-                  >
-                    View Vehicle Timeline
-                  </button>
-                </td>
-              </tr>
-            {/if}
+                </div>
+              {/if}
+            </div>
           {/each}
         {:else}
-          <tr>
-            <td colspan="4" style="text-align: center; padding: 20px;"
-              >No results found</td
-            >
-          </tr>
+          <div class="no-results">No results found</div>
         {/if}
-      </tbody>
-    </table>
+      </div>
+    </div>
   </div>
+
 </main>
 
 <footer>
@@ -571,6 +600,9 @@ function fallbackSavePDF(doc, fileName) {
     padding: 0;
     box-sizing: border-box;
   }
+  .subheader-image {
+    display:none;
+  }
   main {
     flex: 1; 
     background-color: #f9bc39;
@@ -578,6 +610,86 @@ function fallbackSavePDF(doc, fileName) {
   ::placeholder {
     color: #5e5e5e;
     font-size: 0.875rem;
+  }
+  .data-container {
+    width: 100%;
+    margin-top: 2vh;
+  }
+  
+  .mobile-card-view {
+    display: none;
+    width: 95%;
+    margin: 0 auto;
+  }
+  .toggle-search-btn{
+    display:none;
+  }
+  .card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+    padding: 15px;
+    transition: all 0.3s ease;
+  }
+  
+  .card.row-even {
+    background-color: #f8f9fa;
+  }
+  
+  .card.row-odd {
+    background-color: #EAF3FC;
+  }
+  
+  .card-header {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .card-item {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 5px;
+  }
+  
+  .card-label {
+    font-weight: bold;
+    color: #014B96;
+    font-size: 0.8rem;
+    font-family: 'Mulish', sans-serif;
+  }
+  
+  
+  .card-details {
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+  
+  .card-details hr {
+    border: 0;
+    height: 1px;
+    background-color: #ddd;
+    margin: 5px 0 10px 0;
+  }
+  
+  .detail-row {
+    margin-bottom: 8px;
+    font-family: 'Mulish', sans-serif;
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  
+  .mobile-details-btn {
+    margin-top: 10px;
+    width: 100%;
+  }
+  
+  .no-results {
+    text-align: center;
+    padding: 20px;
+    font-family: 'Mulish', sans-serif;
   }
   .header-container {
     width: 100%;
@@ -642,11 +754,20 @@ function fallbackSavePDF(doc, fileName) {
     margin-left: 10%;
   }
   @media (max-width: 1000px){
+    .desktop-view {
+      display: none;
+    }
+    .toggle-search-btn{
+      display:contents;
+    }
+    .mobile-card-view {
+      display: block;
+    }
     .header a:nth-child(2) {
       margin-left: 5%;
     }
     * {
-      font-size: 0.75rem !important
+      font-size: 0.75rem ;
     }
     .header img {
       max-height: 8vh; 
@@ -657,7 +778,6 @@ function fallbackSavePDF(doc, fileName) {
       margin-left:auto;
     }
     .sub-header {
-      display: grid !important;
       padding-left: 5vw !important;
       font-size:0.75rem !important;
     }
@@ -666,8 +786,14 @@ function fallbackSavePDF(doc, fileName) {
       font-size: 1rem !important;
     }
     .sub-header span {
-      padding-left: 0 !important;
-      padding-bottom: 2vh;
+      display:none;
+    }
+    .subheader-image{
+      display:unset;
+      width:40%;
+      height:100%;
+      justify-self: center;
+      align-items: center;
     }
     .breadcrumb {
       display:none;
@@ -711,9 +837,8 @@ function fallbackSavePDF(doc, fileName) {
       padding: 0.25vh 1vw !important;
     }
     .search-fields {
-      display: flex;
+      display: none;
       flex-wrap: wrap;
-      padding-left: 10% !important;
     }
     .main-container{
       font-size:0.75rem !important;
@@ -728,34 +853,35 @@ function fallbackSavePDF(doc, fileName) {
       font-size: 0.75rem !important;
     }
     .search-fields label {
-      width: 25%;
-      margin: 2vh 0 1vh;
-      font-size: 0.75rem !important;
+      min-width: 90px;
+        margin: 0;
+        padding: 8px 0;
+        font-size: 14px !important;
+        white-space: nowrap
     }
     .search-fields input {
-      width: 60% !important;
-      margin: 1vh 5% 1vh 0 !important;
-      padding-left: 0.5vw !important;
+        flex: 1;
+        width: 100% !important;
+        margin: 0 0 0 10px !important;
+        padding: 8px !important;
+        font-size: 14px !important;
     }
-    .search-fields label,
-    .search-fields input {
-      flex: 0 0 auto;
-    }
-    .search-fields label:nth-child(4n + 1),
-    .search-fields label:nth-child(4n + 3) {
-      flex-basis: 15%;
-    }
-    .search-fields input:nth-child(4n + 2),
-    .search-fields input:nth-child(4n + 4) {
-      flex-basis: 25%;
+    .table-type,
+    .current-time,
+    .export-button,
+    .more-details{
+        font-size: 1rem !important;
     }
     .button-container {
       margin-top: 1vh !important;
     }
+    .export-button{
+      display:none;
+    }
     footer img {
-      max-height: 6vh; /* Maintain height relative to viewport */
-      max-width: 20%; /* Ensure it doesn't exceed the width of its container */
-      height: auto; /* Maintain aspect ratio */
+      max-height: 10vh; 
+      max-width: 30%; 
+      height: auto; 
       width: auto !important;
     }
   }
@@ -777,11 +903,6 @@ function fallbackSavePDF(doc, fileName) {
     background-repeat: no-repeat;
     background-size: 16px;
     background-position: 0.5vh center;
-  }
-  @media (max-width: 900px) {
-    .header input[type="text"] {
-      width: 40%;
-    }
   }
   .header input[type="text"]::placeholder {
     color: rgba(255, 255, 255, 0.7);
@@ -821,7 +942,7 @@ function fallbackSavePDF(doc, fileName) {
   }
   .breadcrumb {
     margin-top: 2vh;
-    padding: 0.5vh 2vh 0.5vh 3vh;
+    padding: 0.5vh 1vw;
     color: #014b96;
     background-color: #f9bc39;
     width: fit-content;
@@ -846,7 +967,7 @@ function fallbackSavePDF(doc, fileName) {
     flex-direction: column;
     align-items: flex-start;
     padding-top: 4vh;
-    padding-left: 4vh;
+    padding-left: 1vw;
     border-top-left-radius: 20px;
     background-color: white;
     height: 100%;
@@ -857,10 +978,13 @@ function fallbackSavePDF(doc, fileName) {
     font-weight: 400;
     color: #014b96;
     margin-bottom: 2vh;
+    align-self: center;
   }
   .search-fields {
-    padding-left: 5vw;
-    padding-right: 5vw;
+    margin:auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
   }
   .search-fields label {
     font-family: "Mulish", sans-serif;
@@ -1180,4 +1304,21 @@ function fallbackSavePDF(doc, fileName) {
       border-radius: 3px;
       transition: 0.3s;
     }
+
+  @media (max-width: 1000px) {
+    .search-fields {
+      display:none;
+      flex-wrap: wrap;
+        transition: all 0.3s ease;
+        flex-direction: column;
+        width: 100%;
+        padding: 0 10px
+    }
+
+    .search-fields.visible {
+      display: flex;
+    }
+
+
+  }
 </style>

@@ -262,6 +262,25 @@ onMount(async () => {
       scale:1.1;
       margin-left:auto;
     }
+    .sub-header {
+      display: grid !important;
+      padding-left: 5vw !important;
+      font-size:0.75rem !important;
+    }
+    .sub-header h1 {
+      justify-self: center;
+      font-size: 1rem !important;
+    }
+    .sub-header span {
+      padding-left: 0 !important;
+      padding-bottom: 2vh;
+    }
+    .breadcrumb {
+      display:none;
+    }
+    main {
+      background-color : white;
+    }
 
             .header a {
                 white-space: nowrap;
@@ -313,7 +332,7 @@ onMount(async () => {
             width: 8vw;
         }
         .header input[type="text"] {
-            padding: 1vh 3vh 1vh 3vh;
+            padding: 1vh 1.5vw;     
             border-radius: 4px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             background-color: rgba(255, 255, 255, 0.1);
@@ -351,7 +370,7 @@ onMount(async () => {
         .sub-header {
             display: flex;
             align-items: center;
-            padding-left: 5vh;
+            padding-left: 5vw;
             padding-top: 2vh;
         }
         .sub-header span {
@@ -367,8 +386,8 @@ onMount(async () => {
             }
         .breadcrumb {
             margin-top:2vh;
-        padding: 0.5vh 2vh 0.5vh 3vh;
-        color: #014B96;
+            padding: 0.5vh 1vw;
+            color: #014B96;
         background-color: #F9BC39;
         width: fit-content;
         border-radius: 20px;
@@ -401,7 +420,7 @@ onMount(async () => {
         .header-profile-name {
             text-align: center;
             padding-top: 1vh;
-            padding-left: 1vh;
+            padding-left: 0.5vw;
             padding-bottom: 1vh;
             font-size: 1rem;
             font-family: Mulish;
@@ -444,7 +463,7 @@ onMount(async () => {
             width: 105vw;
             height: 140px;
             margin-left: calc(50% - 176px);
-            padding-left: 2vh;
+            padding-left: 2vw;
         }
         .trailer-container-content span {
             font-family: 'Mulish', sans-serif;
@@ -455,7 +474,7 @@ onMount(async () => {
             width: 352px;
             height: 166px;
             scale:1.2;
-            margin-left: -20vh;
+            margin-left: -10vw;
         }
         .midas-container {
             border-radius: 10px;
@@ -464,7 +483,7 @@ onMount(async () => {
             display: flex;
             justify-content: flex-start;
             align-items: end;
-            padding-right: 4vh;
+            padding-right: 4vw;
         }
         .midas-container-content {
             margin-top: 0;
@@ -478,15 +497,15 @@ onMount(async () => {
             width: 110vw;
             height: 140px;
             margin-right: calc(50% - 200px);
-            padding-left: 1vh;
-            padding-right: 3vh;
+            padding-left: 1vw;
+            padding-right: 2vw;
         }
         .midas-container img {
             width: 300px;
             height:140px;
             scale:1.2;
             margin-bottom: 1.5vh;
-            padding-right:2vh;
+            padding-right:2vw;
             
         }
         .midas-container-content span {
@@ -511,31 +530,37 @@ onMount(async () => {
             border-collapse: collapse;
             font-family: 'Mulish', sans-serif;
             max-height: 80vh;
+            table-layout: fixed;
         }
         .inventory-table thead {
             position: sticky;
             top: 0;
             z-index: 1;
+            display: table;
+            width: 100%;
         }
         .inventory-table th {
             background-color: #014B96;
             color: white;
-            padding: 1vh;
+            padding: 1vh 1vw;
             text-align: left;
             font-weight: 600;
         }
         .inventory-table tbody {
-            display: block;
+            display: table;
+            width: 100%;
             overflow-y: auto;
             max-height: 350px; 
         }
-        .inventory-table thead, 
+        .inventory-table thead tr, 
         .inventory-table tbody tr {
-            display: table;
-            table-layout: fixed;
+            display: table-row;
+            width: 100%;
         }
+        .inventory-table th,
         .inventory-table td {
-            padding: 1vh;
+            display: table-cell;
+            padding: 1vh 1vw;
             border-bottom: 1px solid #EAF3FC;
         }
         .inventory-table tr:hover {
@@ -543,19 +568,19 @@ onMount(async () => {
         }
         .inventory-table th:nth-child(1),
         .inventory-table td:nth-child(1) {
-            width: 30%;
+            width: 25%;
         }
         .inventory-table th:nth-child(2),
         .inventory-table td:nth-child(2) {
-            width: 40%;
+            width: 25%;
         }
         .inventory-table th:nth-child(3),
         .inventory-table td:nth-child(3) {
-            width: 30%;
+            width: 25%;
         }
         .inventory-table th:nth-child(4),
         .inventory-table td:nth-child(4) {
-            width: 10%;
+            width: 25%;
         }
         .mobile-sidebar {
       position: fixed;
