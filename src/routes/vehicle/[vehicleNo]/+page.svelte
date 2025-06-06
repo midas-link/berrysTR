@@ -3,9 +3,24 @@
     import { base } from '$app/paths';
     import { page } from '$app/stores';
     import { goto } from "$app/navigation";
+    import { get } from 'svelte/store';
     $: trailer = $page.state?.trailer;
     $: previousURL = $page.state?.from;
+    const currentPath = get(page).url.pathname;
     let searchBy = "day";
+    function openDetails(event) {
+    goto(`${base}/deliveryDetail/${event.Zip}`, {
+      state: {
+        from: currentPath,
+        address: event.Address,
+        city: event.City,
+        state: event.State,
+        date: event.Date,
+        time: event.Time,
+        siteCode : event.Zip
+      }
+    });
+  }
     const dayOptions = Array.from({ length: 31 }, (_, i) => i + 1);
     const monthOptions = [
         { value: 1, label: "January" },
@@ -22,14 +37,15 @@
         { value: 12, label: "December" }
     ];
 
+    let isSidebarActive = false;
 
-function gotoVehicle(vehicleNum) {
-  goto(`${base}/vehicle/${vehicleNum}`, {
-    state: {
-      trailer: vehicleNum,
-    },
-  });
-}
+    function gotoVehicle(vehicleNum) {
+      goto(`${base}/vehicle/${vehicleNum}`, {
+        state: {
+          trailer: vehicleNum,
+        },
+      });
+    }
     const currentYear = new Date().getFullYear();
     const yearOptions = Array.from({ length: 51 }, (_, i) => currentYear - i);
     
@@ -41,183 +57,201 @@ function gotoVehicle(vehicleNum) {
     }
   
     let allTimelineEvents = [
-        {
-        "Date": "09.12.2025",
+    {
+        "Date": "05.12.2025",
         "Time": "12:16",
         "Trailer No.": "XJWP612",
         "Address": "2151 SW 36TH ST",
         "City": "San Antonio",
         "State": "TX",
+        "Zip": "78237",
         "Tank No. ": "1",
         "Prevented Delivery ": "GAS-REG"
     },
     {
-        "Date": "09.01.2025",
+        "Date": "05.08.2025",
         "Time": "9:04",
         "Trailer No.": "EAQY355",
         "Address": "207 E HWY 90A",
         "City": "Richmond",
         "State": "TX",
+        "Zip": "77469",
         "Tank No. ": "1",
         "Prevented Delivery ": "GAS-REG"
     },
     {
-        "Date": "08.14.2025",
+        "Date": "05.02.2025",
         "Time": "5:52",
         "Trailer No.": "QIBL401",
         "Address": "619 CROSSROADS ST",
         "City": "Laredo",
         "State": "TX",
+        "Zip": "78040",
         "Tank No. ": "6",
         "Prevented Delivery ": "DIESEL"
     },
     {
-        "Date": "07.09.2025",
+        "Date": "04.05.2025",
         "Time": "2:40",
         "Trailer No.": "ZMXN329",
         "Address": "2901 highway 35 N",
         "City": "Rockport",
         "State": "TX",
+        "Zip": "78382",
         "Tank No. ": "4",
         "Prevented Delivery ": "GAS-PREM"
     },
     {
-        "Date": "06.30.2025",
+        "Date": "03.30.2025",
         "Time": "23:28",
         "Trailer No.": "YDAL921",
         "Address": "6321 S 23rd St.",
         "City": "McAllen",
         "State": "TX",
+        "Zip": "78503",
         "Tank No. ": "2",
         "Prevented Delivery ": "GAS-REG"
     },
     {
-        "Date": "06.24.2025",
+        "Date": "03.24.2025",
         "Time": "20:16",
         "Trailer No.": "WQOG696",
         "Address": "6321 S 23rd St.",
         "City": "McAllen",
         "State": "TX",
+        "Zip": "78503",
         "Tank No. ": "4",
         "Prevented Delivery ": "GAS-REG"
     },
     {
-        "Date": "06.03.2025",
+        "Date": "01.03.2025",
         "Time": "17:04",
         "Trailer No.": "MLCP696",
         "Address": "11102 IH-37 Access",
         "City": "Corpus Christi",
         "State": "TX",
+        "Zip": "78410",
         "Tank No. ": "5",
         "Prevented Delivery ": "GAS-PREM"
     },
     {
-        "Date": "05.19.2025",
+        "Date": "05.19.2024",
         "Time": "13:52",
         "Trailer No.": "CSHQ488",
         "Address": "2202 HOLLY ROAD",
         "City": "Corpus Christi",
         "State": "TX",
+        "Zip": "78415",
         "Tank No. ": "5",
         "Prevented Delivery ": "GAS-REG"
     },
     {
-        "Date": "05.14.2025",
+        "Date": "05.14.2024",
         "Time": "10:40",
         "Trailer No.": "NDTN157",
         "Address": "9111 N. Interstate 35",
         "City": "Jarrell",
         "State": "TX",
+        "Zip": "76537",
         "Tank No. ": "7",
         "Prevented Delivery ": "DIESEL"
     },
     {
-        "Date": "04.18.2025",
+        "Date": "04.18.2024",
         "Time": "7:28",
         "Trailer No.": "WAYQ933",
         "Address": "16555 HUEBNER RD",
         "City": "San Antonio",
         "State": "TX",
+        "Zip": "78248",
         "Tank No. ": "3",
         "Prevented Delivery ": "DIESEL"
     },
     {
-        "Date": "04.12.2025",
+        "Date": "04.12.2024",
         "Time": "4:16",
         "Trailer No.": "VYQJ687",
         "Address": "1301 N LOOP 340",
         "City": "LACY LAKEVIEW",
         "State": "TX",
+        "Zip": "76705",
         "Tank No. ": "6",
         "Prevented Delivery ": "GAS-PREM"
     },
     {
-        "Date": "04.04.2025",
+        "Date": "04.04.2024",
         "Time": "1:04",
         "Trailer No.": "XVMF575",
         "Address": "720 SPRING VALLEY",
         "City": "Hewitt",
         "State": "TX",
+        "Zip": "76643",
         "Tank No. ": "5",
         "Prevented Delivery ": "GAS-REG"
     },
     {
-        "Date": "02.22.2025",
+        "Date": "02.22.2024",
         "Time": "21:52",
         "Trailer No.": "HRZC199",
         "Address": "3225 E EXPY 83",
         "City": "Weslaco",
         "State": "TX",
+        "Zip": "78596",
         "Tank No. ": "4",
         "Prevented Delivery ": "DIESEL"
     },
     {
-        "Date": "02.11.2025",
+        "Date": "02.11.2024",
         "Time": "18:40",
         "Trailer No.": "WWRO626",
         "Address": "101 N WATER ST",
         "City": "Burnet",
         "State": "TX",
+        "Zip": "78611",
         "Tank No. ": "5",
         "Prevented Delivery ": "GAS-REG"
     },
     {
-        "Date": "01.29.2025",
+        "Date": "01.29.2024",
         "Time": "15:28",
         "Trailer No.": "XPUW441",
         "Address": "S. 9th & Tyler Ave.",
         "City": "Harlingen",
         "State": "TX",
+        "Zip": "78550",
         "Tank No. ": "2",
         "Prevented Delivery ": "GAS-PREM"
     },
     {
-        "Date": "01.18.2025",
+        "Date": "01.18.2024",
         "Time": "12:16",
         "Trailer No.": "TZJB482",
         "Address": "S. 9th & Tyler Ave.",
         "City": "Harlingen",
         "State": "TX",
+        "Zip": "78550",
         "Tank No. ": "4",
         "Prevented Delivery ": "GAS-REG"
     },
     {
-        "Date": "01.12.2025",
+        "Date": "01.12.2024",
         "Time": "9:04",
         "Trailer No.": "IQZL863",
         "Address": "15513 STATE HWY 30",
         "City": "Roans Prairie",
         "State": "TX",
+        "Zip": "77845",
         "Tank No. ": "4",
         "Prevented Delivery ": "DIESEL"
     },
     {
-        "Date": "01.03.2025",
+        "Date": "01.03.2024",
         "Time": "5:52",
         "Trailer No.": "RKAS706",
         "Address": "5202 IH 37",
         "City": "Corpus Christi",
         "State": "TX",
+        "Zip": "78408",
         "Tank No. ": "4",
         "Prevented Delivery ": "GAS-PREM"
     },
@@ -228,6 +262,7 @@ function gotoVehicle(vehicleNum) {
         "Address": "12200 FM 969 RD",
         "City": "Austin",
         "State": "TX",
+        "Zip": "78724",
         "Tank No. ": "5",
         "Prevented Delivery ": "DIESEL"
     },
@@ -238,6 +273,7 @@ function gotoVehicle(vehicleNum) {
         "Address": "905 N. McCoy Blvd.",
         "City": "New Boston",
         "State": "TX",
+        "Zip": "75570",
         "Tank No. ": "4",
         "Prevented Delivery ": "GAS-REG"
     },
@@ -248,6 +284,7 @@ function gotoVehicle(vehicleNum) {
         "Address": "101 EE OHNMEISS BLVD",
         "City": "Lampasas",
         "State": "TX",
+        "Zip": "76550",
         "Tank No. ": "5",
         "Prevented Delivery ": "DIESEL"
     },
@@ -258,6 +295,7 @@ function gotoVehicle(vehicleNum) {
         "Address": "16222 WALLISVILLE RD",
         "City": "Houston",
         "State": "TX",
+        "Zip": "77049",
         "Tank No. ": "5",
         "Prevented Delivery ": "GAS-PREM"
     },
@@ -268,6 +306,7 @@ function gotoVehicle(vehicleNum) {
         "Address": "27137 TOMBALL PKWY",
         "City": "Tomball",
         "State": "TX",
+        "Zip": "77375",
         "Tank No. ": "5",
         "Prevented Delivery ": "GAS-PREM"
     },
@@ -278,6 +317,7 @@ function gotoVehicle(vehicleNum) {
         "Address": "6406 Old Pearsall Rd",
         "City": "San Antonio",
         "State": "TX",
+        "Zip": "78242",
         "Tank No. ": "5",
         "Prevented Delivery ": "GAS-REG"
     },
@@ -288,6 +328,7 @@ function gotoVehicle(vehicleNum) {
         "Address": "21997 FM 1314",
         "City": "Porter",
         "State": "TX",
+        "Zip": "77365",
         "Tank No. ": "5",
         "Prevented Delivery ": "DIESEL"
     },
@@ -298,6 +339,7 @@ function gotoVehicle(vehicleNum) {
         "Address": "9157 FM 471 N",
         "City": "San Antonio",
         "State": "TX",
+        "Zip": "78253",
         "Tank No. ": "5",
         "Prevented Delivery ": "GAS-PREM"
     },
@@ -308,6 +350,7 @@ function gotoVehicle(vehicleNum) {
         "Address": "10537 N. Hwy. 359",
         "City": "Mathis",
         "State": "TX",
+        "Zip": "78368",
         "Tank No. ": "4",
         "Prevented Delivery ": "GAS-REG"
     },
@@ -318,6 +361,7 @@ function gotoVehicle(vehicleNum) {
         "Address": "1303 W MOUNT HOUSTON RD",
         "City": "Houston",
         "State": "TX",
+        "Zip": "77038",
         "Tank No. ": "4",
         "Prevented Delivery ": "GAS-MID"
     },
@@ -328,6 +372,7 @@ function gotoVehicle(vehicleNum) {
         "Address": "31700 INTERSTATE 10 W",
         "City": "Boerne",
         "State": "TX",
+        "Zip": "78006",
         "Tank No. ": "4",
         "Prevented Delivery ": "GAS-REG"
     }
@@ -514,24 +559,23 @@ function goToSelectedDate() {
   
     function setupMobileMenu() {
       const hamburger = document.getElementById('hamburger-menu');
-      const sidebar = document.getElementById('mobile-sidebar');
       const overlay = document.getElementById('overlay');
       
-      if (hamburger && sidebar && overlay) {
+      if (hamburger && overlay) {
         hamburger.addEventListener('click', function() {
-          sidebar.classList.toggle('active');
-          overlay.style.display = sidebar.classList.contains('active') ? 'block' : 'none';
+          isSidebarActive = !isSidebarActive;
+          overlay.style.display = isSidebarActive ? 'block' : 'none';
         });
         
         overlay.addEventListener('click', function() {
-          sidebar.classList.remove('active');
+          isSidebarActive = false;
           overlay.style.display = 'none';
         });
         
-        const sidebarLinks = sidebar.querySelectorAll('a');
+        const sidebarLinks = document.querySelectorAll('#mobile-sidebar a');
         sidebarLinks.forEach(link => {
           link.addEventListener('click', function() {
-            sidebar.classList.remove('active');
+            isSidebarActive = false;
             overlay.style.display = 'none';
           });
         });
@@ -596,13 +640,16 @@ function goToSelectedDate() {
     </div>
   </header>
   
-  <div class="mobile-sidebar" id="mobile-sidebar">
+  <div class="mobile-sidebar" id="mobile-sidebar" class:active={isSidebarActive}>
     <a href="{base}/home">Home</a>
     <a href="{base}/vehicle-logging">Vehicle Logging</a>
     <a href="{base}/cross-drops">Cross-Drop Prevention</a>
     <a href="{base}/site-data">Site Data</a>
     <a href="{base}/inventory">Inventory</a>
     <a href="{base}/analytics">Analytics</a>
+    <span class="footer-text">Contact Us <br>
+      Berrys Technologies Ltd 141 Lichfield Road, Birmingham ,  B6 5SP , United Kingdom <br> 0121 558 4411 <br>
+      enquiries@berrys.com</span>
   </div>
   
   <div class="overlay" id="overlay"></div>
@@ -699,6 +746,9 @@ function goToSelectedDate() {
                 <p><strong>Tank #:</strong> {event["Tank No. "]}</p>
                 <p><strong>Trailer #:</strong> {event["Trailer No."]}</p>
                 <p><strong>Prevented Delivery:</strong> {event["Prevented Delivery "]}</p>
+                <button on:click={() => openDetails(event)} class="more-details">
+                  See Delivery Details
+                </button>
                 </div>
               </div>
             {/each}
@@ -759,6 +809,9 @@ function goToSelectedDate() {
                 <p><strong>Tank #:</strong> {event["Tank No. "]}</p>
                 <p><strong>Trailer #:</strong> {event["Trailer No."]}</p>
                 <p><strong>Prevented Delivery:</strong> {event["Prevented Delivery "]}</p>
+                <button on:click={() => openDetails(event)} class="more-details">
+                  See Delivery Details
+                </button>
               </div>
             </div>
           {/each}
@@ -832,7 +885,21 @@ function goToSelectedDate() {
       padding: 0;
       box-sizing: border-box;
     }
-    
+    .more-details{
+        background-color: #014B96;
+        color: white;
+        padding: 0.5vh 2vw;
+        border-radius: 4px;
+        font-family: 'Mulish', sans-serif;
+        font-weight: 400;
+        font-size: 1rem;
+        border: none;
+        cursor: pointer;
+        margin-left: auto;
+        transition: background-color 0.3s ease;
+        max-height:fit-content;
+        text-wrap:nowrap;
+    }
     main {
       flex: 1; 
       background-color: #F9BC39;
@@ -951,8 +1018,7 @@ function goToSelectedDate() {
         display:none;
       }
       .sub-header h1 {
-      font-size: 1rem !important;
-    }
+        font-size: 1.5rem !important;    }
       .hamburger-menu {
         display: block !important;
         position: absolute;
@@ -1143,7 +1209,7 @@ function goToSelectedDate() {
       overflow-y: auto;
     }
     
-    :global(.mobile-sidebar.active) {
+    .mobile-sidebar.active {
       left: 0;
     }
   
@@ -1534,7 +1600,20 @@ function goToSelectedDate() {
   .desktop-timeline {
     display: none;
   }
-  
+  .header-background{
+      top:25% !important;
+      height:75% !important;
+    }
+  .footer-text{
+      position: absolute;
+      bottom: 2%;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 0.8rem;
+      font-family: 'Mulish', sans-serif;
+      color:white;
+    }
   .mobile-timeline {
     display: block;
   }
@@ -1552,6 +1631,10 @@ function goToSelectedDate() {
   
   .vertical-timeline-event .timeline-popup {
     width: 180px;
+  }
+  .timeline-controls{
+    padding-left:5vw;
+    padding-right:5vw;
   }
 }
   </style>

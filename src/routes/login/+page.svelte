@@ -56,6 +56,7 @@ onMount(()=>{
     <link href='https://fonts.googleapis.com/css?family=Inter' rel='stylesheet'>
 </svelte:head>
 <div class="body-container" style="background-image: url({base}/images/Sign-in-page.jpg)">
+    <img src="{base}/images/Midas_Link_logo.png" class="midas-link-logo" alt="logo">
     <main>
         <div class="content">
             <div class="sign-in-container">
@@ -123,6 +124,9 @@ onMount(()=>{
         padding: 0;
         box-sizing: border-box;
     }
+    .midas-link-logo{
+        display:none;
+    }
     .body-container {
         font-family: var(--font-family);
         line-height: 1.6;
@@ -165,20 +169,27 @@ onMount(()=>{
         margin-left: 2%;
     }
     
-    /* Responsive Design */
-    @media (max-width: 900px) {
-        
+    @media (max-width: 1000px) {
+        .midas-link-logo{
+            display:block !important;
+            height:auto;
+            width:80%;
+            margin-left:20%;
+        }
         .sign-in-container {
-            padding: 1rem;
-            justify-content: center;
+            padding: 1rem !important;
+            justify-content: center !important;
         }
         
         .content {
             padding: 1rem 0;
         }
+        .body-container{
+            background-image: none !important;
+            background: linear-gradient(to top right, #001338, #014B96) !important  ;      
+        }
     }
     
-    /* Sign In Form Styles */
     .sign-in-container {
         display: flex;
         justify-content: flex-start;
@@ -365,16 +376,16 @@ onMount(()=>{
     }
     
     .spinner {
-        border: 4px solid rgba(255, 255, 255, 0.3); /* Light border for the spinner */
-        border-top: 4px solid #014B96; /* Top border color for the spinner */
-        border-radius: 50%; /* Make it circular */
-        width: 24px; /* Size of the spinner */
-        height: 24px; /* Size of the spinner */
-        animation: spin 1s linear infinite; /* Animation for spinning */
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top: 4px solid #014B96;
+        border-radius: 50%; 
+        width: 24px; 
+        height: 24px; 
+        animation: spin 1s linear infinite; 
     }
     
     @keyframes spin {
-        0% { transform: rotate(0deg); } /* Start at 0 degrees */
-        100% { transform: rotate(360deg); } /* End at 360 degrees */
+        0% { transform: rotate(0deg); } 
+        100% { transform: rotate(360deg); }
     }
 </style>    

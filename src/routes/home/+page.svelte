@@ -41,8 +41,8 @@
     setTimeout(() => {
       container1.classList.remove('transitioning')
       container2.classList.remove('transitioning')
-    }, 100);
-  },100);
+    }, 200);
+  },150);
   }
 
   function moveContainers(direction) {
@@ -59,7 +59,7 @@
     setTimeout(() => {
     if (leftArrow) leftArrow.style.pointerEvents = 'auto';
     if (rightArrow) rightArrow.style.pointerEvents = 'auto';
-  }, 200); 
+  }, 400); 
   }
 
   function toggleDropdown(event) {
@@ -249,6 +249,9 @@
   <a href="{base}/site-data">Site Data</a>
   <a href="{base}/inventory">Inventory</a>
   <a href="{base}/analytics">Analytics</a>
+  <span class="footer-text">Contact Us <br>
+    Berrys Technologies Ltd 141 Lichfield Road, Birmingham ,  B6 5SP , United Kingdom <br> 0121 558 4411 <br>
+    enquiries@berrys.com</span>
 </div>
 
 <div class="overlay" id="overlay"></div>
@@ -445,6 +448,20 @@
     .header a:nth-child(2) { 
       margin-left: 5%;
     }
+    .header-background{
+      top:25% !important;
+      height:75% !important;
+    }
+    .footer-text{
+      position: absolute;
+      bottom: 2%;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 0.8rem;
+      font-family: 'Mulish', sans-serif;
+      color:white;
+    }
     .header img {
       max-height: 8vh; 
       max-width: 100%; 
@@ -481,6 +498,7 @@
     .sub-header-role {
       font-size: 0.8rem;
     }
+   
     * { 
       font-size: 0.75rem !important;
     }
@@ -513,10 +531,10 @@
       width: auto !important;
     }
     .main-container img { 
-    width: 22.5vw !important; 
+    width: 25.5vw !important; 
     }
    .main-container-middle img {
-  width: 30vw !important;
+  width: 26vw !important;
  }
   }
   .header a:hover {
@@ -592,22 +610,22 @@
   .main-container-left,
 .main-container-middle,
 .main-container-right {
-  transition: opacity 0.1s ease, transform 0.1s ease;
+    transition: opacity 0.2s ease, transform 0.2s ease;
 }
 .main-container-middle {
   position: relative;
   z-index: 2;
   transform: scale(1.05);
-  transition: all 0.1s ease;
+  transition: all 0.2s ease;
 }
 :global(.main-container-middle.transitioning) {
   transform: scale(1);
 }
 .main-container button {
-  transition: all 0.1s ease;
+  transition: all 0.2s ease;
 }
 .main-container span {
-  transition: opacity 0.1s ease ;
+  transition: opacity 0.2s ease ;
 }
 :global(.transitioning span) {
   opacity: 0;

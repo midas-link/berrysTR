@@ -4,6 +4,8 @@
   import { base } from "$app/paths";
   import { goto } from "$app/navigation";
   import { page } from '$app/stores';
+  import DropdownField from "./DropdownField.svelte";
+
     import { get } from 'svelte/store';
     const currentPath = get(page).url.pathname;
   function openDetails(row) {
@@ -14,7 +16,8 @@
       },
     });
   }
-
+  let uniqueCities;
+  let uniqueStates;
   let rows = [];
   let filteredRows = [];
   let detailsVisible = [];
@@ -38,6 +41,17 @@
   }
   function toggleMobileSearch() {
     mobileSearchVisible = !mobileSearchVisible;
+  }
+  function formatSearchedDate(searchedDate){
+    if(!searchedDate) return "";
+    const date = new Date(searchedDate);
+    const formattedDate = date.toLocaleDateString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year:'numeric'
+    }).replace(/\//g,'.');
+    console.log(formattedDate);
+    return formattedDate;
   }
   function filterRows() {
     filteredRows = rows.filter((row) => {
@@ -67,7 +81,7 @@
 
       const dateMatch =
         !searchParams.date ||
-        (row.Date && row.Date.includes(searchParams.date));
+        (row.Date && row.Date.includes(formatSearchedDate(searchParams.date)));
 
       const fuelMatch =
         !searchParams.fuel ||
@@ -321,12 +335,15 @@ function fallbackSavePDF(doc, fileName) {
     setupMobileMenu();
     vehicleFuncs.updateDateTime();
     vehicleFuncs.disableBrowserAutocomplete();
+    
     console.log("Starting data fetch");
     try {
       const result = await vehicleFuncs.fetchVehicleData();
       console.log("Data fetched:", result);
       rows = result;
       filteredRows = [...rows];
+      uniqueStates = [...new Set(rows.map(row => row.State).filter(state => state && state.trim() !== ''))];
+      uniqueCities = [...new Set(rows.map(row => row.City).filter(state => state && state.trim() !== ''))];
       detailsVisible = Array(rows.length).fill(false);
     } catch (error) {
       console.error("Failed to load data:", error);
@@ -392,6 +409,9 @@ function fallbackSavePDF(doc, fileName) {
   <a href="{base}/site-data">Site Data</a>
   <a href="{base}/inventory">Inventory</a>
   <a href="{base}/analytics">Analytics</a>
+  <span class="footer-text">Contact Us <br>
+    Berrys Technologies Ltd 141 Lichfield Road, Birmingham ,  B6 5SP , United Kingdom <br> 0121 558 4411 <br>
+    enquiries@berrys.com</span>
 </div>
 
 <div class="overlay" id="overlay"></div>
@@ -408,7 +428,7 @@ function fallbackSavePDF(doc, fileName) {
     <a href="{base}/home">Home</a> / <span>Vehicle Logging</span>
   </div>
 </div>
-<main>
+<main class="vehicle-logging-page">
   <div class="main-container">
     <button on:click={toggleMobileSearch} class="toggle-search-btn"><label for="search-fields" class="search-label"> Search <span style="font-size:1rem">{mobileSearchVisible ?  '▲' : '▼'} </span> </label>   </button>
     <div class="search-fields" class:visible={mobileSearchVisible}>
@@ -419,15 +439,18 @@ function fallbackSavePDF(doc, fileName) {
         id="ST-address"
         name="ST-address"   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}
       />
-      <label for="State"> State</label>
-      <input
-        type="text"
-        bind:value={searchParams.state}
-        id="State"
-        name="State"   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}
-      />
-      <label for="City"> City</label>
-      <input type="text" bind:value={searchParams.city} id="City" name="City"   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }} />
+      <DropdownField 
+      id="State" 
+      label="State" 
+      options={uniqueStates} 
+      bind:value={searchParams.state}   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}
+    />
+    <DropdownField 
+    id="City" 
+    label="City" 
+    options={uniqueCities} 
+    bind:value={searchParams.city}   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}
+  />
       <label for="Trailer_No">Trailer No</label>
       <input
         type="text"
@@ -437,7 +460,7 @@ function fallbackSavePDF(doc, fileName) {
       />
       <label for="Date">Date</label>
       <input
-        type="text"
+        type="date"
         bind:value={searchParams.date}
         id="Date"
         name="Date"
@@ -783,8 +806,8 @@ function fallbackSavePDF(doc, fileName) {
     }
     .sub-header h1 {
       justify-self: center;
-      font-size: 1rem !important;
-    }
+      font-size: 1.5rem !important;
+      }
     .sub-header span {
       display:none;
     }
@@ -839,6 +862,7 @@ function fallbackSavePDF(doc, fileName) {
     .search-fields {
       display: none;
       flex-wrap: wrap;
+      margin:auto !important;
     }
     .main-container{
       font-size:0.75rem !important;
@@ -855,9 +879,10 @@ function fallbackSavePDF(doc, fileName) {
     .search-fields label {
       min-width: 90px;
         margin: 0;
-        padding: 8px 0;
+        padding: 8px 2vw;
         font-size: 14px !important;
-        white-space: nowrap
+        white-space: nowrap;
+        align-self: initial !important;
     }
     .search-fields input {
         flex: 1;
@@ -968,6 +993,7 @@ function fallbackSavePDF(doc, fileName) {
     align-items: flex-start;
     padding-top: 4vh;
     padding-left: 1vw;
+    padding-right:1vw;
     border-top-left-radius: 20px;
     background-color: white;
     height: 100%;
@@ -981,15 +1007,16 @@ function fallbackSavePDF(doc, fileName) {
     align-self: center;
   }
   .search-fields {
-    margin:auto;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    margin: 0 7vw;
   }
   .search-fields label {
     font-family: "Mulish", sans-serif;
     font-weight: 400;
     font-size: 1rem;
+    align-self:center;
   }
   .search-fields input {
     background-color: #eaf3fc;
@@ -1125,6 +1152,7 @@ function fallbackSavePDF(doc, fileName) {
     cursor: pointer;
     margin-left: auto;
     transition: background-color 0.3s ease;
+    width:10vw;
   }
   .export-button:hover {
     background-color: #013b77;
@@ -1133,13 +1161,14 @@ function fallbackSavePDF(doc, fileName) {
     display: flex;
     align-items: center;
     width: 90%;
-    margin: 0 auto;
-    z-index: 1;
+    margin: 0 5vw;
+    z-index: 1000;
   }
   .export-dropdown {
     position: relative;
     display: inline-block;
     margin-left: auto;
+    z-index: 1000;
   }
   .dropdown-content {
     display: none;
@@ -1147,8 +1176,9 @@ function fallbackSavePDF(doc, fileName) {
     right: 0;
     background-color: #f9f9f9;
     min-width: 120px;
+    width:10vw;
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    z-index: 2000;
+    z-index: 1001;
     border-radius: 4px;
   }
   .dropdown-content a {
@@ -1157,6 +1187,7 @@ function fallbackSavePDF(doc, fileName) {
     text-decoration: none;
     display: block;
     font-family: "Mulish", sans-serif;
+    justify-self: center;
   }
   .dropdown-content a:hover {
     background-color: #eaf3fc;
@@ -1180,7 +1211,6 @@ function fallbackSavePDF(doc, fileName) {
   }
   .search-fields input::placeholder {
     font-size: 0.75rem;
-    text-align: center;
   }
   .main-row {
     transition: background-color 0.3s ease;
@@ -1242,7 +1272,12 @@ function fallbackSavePDF(doc, fileName) {
     margin-left: auto;
     transition: background-color 0.3s ease;
   }
-
+  :global(.vehicle-logging-page .search-fields label) {
+        font-family: 'Mulish', sans-serif;
+        font-weight: 400;
+        font-size: 1rem;
+        align-self:center;
+      }
   .more-details:hover {
     background-color: #013b77;
   }
@@ -1254,13 +1289,13 @@ function fallbackSavePDF(doc, fileName) {
       width: 250px;
       height: 100vh;
       background: linear-gradient(to bottom, #001338 0%, #014B96 100%);
-      z-index: 999;
+      z-index: 1002;
       transition: left 0.3s ease;
       box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
       padding-top: 60px;
       overflow-y: auto;
     }
-    :global(.mobile-sidebar.active) {
+    .mobile-sidebar.active {
       left: 0;
     }
     
@@ -1314,9 +1349,73 @@ function fallbackSavePDF(doc, fileName) {
         width: 100%;
         padding: 0 10px
     }
-
+    :global(.search-fields) {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 0 10px;
+    }
+    
+    /* Create rows for label + input pairs */
+    :global(.search-fields > div), 
+    :global(.search-fields > label) + input {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        margin-bottom: 10px;
+        align-items: center;
+    }
+    
+    /* Style labels */
+    :global(.search-fields label) {
+        min-width: 90px;
+        margin: 0;
+        padding: 8px 2vw;
+        font-size: 14px !important;
+        white-space: nowrap;
+        align-self: initial !important;
+    }
+    
+    /* Style inputs */
+    :global(.search-fields input) {
+        flex: 1;
+        width: 100% !important;
+        margin: 0 0 0 10px !important;
+        padding: 8px !important;
+        font-size: 14px !important;
+    }
+    
+    /* Fix dropdown components */
+    :global(.custom-dropdown) {
+        display: flex !important;
+        width: 100% !important;
+        margin-bottom: 10px;
+    }
+    
+    :global(.custom-dropdown input) {
+        flex: 1;
+        width: 100% !important;
+        padding: 8px !important;
+        margin: 0 0 0 10px !important;
+        height:32px !important;
+    }
+    .header-background{
+      top:25% !important;
+      height:75% !important;
+    }
+    .footer-text{
+      position: absolute;
+      bottom: 2%;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 0.8rem;
+      font-family: 'Mulish', sans-serif;
+      color:white;
+    }
     .search-fields.visible {
       display: flex;
+      padding: 0 5vw;
     }
 
 

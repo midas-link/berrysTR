@@ -75,6 +75,9 @@ onMount(async () => {
     <a href="{base}/site-data">Site Data</a>
     <a href="{base}/inventory">Inventory</a>
     <a href="{base}/analytics">Analytics</a>
+    <span class="footer-text">Contact Us <br>
+        Berrys Technologies Ltd 141 Lichfield Road, Birmingham ,  B6 5SP , United Kingdom <br> 0121 558 4411 <br>
+        enquiries@berrys.com</span>
   </div>
   
   <div class="overlay" id="overlay"></div>
@@ -262,6 +265,20 @@ onMount(async () => {
       scale:1.1;
       margin-left:auto;
     }
+    .header-background{
+      top:25% !important;
+      height:75% !important;
+    }
+    .footer-text{
+      position: absolute;
+      bottom: 2%;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 0.8rem;
+      font-family: 'Mulish', sans-serif;
+      color:white;
+    }
     .sub-header {
       display: grid !important;
       padding-left: 5vw !important;
@@ -269,8 +286,8 @@ onMount(async () => {
     }
     .sub-header h1 {
       justify-self: center;
-      font-size: 1rem !important;
-    }
+      font-size: 1.4rem !important;
+        }
     .sub-header span {
       padding-left: 0 !important;
       padding-bottom: 2vh;
@@ -291,12 +308,10 @@ onMount(async () => {
             }
             .sub-header {
                 padding-left: 2vw !important;
+                min-height: 10vh;
             }
             .sub-header span {
-                padding-left: 1.5vw !important;
-                font-size:0.7rem !important;
-                overflow-wrap: break-word;
-                white-space: normal;
+                display:none;
             }
             * {
                 font-size: 0.75rem !important;
@@ -306,7 +321,7 @@ onMount(async () => {
                 width:100vw !important
             }
             .trailer-container img{
-                margin-left: -35vw !important;
+                margin-left: -30vw !important;
                 width:90% !important;
             }
             
@@ -318,8 +333,8 @@ onMount(async () => {
                 margin-right: 4vw;
             }
             footer img { 
-                max-height: 6vh; 
-                max-width: 20%; 
+                max-height: 10vh; 
+                max-width: 30%; 
                 height: auto; 
                 width: auto !important;
             }
@@ -342,11 +357,6 @@ onMount(async () => {
             background-repeat: no-repeat;
             background-size: 16px;
             background-position: 0.5vh center;
-        }
-        @media (max-width: 900px) {
-            .header input[type="text"] {
-                width: 40%;
-            }
         }
         .header input[type="text"]::placeholder {
             color: rgba(255, 255, 255, 0.7);
@@ -521,7 +531,7 @@ onMount(async () => {
             border-radius: 10px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             overflow: hidden;
-            max-height: 500px; 
+            max-height: 500px;
             display: flex;
             flex-direction: column;
         }
@@ -529,15 +539,13 @@ onMount(async () => {
             width: 100%;
             border-collapse: collapse;
             font-family: 'Mulish', sans-serif;
-            max-height: 80vh;
             table-layout: fixed;
         }
         .inventory-table thead {
             position: sticky;
             top: 0;
             z-index: 1;
-            display: table;
-            width: 100%;
+            background-color: #014B96;
         }
         .inventory-table th {
             background-color: #014B96;
@@ -547,19 +555,22 @@ onMount(async () => {
             font-weight: 600;
         }
         .inventory-table tbody {
+            display: block;
+            overflow-y: auto;
+            max-height: 450px;
+        }
+        .inventory-table thead tr {
             display: table;
             width: 100%;
-            overflow-y: auto;
-            max-height: 350px; 
+            table-layout: fixed;
         }
-        .inventory-table thead tr, 
         .inventory-table tbody tr {
-            display: table-row;
+            display: table;
             width: 100%;
+            table-layout: fixed;
         }
         .inventory-table th,
         .inventory-table td {
-            display: table-cell;
             padding: 1vh 1vw;
             border-bottom: 1px solid #EAF3FC;
         }

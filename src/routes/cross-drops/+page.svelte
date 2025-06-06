@@ -5,6 +5,9 @@
     import { goto } from '$app/navigation';
     import { page } from '$app/stores';
     import { get } from 'svelte/store';
+    import DropdownField from "./DropdownField.svelte";
+    let uniqueStates;
+    let uniqueCities;
     const currentPath = get(page).url.pathname;
     let mobileSearchVisible = false;
     function openDetails(row) {
@@ -19,6 +22,17 @@
         siteCode : row.zip
       }
     });
+  }
+  function formatSearchedDate(searchedDate){
+    if(!searchedDate) return "";
+    const date = new Date(searchedDate);
+    const formattedDate = date.toLocaleDateString('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year:'numeric'
+    }).replace(/\//g,'.');
+    console.log(formattedDate);
+    return formattedDate;
   }
   function toggleMobileSearch() {
     mobileSearchVisible = !mobileSearchVisible;
@@ -76,7 +90,7 @@
                 (row.zip && row.zip.toString().includes(searchParams.zip));
             
             const dateMatch = !searchParams.date || 
-                (row.date && row.date.includes(searchParams.date));
+                (row.date && row.date.includes(formatSearchedDate(searchParams.date)));
             
             const fuelMatch = !searchParams.fuel || 
                 (row.preventedDelivery && row.preventedDelivery.toLowerCase().includes(searchParams.fuel.toLowerCase()));
@@ -391,6 +405,8 @@ function closeDropdown(event) {
     rows = await crossdrop.fetchPreventions()
     filteredRows = [...rows];
     detailsVisible = Array(rows.length).fill(false);
+    uniqueStates = [...new Set(rows.map(row => row.state).filter(state => state && state.trim() !== ''))];
+    uniqueCities = [...new Set(rows.map(row => row.city).filter(state => state && state.trim() !== ''))];
     crossdrop.disableBrowserAutocomplete();
     const interval =  setInterval(updateDateTime,1000);
     window.addEventListener('click',closeDropdown);
@@ -445,6 +461,9 @@ function closeDropdown(event) {
     <a href="{base}/site-data">Site Data</a>
     <a href="{base}/inventory">Inventory</a>
     <a href="{base}/analytics">Analytics</a>
+    <span class="footer-text">Contact Us <br>
+      Berrys Technologies Ltd 141 Lichfield Road, Birmingham ,  B6 5SP , United Kingdom <br> 0121 558 4411 <br>
+      enquiries@berrys.com</span>
   </div>
   <div class="overlay" id="overlay"></div>
 
@@ -459,20 +478,28 @@ function closeDropdown(event) {
             <a href="{base}/home">Home</a> / <span>Cross-drop prevention</span>
         </div> 
     </div>
-    <main>
+    <main class="cross-drop-page">
         <div class="main-container">
           <button on:click={toggleMobileSearch} class="toggle-search-btn"><label for="search-fields" class="search-label"> Search <span style="font-size:1rem">{mobileSearchVisible ?  '▲' : '▼'} </span> </label>   </button>
           <div class="search-fields" class:visible={mobileSearchVisible}>
              <label for="ST-address"> Address</label>
              <input type="text" id="ST-address"  bind:value={searchParams.address}  name="ST-address" autocomplete="off"   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}>
-             <label for="State"> State</label>
-             <input type="text" id="State"  bind:value={searchParams.state} name="State" autocomplete="off"   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}>
-             <label for="City"> City</label>
-             <input type="text" id="City" bind:value={searchParams.city} name="City" autocomplete="off"  on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}>
+             <DropdownField 
+             id="State" 
+             label="State" 
+             options={uniqueStates} 
+             bind:value={searchParams.state}   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}
+         />
+         <DropdownField 
+         id="City" 
+         label="City" 
+         options={uniqueCities} 
+         bind:value={searchParams.city}   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}
+     />
              <label for="Zip">Zip</label>
              <input type="text" id="Zip"  bind:value={searchParams.zip} name="Zip" autocomplete="off"  on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}>
              <label for="Date">Date</label>
-             <input type="text" id="Date" bind:value={searchParams.date} name="Date" autocomplete="off" placeholder="DD.MM.YYYY"   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}>
+             <input type="date" id="Date" bind:value={searchParams.date} name="Date" autocomplete="off" placeholder="DD.MM.YYYY"   on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}>
              <label for="Fuel">Fuel</label>
              <input type="text" id="Fuel"     bind:value={searchParams.fuel}  name="Fuel" autocomplete="off"  on:keydown={(e) => { if (e.key === 'Enter') filterRows(); }}>
              <div class="button-container">
@@ -622,6 +649,7 @@ function closeDropdown(event) {
     .subheader-image{
       display:none;
     }
+    
     ::placeholder {
         color: #5e5e5e;
         font-size: 0.875rem;
@@ -660,7 +688,7 @@ function closeDropdown(event) {
         top: 40%;
         left: 0;
         width: 100%;
-        height: 70%;
+        height: 60%;
         background-size: contain;
         z-index: -1;
         opacity: 1;
@@ -782,7 +810,10 @@ function closeDropdown(event) {
         .desktop-view {
       display: none;
     }
-    
+    .header-background{
+      top:25% !important;
+      height:75% !important;
+    }
     .mobile-card-view {
       display: block;
     }
@@ -798,7 +829,7 @@ function closeDropdown(event) {
       margin-left:auto;
     }
     .sub-header {
-      font-size:0.75rem !important;
+    color: #014b96;
     }
     .subheader-image{
       display:unset;
@@ -807,9 +838,20 @@ function closeDropdown(event) {
       justify-self: center;
       align-items: center;
     }
+    .footer-text{
+      position: absolute;
+      bottom: 2%;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 0.8rem;
+      font-family: 'Mulish', sans-serif;
+      color:white;
+    }
     .sub-header h1 {
       justify-self: center;
-      font-size: 1rem !important;
+      font-size: 1.1rem !important;
+      font-weight: 400 !important;
     }
     .table-type,
     .current-time,
@@ -826,6 +868,7 @@ function closeDropdown(event) {
     .export-button{
       display:none;
     }
+
     main {
       background-color : white;
     }
@@ -856,13 +899,15 @@ function closeDropdown(event) {
         .search-fields {
             display: flex;
             flex-wrap: wrap;
+            margin: 0 auto !important;
         }
         .search-fields label {
           min-width: 90px;
         margin: 0;
-        padding: 8px 0;
+        padding: 8px 2vw;
         font-size: 14px !important;
         white-space: nowrap;
+        align-self: initial !important;
         }
         .button-container{
             margin-top: 1vh !important;
@@ -953,20 +998,27 @@ function closeDropdown(event) {
         align-items: flex-start;
         padding-top: 4vh;
         padding-left: 1vw;
+        padding-right:1vw;
         border-top-left-radius: 20px;
         background-color: white;
         height: 100%;
     }
     .search-label {
     font-family: "Mulish", sans-serif;
-    font-size: 2rem;
+    font-size: 1.6rem;
     font-weight: 400;
     color: #014b96;
     margin-bottom: 2vh;
     align-self: center;
   }
+  :global(.cross-drop-page .search-fields label) {
+        font-family: 'Mulish', sans-serif;
+        font-weight: 400;
+        font-size: 1rem;
+        align-self:center;
+      }
   .search-fields {
-    margin:auto;
+    margin: 0 7vw;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -975,6 +1027,7 @@ function closeDropdown(event) {
         font-family: 'Mulish', sans-serif;
         font-weight: 400;
         font-size: 1rem;
+        align-self:center;
 
     }
     .search-fields input{
@@ -1105,6 +1158,7 @@ function closeDropdown(event) {
         font-family: 'Mulish', sans-serif;
         font-weight: 400;
         font-size: 1rem;
+        width:10vw;
         border: none;
         cursor: pointer;
         margin-left: auto;
@@ -1171,6 +1225,7 @@ function closeDropdown(event) {
         right: 0;
         background-color: #f9f9f9;
         min-width: 120px;
+        width:10vw;
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
         z-index: 2000;
         border-radius: 4px;
@@ -1181,6 +1236,7 @@ function closeDropdown(event) {
         text-decoration: none;
         display: block;
         font-family: 'Mulish', sans-serif;
+        justify-self: center;
     }
     .dropdown-content a:hover {
         background-color: #EAF3FC;
@@ -1236,10 +1292,9 @@ function closeDropdown(event) {
       padding-top: 60px;
       overflow-y: auto;
     }
-    :global(.mobile-sidebar.active) {
+    .mobile-sidebar.active {
       left: 0;
     }
-    
     .mobile-sidebar a {
       display: block;
       padding: 15px 20px;
@@ -1271,7 +1326,6 @@ function closeDropdown(event) {
     }
     .search-fields input::placeholder {
     font-size: 0.75rem;
-    text-align: center;
   }
     .hamburger-menu span {
       display: block;
@@ -1297,6 +1351,8 @@ function closeDropdown(event) {
 
     .search-fields.visible {
       display: flex;
+      padding: 0 5vw;
+
     }
     .search-fields input {
         flex: 1;
@@ -1304,6 +1360,56 @@ function closeDropdown(event) {
         margin: 0 0 0 10px !important;
         padding: 8px !important;
         font-size: 14px !important;
+    }
+    :global(.search-fields) {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 0 10px;
+    }
+    
+    /* Create rows for label + input pairs */
+    :global(.search-fields > div), 
+    :global(.search-fields > label) + input {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        margin-bottom: 10px;
+        align-items: center;
+    }
+    
+    /* Style labels */
+    :global(.search-fields label) {
+        min-width: 90px;
+        margin: 0;
+        padding: 8px 2vw;
+        font-size: 14px !important;
+        white-space: nowrap;
+        align-self: initial !important;
+    }
+    
+    /* Style inputs */
+    :global(.search-fields input) {
+        flex: 1;
+        width: 100% !important;
+        margin: 0 0 0 10px !important;
+        padding: 8px !important;
+        font-size: 14px !important;
+    }
+    
+    /* Fix dropdown components */
+    :global(.custom-dropdown) {
+        display: flex !important;
+        width: 100% !important;
+        margin-bottom: 10px;
+    }
+    
+    :global(.custom-dropdown input) {
+        flex: 1;
+        width: 100% !important;
+        padding: 8px !important;
+        margin: 0 0 0 10px !important;
+        height:32px !important;
     }
   }
 </style>

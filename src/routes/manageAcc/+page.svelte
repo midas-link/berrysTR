@@ -69,6 +69,9 @@ setupMobileMenu();
         <a href="{base}/site-data">Site Data</a>
         <a href="{base}/inventory">Inventory</a>
         <a href="{base}/analytics">Analytics</a>
+        <span class="footer-text">Contact Us <br>
+            Berrys Technologies Ltd 141 Lichfield Road, Birmingham ,  B6 5SP , United Kingdom <br> 0121 558 4411 <br>
+            enquiries@berrys.com</span>
       </div>
       <div class="overlay" id="overlay"></div>
     <div class="sub-header-container">
@@ -196,10 +199,24 @@ setupMobileMenu();
             .header a:nth-child(2) {
         margin-left: 5%;
       }
+      .header-background{
+      top:25% !important;
+      height:75% !important;
+    }
+      .footer-text{
+      position: absolute;
+      bottom: 2%;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 0.8rem;
+      font-family: 'Mulish', sans-serif;
+      color:white;
+    }
       .header img {
-        max-height: 6vh; /* Maintain height relative to viewport */
-        max-width: 100%; /* Ensure it doesn't exceed the width of its container */
-        height: auto; /* Maintain aspect ratio */
+        max-height: 8vh;
+        max-width: 100%;
+        height: auto; 
         width: auto;
         scale:1.1;
         margin-left:auto;
@@ -250,11 +267,6 @@ setupMobileMenu();
             background-repeat: no-repeat;
             background-size: 16px;
             background-position: 0.5vh center;
-        }
-        @media (max-width: 900px) {
-            .header input[type="text"] {
-                width: 40%;
-            }
         }
         .header input[type="text"]::placeholder {
             color: rgba(255, 255, 255, 0.7);

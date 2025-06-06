@@ -42,6 +42,17 @@
   let dateInput;
   let fuelInput;
   let mobileSearchVisible = false;
+  function formatSearchedDate(searchedDate){
+    if(!searchedDate) return "";
+    const date = new Date(searchedDate);
+    const formattedDate = date.toLocaleDateString('en-GB', {
+      month: '2-digit',
+      day: '2-digit',
+      year:'numeric'
+    })
+    console.log(formattedDate);
+    return formattedDate;
+  }
   function getRowClass(index) {
     return index % 2 === 0 ? 'row-even' : 'row-odd';
 }
@@ -72,7 +83,7 @@ function filterRows() {
           (row.Zip && row.Zip.toString().includes(searchParams.zip));
       
       const dateMatch = !searchParams.date || 
-          (row.Date && row.Date.includes(searchParams.date));
+          (row.Date && row.Date.includes(formatSearchedDate(searchParams.date)));
       
       const fuelMatch = !searchParams.fuel || 
           (row.Delivered && row.Delivered.toLowerCase().includes(searchParams.fuel.toLowerCase()));
@@ -488,6 +499,9 @@ async function exportTableToPDF() {
         <a href="{base}/site-data">Site Data</a>
         <a href="{base}/inventory">Inventory</a>
         <a href="{base}/analytics">Analytics</a>
+        <span class="footer-text">Contact Us <br>
+          Berrys Technologies Ltd 141 Lichfield Road, Birmingham ,  B6 5SP , United Kingdom <br> 0121 558 4411 <br>
+          enquiries@berrys.com</span>
       </div>
       <div class="overlay" id="overlay"></div>
     <div class="sub-header-container">
@@ -500,7 +514,7 @@ async function exportTableToPDF() {
             <a href="{base}/home">Home</a> / <span>Site Data</span>
         </div> 
     </div>
-    <main>
+    <main class="site-data-page">
         <div class="main-container">
           <button on:click={toggleMobileSearch} class="toggle-search-btn"><label for="search-fields" class="search-label"> Search <span style="font-size:1rem">{mobileSearchVisible ?  '▲' : '▼'} </span> </label>   </button>
             <div class="search-fields" class:visible={mobileSearchVisible}>
@@ -560,7 +574,7 @@ async function exportTableToPDF() {
                 
                 <label for="Date">Date</label>
                 <input 
-                    type="text" 
+                    type="date" 
                     id="Date" 
                     name="Date" 
                     bind:this={dateInput} 
@@ -877,7 +891,7 @@ async function exportTableToPDF() {
         width: 8vw;
     }
     .header input[type="text"] {
-        padding: 1vh 3vw;
+        padding: 1vh 1.5vw;
         border-radius: 4px;
         border: 1px solid rgba(255, 255, 255, 0.2);
         background-color: rgba(255, 255, 255, 0.1);
@@ -953,6 +967,7 @@ async function exportTableToPDF() {
         align-items: flex-start;
         padding-top: 4vh;
         padding-left: 1vw;
+        padding-right:1vw;
         border-top-left-radius: 20px;
         background-color: white;
         height: 100%;
@@ -966,27 +981,28 @@ async function exportTableToPDF() {
     align-self: center;
   }
  
-    :global(.search-fields) {
-        margin:auto;
+    .search-fields {
+        margin:0 5vw;
         display:flex;
         justify-content: center;
+        text-wrap: nowrap;
     }
-    :global(.search-fields label) {
+    :global(.site-data-page .search-fields label) {
         font-family: 'Mulish', sans-serif;
         font-weight: 400;
         font-size: 1rem;
-        padding-left: 1vw;
-        padding-top:0.5vh;
-    }
-    :global(.search-fields input){
+        align-self:center;
+      }
+    :global( .search-fields input) {
         background-color: #EAF3FC;
-        border:none;
-        margin-left:1vw;
+        border: none;
+        margin-left: 1vw;
         padding-top: 1vh;
         padding-bottom: 1vh;
-        padding-left: 1vw;
+        padding-left: 10px;
         width: 7vw;
         border-radius: 10px;
+        margin-right:1vw;
     }
     :global(.search-fields input::placeholder){
         color: #5e5e5e;
@@ -1024,10 +1040,10 @@ async function exportTableToPDF() {
         overflow-y: auto;
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
         z-index: 2000;
+        width:10vw;
         border-radius: 4px;
         margin-top: 2px;
-        left: 1vw;
-        right: 1vw;
+
     }
     .dropdown-content.show {
         display: block;
@@ -1210,6 +1226,7 @@ async function exportTableToPDF() {
         text-decoration: none;
         display: block;
         font-family: 'Mulish', sans-serif;
+        justify-self:center;
     }
     .dropdown-content a:hover {
         background-color: #EAF3FC;
@@ -1360,6 +1377,20 @@ async function exportTableToPDF() {
         .desktop-view {
       display: none;
     }
+    .header-background{
+      top:25% !important;
+      height:75% !important;
+    }
+    .footer-text{
+      position: absolute;
+      bottom: 2%;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 0.8rem;
+      font-family: 'Mulish', sans-serif;
+      color:white;
+    }
     .toggle-search-btn{
       display:contents;
     }
@@ -1383,8 +1414,8 @@ async function exportTableToPDF() {
     }
     .sub-header h1 {
       justify-self: center;
-      font-size: 1rem !important;
-    }
+      font-size: 1.5rem !important;
+      }
     .sub-header span {
       display:none;
     }
@@ -1419,7 +1450,6 @@ async function exportTableToPDF() {
         flex-direction: column;
         width: 100%;
         padding: 0 10px;
-
     }
     
     /* Create rows for label + input pairs */
@@ -1436,9 +1466,10 @@ async function exportTableToPDF() {
     :global(.search-fields label) {
         min-width: 90px;
         margin: 0;
-        padding: 8px 0;
+        padding: 8px 2vw;
         font-size: 14px !important;
         white-space: nowrap;
+        align-self: initial !important;
     }
     
     /* Style inputs */
@@ -1462,6 +1493,7 @@ async function exportTableToPDF() {
         width: 100% !important;
         padding: 8px !important;
         margin: 0 0 0 10px !important;
+        height:32px !important;
     }
     
 
@@ -1502,13 +1534,15 @@ async function exportTableToPDF() {
         display:none;
     }
     .search-fields {
-      display: none; /* Hide by default on mobile */
+      display: none; 
       flex-wrap: wrap;
       transition: all 0.3s ease;
+      margin:auto !important;
     }
  
     .search-fields.visible {
       display: flex;
+      padding: 0 5vw;
     }
     .button-container{
       display:none; 

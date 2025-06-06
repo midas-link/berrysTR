@@ -339,6 +339,9 @@ function closeDropdown(event) {
           <a href="{base}/site-data">Site Data</a>
           <a href="{base}/inventory">Inventory</a>
           <a href="{base}/analytics">Analytics</a>
+          <span class="footer-text">Contact Us <br>
+            Berrys Technologies Ltd 141 Lichfield Road, Birmingham ,  B6 5SP , United Kingdom <br> 0121 558 4411 <br>
+            enquiries@berrys.com</span>
         </div>
         <div class="overlay" id="overlay"></div>
       <div class="sub-header-container">
@@ -581,6 +584,16 @@ function closeDropdown(event) {
       .desktop-view {
       display: none;
     }
+    .footer-text{
+      position: absolute;
+      bottom: 2%;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 0.8rem;
+      font-family: 'Mulish', sans-serif;
+      color:white;
+    }
     .mobile-view {
       display: grid;
       width:100vw;
@@ -623,11 +636,12 @@ function closeDropdown(event) {
     }
     .sub-header h1 {
       font-size: 1rem !important;
+      font-weight: 400 !important;
     }
     .mobile-delivery-date{
       display: contents !important;
       font-size: 1rem !important;
-    }
+      }
     .trailer-id-container{
       width: 100%;
       background-color: #004B96;
@@ -663,8 +677,13 @@ function closeDropdown(event) {
         font-size: 1rem !important;
         height:3vh;
       }
+      .header-background{
+      top:25% !important;
+      height:75% !important;
+    }
         .sub-header {
           margin:auto;
+          padding-left: 0 !important;
         }
         .sub-header img{
           width: 30% !important;
@@ -675,9 +694,13 @@ function closeDropdown(event) {
         }
         table{
           width:100% !important;
+          margin-top:0 !important;
         } 
         table tr{
           max-height: 2vh !important;
+        }
+        table td{
+          height: 8vh !important;
         }
         footer img { 
           max-height: 10vh; 
