@@ -1,0 +1,292 @@
+[
+  {
+    "Date": "09.12.2024",
+    "Time": "12:16",
+    "Trailer No.": "XJWP612",
+    "Address": "8523 Aksu Crossing",
+    "City": "Gülterberg",
+    "State": "Samsun",
+    "Tank No. ": "1",
+    "Prevented Delivery ": "GAS-REG"
+  },
+  {
+    "Date": "09.01.2024",
+    "Time": "9:04",
+    "Trailer No.": "EAQY355",
+    "Address": "72436 Akar Corner",
+    "City": "Ertaşton",
+    "State": "Samsun",
+    "Tank No. ": "1",
+    "Prevented Delivery ": "GAS-REG"
+  },
+  {
+    "Date": "08.14.2024",
+    "Time": "5:52",
+    "Trailer No.": "QIBL401",
+    "Address": "702 Yılmaz Underpass",
+    "City": "New Adlanfurt",
+    "State": "Şanlıurfa",
+    "Tank No. ": "6",
+    "Prevented Delivery ": "DIESEL"
+  },
+  {
+    "Date": "07.09.2024",
+    "Time": "2:40",
+    "Trailer No.": "ZMXN329",
+    "Address": "51563 Tarhan Crescent",
+    "City": "Gülenshire",
+    "State": "Bursa",
+    "Tank No. ": "4",
+    "Prevented Delivery ": "GAS-PREM"
+  },
+  {
+    "Date": "06.30.2024",
+    "Time": "23:28",
+    "Trailer No.": "YDAL921",
+    "Address": "706 Fatmanur Square Suite 725",
+    "City": "Derkayville",
+    "State": "Ankara",
+    "Tank No. ": "2",
+    "Prevented Delivery ": "GAS-REG"
+  },
+  {
+    "Date": "06.24.2024",
+    "Time": "20:16",
+    "Trailer No.": "WQOG696",
+    "Address": "4240 Gülen Ridge Suite 528",
+    "City": "Port Kutunfort",
+    "State": "Denizli",
+    "Tank No. ": "4",
+    "Prevented Delivery ": "GAS-REG"
+  },
+  {
+    "Date": "06.03.2024",
+    "Time": "17:04",
+    "Trailer No.": "MLCP696",
+    "Address": "210 Yıldırım Wall Suite 762",
+    "City": "Dilaratown",
+    "State": "İstanbul",
+    "Tank No. ": "5",
+    "Prevented Delivery ": "GAS-PREM"
+  },
+  {
+    "Date": "05.19.2024",
+    "Time": "13:52",
+    "Trailer No.": "CSHQ488",
+    "Address": "543 Karanbay Overpass Suite 024",
+    "City": "South Demirok",
+    "State": "Kayseri",
+    "Tank No. ": "5",
+    "Prevented Delivery ": "GAS-REG"
+  },
+  {
+    "Date": "05.14.2024",
+    "Time": "10:40",
+    "Trailer No.": "NDTN157",
+    "Address": "99302 Hacile Cove Apt. 732",
+    "City": "New Sittik",
+    "State": "İstanbul",
+    "Tank No. ": "7",
+    "Prevented Delivery ": "DIESEL"
+  },
+  {
+    "Date": "04.18.2024",
+    "Time": "7:28",
+    "Trailer No.": "WAYQ933",
+    "Address": "5058 Yüksel Estate",
+    "City": "Dalkılıçville",
+    "State": "Adana",
+    "Tank No. ": "3",
+    "Prevented Delivery ": "DIESEL"
+  },
+  {
+    "Date": "04.12.2024",
+    "Time": "4:16",
+    "Trailer No.": "VYQJ687",
+    "Address": "97443 İldem Heights Apt. 853",
+    "City": "Aközfurt",
+    "State": "Eskişehir",
+    "Tank No. ": "6",
+    "Prevented Delivery ": "GAS-PREM"
+  },
+  {
+    "Date": "04.04.2024",
+    "Time": "1:04",
+    "Trailer No.": "XVMF575",
+    "Address": "449 Yüksel Avenue",
+    "City": "Lake Günaydin",
+    "State": "Eskişehir",
+    "Tank No. ": "5",
+    "Prevented Delivery ": "GAS-REG"
+  },
+  {
+    "Date": "02.22.2024",
+    "Time": "21:52",
+    "Trailer No.": "HRZC199",
+    "Address": "98768 Gülenay Village Suite 608",
+    "City": "Gülağafurt",
+    "State": "İstanbul",
+    "Tank No. ": "4",
+    "Prevented Delivery ": "DIESEL"
+  },
+  {
+    "Date": "02.11.2024",
+    "Time": "18:40",
+    "Trailer No.": "WWRO626",
+    "Address": "9541 Gülper Burgs Suite 101",
+    "City": "Durukhaven",
+    "State": "Ankara",
+    "Tank No. ": "5",
+    "Prevented Delivery ": "GAS-REG"
+  },
+  {
+    "Date": "01.29.2024",
+    "Time": "15:28",
+    "Trailer No.": "XPUW441",
+    "Address": "9714 Nakip Motorway",
+    "City": "Alemdarhaven",
+    "State": "Kayseri",
+    "Tank No. ": "2",
+    "Prevented Delivery ": "GAS-PREM"
+  },
+  {
+    "Date": "01.18.2024",
+    "Time": "12:16",
+    "Trailer No.": "TZJB482",
+    "Address": "7541 İhsanoğlu Crossing Suite 215",
+    "City": "New Tüzeerchester",
+    "State": "Şanlıurfa",
+    "Tank No. ": "4",
+    "Prevented Delivery ": "GAS-REG"
+  },
+  {
+    "Date": "01.12.2024",
+    "Time": "9:04",
+    "Trailer No.": "IQZL863",
+    "Address": "56600 Jaruthip Highway Apt. 805",
+    "City": "Port Abdurrahman",
+    "State": "Bursa",
+    "Tank No. ": "4",
+    "Prevented Delivery ": "DIESEL"
+  },
+  {
+    "Date": "01.03.2024",
+    "Time": "5:52",
+    "Trailer No.": "RKAS706",
+    "Address": "3989 Heyvetullah Mews Apt. 806",
+    "City": "Sittikburgh",
+    "State": "Şanlıurfa",
+    "Tank No. ": "4",
+    "Prevented Delivery ": "GAS-PREM"
+  },
+  {
+    "Date": "12.22.2024",
+    "Time": "2:40",
+    "Trailer No.": "XQGA728",
+    "Address": "6304 Tevetoğlu Land",
+    "City": "Lake Börteçinfort",
+    "State": "Bursa",
+    "Tank No. ": "5",
+    "Prevented Delivery ": "DIESEL"
+  },
+  {
+    "Date": "12.21.2024",
+    "Time": "23:28",
+    "Trailer No.": "OXKD221",
+    "Address": "45811 Nevise Cove Suite 930",
+    "City": "New Üsame",
+    "State": "Diyarbakır",
+    "Tank No. ": "4",
+    "Prevented Delivery ": "GAS-REG"
+  },
+  {
+    "Date": "12.13.2024",
+    "Time": "20:16",
+    "Trailer No.": "FDQV927",
+    "Address": "9481 Yılma Plain Suite 961",
+    "City": "West Ecegülberg",
+    "State": "Bursa",
+    "Tank No. ": "5",
+    "Prevented Delivery ": "DIESEL"
+  },
+  {
+    "Date": "12.02.2024",
+    "Time": "17:04",
+    "Trailer No.": "NALY964",
+    "Address": "8914 Aksu View Suite 556",
+    "City": "Lake Zaliha",
+    "State": "Şanlıurfa",
+    "Tank No. ": "5",
+    "Prevented Delivery ": "GAS-PREM"
+  },
+  {
+    "Date": "11.09.2024",
+    "Time": "13:52",
+    "Trailer No.": "OXXE632",
+    "Address": "94086 Nas Locks",
+    "City": "Port Nuyan",
+    "State": "Trabzon",
+    "Tank No. ": "5",
+    "Prevented Delivery ": "GAS-PREM"
+  },
+  {
+    "Date": "10.30.2024",
+    "Time": "10:40",
+    "Trailer No.": "FRFK999",
+    "Address": "2786 Gül Landing",
+    "City": "South Alabezekside",
+    "State": "Ankara",
+    "Tank No. ": "5",
+    "Prevented Delivery ": "GAS-REG"
+  },
+  {
+    "Date": "09.09.2024",
+    "Time": "7:28",
+    "Trailer No.": "NASZ308",
+    "Address": "36828 Aslan Via Apt. 575",
+    "City": "Zenginfort",
+    "State": "Diyarbakır",
+    "Tank No. ": "5",
+    "Prevented Delivery ": "DIESEL"
+  },
+  {
+    "Date": "08.10.2024",
+    "Time": "4:16",
+    "Trailer No.": "LWRZ693",
+    "Address": "3673 Sayrak View",
+    "City": "Akgündüzland",
+    "State": "Gaziantep",
+    "Tank No. ": "5",
+    "Prevented Delivery ": "GAS-PREM"
+  },
+  {
+    "Date": "06.28.2024",
+    "Time": "1:04",
+    "Trailer No.": "OGOB151",
+    "Address": "839 Tuğrulhan Trafficway",
+    "City": "Türkfort",
+    "State": "Gaziantep",
+    "Tank No. ": "4",
+    "Prevented Delivery ": "GAS-REG"
+  },
+  {
+    "Date": "05.01.2024",
+    "Time": "21:52",
+    "Trailer No.": "ICSL902",
+    "Address": "170 Alkor Roads",
+    "City": "New Rezinmouth",
+    "State": "Adana",
+    "Tank No. ": "4",
+    "Prevented Delivery ": "GAS-MID"
+  },
+  {
+    "Date": "04.28.2024",
+    "Time": "18:40",
+    "Trailer No.": "LVIC218",
+    "Address": "24046 Kısakürek Well Suite 276",
+    "City": "South Kaygusuz",
+    "State": "Konya",
+    "Tank No. ": "4",
+    "Prevented Delivery ": "GAS-REG"
+  }
+]
