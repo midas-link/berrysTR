@@ -261,11 +261,11 @@
     <div class="sub-header-profile">
       <div class="profile-column">
         <img class="profile-pic" src="{base}/images/NicePng_gray.png" alt="profile-logo">
-        <div class="sub-header-profile-name">Darren Keane</div>
+        <div class="sub-header-profile-name">Remzi Ozer</div>
       </div>
       <div class="company-column">
-        <img class="company-logo" src="{base}/images/circle-k-logo.png" alt="company-logo">
-        <div class="sub-header-role">( Area Manager )</div>
+        <img class="company-logo" src="{base}/images/cust-logo.svg" alt="company-logo">
+        <div class="sub-header-role">( Maintenance manager )</div>
       </div>
     </div>
   </div>
@@ -590,6 +590,7 @@
     margin: 0 auto;
   }
   .company-logo{
+    width:50% !important;
     height: 6vh !important;
   }
   .sub-header-profile-name {

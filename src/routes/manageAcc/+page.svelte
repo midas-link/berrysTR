@@ -89,11 +89,11 @@ setupMobileMenu();
             <div class="profile-details">
                 <div class="header-profile">
                     <img src="images/NicePng_gray.png" alt="profile-logo">
-                    <div class="header-profile-name">Darren Keane</div>
+                    <div class="header-profile-name">Remzi Ozer</div>
                 </div>
                 <div class="header-company">
-                    <img class="company-logo" src="images/circle-k-logo.png" alt="company-logo">
-                    <div class="header-role">(Area Manager)</div>
+                    <img class="company-logo" src="images/cust-logo.svg" alt="company-logo">
+                    <div class="header-role">(Maintenance manager)</div>
                 </div>
             </div>
             <div class="form-container">
@@ -409,7 +409,7 @@ setupMobileMenu();
             margin: 0 auto;
         }
         .header-company img {
-            width: 5vh;
+            width: 50%;
             height: 6vh;
             display: block;
             margin: 0 auto;
