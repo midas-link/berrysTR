@@ -762,6 +762,7 @@ async function exportTableToPDF() {
     margin-bottom: 15px;
     padding: 15px;
     transition: all 0.3s ease;
+    min-height:7vh;
   }
   
   .card.row-even {

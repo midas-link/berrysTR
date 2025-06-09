@@ -93,14 +93,14 @@ onMount(async () => {
     </div>
     <main>
         <div class="main-container">
-            <div class="profile-details">
+                <div class="profile-details">
                 <div class="header-profile">
-                    <img src="{base}/images/NicePng_gray.png" alt="profile-logo">
-                    <div class="header-profile-name">Darren Keane</div>
+                    <img src="images/NicePng_gray.png" alt="profile-logo">
+                    <div class="header-profile-name">Remzi Ozer</div>
                 </div>
                 <div class="header-company">
-                    <img class="company-logo" src="{base}/images/circle-k-logo.png" alt="company-logo">
-                    <div class="header-role">(Area Manager)</div>
+                    <img class="company-logo" src="images/cust-logo.svg" alt="company-logo">
+                    <div class="header-role">(Maintenance manager)</div>
                 </div>
             </div>
             <div class="trailer-container">
@@ -443,7 +443,7 @@ onMount(async () => {
             margin: 0 auto;
         }
         .header-company img {
-            width: 5vh;
+            width: 54px;
             height: 6vh;
             display: block;
             margin: 0 auto;

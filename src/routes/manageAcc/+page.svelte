@@ -409,7 +409,7 @@ setupMobileMenu();
             margin: 0 auto;
         }
         .header-company img {
-            width: 50%;
+            width: 54px;
             height: 6vh;
             display: block;
             margin: 0 auto;
@@ -420,7 +420,7 @@ setupMobileMenu();
             justify-content: space-between; /* Optional: space them out evenly */
             align-items: center; /* Optional: center them vertically */
         }
-        .form-container {
+        .form-container {`
             border-radius: 25px;
             background-color: #FAFAFA;
             font-family: 'Mulish', sans-serif;
